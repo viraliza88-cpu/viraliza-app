@@ -1,0 +1,21 @@
+{
+  "name": "viraliza",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Plataforma de producción de videos por membresía",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dejavu-fonts-ttf": "^2.37.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "ffmpeg-static": "^5.3.0",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi panel — Viraliza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="panel.html">Viraliza<i>.</i></a>
+    <div class="sesion">
+      <span>Hola, <b id="nombre-usuario">…</b></span>
+      <button class="salir" id="salir" type="button">Salir</button>
+    </div>
+  </div>
+</header>
+
+<main class="panel">
+  <div class="wrap">
+    <span class="eyebrow">Tu estudio</span>
+    <h1 class="serif" style="font-size:clamp(26px,3.4vw,38px)">¿Qué vamos a <em>producir</em> hoy?</h1>
+
+    <div class="panel-grid">
+
+      <!-- Columna: producir -->
+      <section class="card gold">
+        <h2 class="serif" style="font-size:21px;margin-bottom:22px">Nuevo video</h2>
+        <p class="msg" id="mensaje"></p>
+
+        <div id="paso-tema">
+          <label for="tema">Tema del video</label>
+          <input id="tema" type="text" maxlength="160" placeholder="5 errores al comprar apartamento en Medellín">
+          <p class="ayuda">Con una frase basta. Vas a poder leer y ajustar el guion antes de producir.</p>
+
+          <label for="voz">Voz</label>
+          <select id="voz">
+            <option value="es-CO-SalomeNeural-Female">Salomé — femenina, acento colombiano</option>
+            <option value="es-CO-GonzaloNeural-Male">Gonzalo — masculina, acento colombiano</option>
+            <option value="es-MX-DaliaNeural-Female">Dalia — femenina, acento mexicano</option>
+            <option value="es-ES-AlvaroNeural-Male">Álvaro — masculina, acento español</option>
+          </select>
+
+          <label for="duracion">Duración</label>
+          <select id="duracion">
+            <option value="corto">Corto — ideal para TikTok (~30 s)</option>
+            <option value="medio">Medio — más contexto (~60 s)</option>
+            <option value="largo">Largo — mini historia (~90 s)</option>
+          </select>
+
+          <button class="btn block" id="generar-guion" type="button">Generar guion</button>
+        </div>
+
+        <div id="paso-guion" style="display:none">
+          <label for="guion-editable">Tu guion (puedes editarlo)</label>
+          <textarea id="guion-editable" style="min-height:150px"></textarea>
+
+          <button class="btn block" id="producir" type="button">Producir video</button>
+          <button class="btn line block" id="regenerar-guion" type="button" style="margin-top:12px">Generar otro guion</button>
+        </div>
+
+        <div class="cuota">
+          <div>
+            <span class="plan-nombre" id="plan-nombre">—</span><br>
+            <span style="font-size:13px;color:var(--muted)">Videos este mes</span>
+          </div>
+          <span class="num"><span id="cuota-usados">0</span> <i>/ <span id="cuota-limite">0</span></i></span>
+        </div>
+      </section>
+
+      <!-- Columna: mis videos -->
+      <section>
+        <h2 class="serif" style="font-size:21px;margin-bottom:18px">Mis videos</h2>
+        <div class="videos" id="lista-videos">
+          <div class="vacio">Aquí aparecerán tus producciones.<br>Crea tu primer video para estrenar el estudio.</div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+<script src="app.js"></script>
+<script>Panel.iniciar();</script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acceso — Viraliza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<main class="acceso">
+  <div class="caja">
+    <a class="logo" href="index.html">Viraliza<i>.</i></a>
+
+    <div class="tabs" role="tablist">
+      <button id="tab-login" type="button">Iniciar sesión</button>
+      <button id="tab-registro" type="button">Crear cuenta</button>
+    </div>
+
+    <div class="card gold">
+      <h1 class="serif" id="titulo">Bienvenido <em>de vuelta</em></h1>
+      <p class="sub" id="subtitulo">Entra a tu panel de producción.</p>
+
+      <p class="msg" id="mensaje"></p>
+
+      <div id="campo-nombre" style="display:none">
+        <label for="nombre">Tu nombre</label>
+        <input id="nombre" type="text" autocomplete="name" placeholder="Esteban Rendón">
+      </div>
+
+      <label for="email">Correo</label>
+      <input id="email" type="email" autocomplete="email" placeholder="tu@correo.com">
+
+      <label for="clave">Contraseña</label>
+      <input id="clave" type="password" autocomplete="current-password" placeholder="Mínimo 6 caracteres">
+
+      <button class="btn block" id="accion" type="button">Entrar</button>
+
+      <p class="alterno" id="alterno">¿Aún no tienes cuenta? <a href="#" id="cambiar">Crea una gratis</a></p>
+    </div>
+  </div>
+</main>
+
+<script src="app.js"></script>
+<script>Acceso.iniciar();</script>
+</body>
+</html>
