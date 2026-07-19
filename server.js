@@ -1,63 +1,53 @@
 // ============================================================
 //  VIRALIZA — Servidor principal
-//  Plataforma de producción de video · v0.5 (marca de agua plan gratis)
+//  Plataforma de producción de video · v1.0 (con Supabase)
 // ============================================================
 require("dotenv").config();
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const { spawn } = require("child_process");
 const os = require("os");
 const FFMPEG_BIN = require("ffmpeg-static");
-const MARCA_AGUA_PNG = path.join(__dirname, "public_assets", "marca-agua.png");
+const { createClient } = require("@supabase/supabase-js");
+global.WebSocket = require("ws");
 
-// Aplica la marca de agua (solo plan gratis) sobre un archivo de video local.
-// Si algo falla, no rompe la descarga: se resuelve con la ruta original.
+const MARCA_AGUA_PNG = path.join(__dirname, "public_assets", "marca-agua.png");
+const PUERTO = process.env.PUERTO || 3000;
+const MOTOR_URL = (process.env.MOTOR_URL || "http://127.0.0.1:8080").replace(/\/$/, "");
+const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
+const GROQ_MODELO = process.env.GROQ_MODELO || "llama-3.3-70b-versatile";
+
+const SUPABASE_URL = process.env.SUPABASE_URL || "";
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "";
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+
+const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+const supabasePublic = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 function aplicarMarcaDeAgua(rutaEntrada) {
   return new Promise((resolve) => {
     const rutaSalida = path.join(os.tmpdir(), `viraliza-marca-${crypto.randomUUID()}.mp4`);
     const proceso = spawn(FFMPEG_BIN, [
-      "-y",
-      "-i", rutaEntrada,
-      "-i", MARCA_AGUA_PNG,
+      "-y", "-i", rutaEntrada, "-i", MARCA_AGUA_PNG,
       "-filter_complex", "[0:v][1:v]overlay=W-w-24:H-h-40",
-      "-c:v", "libx264",
-      "-preset", "veryfast",
-      "-pix_fmt", "yuv420p",
-      "-c:a", "copy",
+      "-c:v", "libx264", "-preset", "veryfast", "-pix_fmt", "yuv420p", "-c:a", "copy",
       rutaSalida,
     ]);
     proceso.on("error", () => resolve(rutaEntrada));
     proceso.on("close", (codigo) => {
-      if (codigo === 0 && fs.existsSync(rutaSalida)) resolve(rutaSalida);
-      else resolve(rutaEntrada);
+      resolve(codigo === 0 && fs.existsSync(rutaSalida) ? rutaSalida : rutaEntrada);
     });
   });
 }
 
-const PUERTO = process.env.PUERTO || 3000;
-const MOTOR_URL = (process.env.MOTOR_URL || "http://127.0.0.1:8080").replace(/\/$/, "");
-const JWT_SECRETO = process.env.JWT_SECRETO || "viraliza-cambia-esta-clave";
-const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
-const GROQ_MODELO = process.env.GROQ_MODELO || "llama-3.3-70b-versatile";
-
-// ---------- Redacción propia: guion natural + palabras clave reales ----------
-const PALABRAS_POR_DURACION = {
-  corto: 65,
-  medio: 130,
-  largo: 195,
-};
+const PALABRAS_POR_DURACION = { corto: 65, medio: 130, largo: 195 };
 
 async function preguntarGroq(mensajes) {
   const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${GROQ_API_KEY}`,
-    },
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${GROQ_API_KEY}` },
     body: JSON.stringify({ model: GROQ_MODELO, temperature: 0.7, messages: mensajes }),
   });
   const j = await r.json();
@@ -119,7 +109,6 @@ async function redactarPalabrasClave(tema, guion) {
   return texto.split(",").map((t) => t.trim()).filter(Boolean).slice(0, 5);
 }
 
-// ---------- Membresías y cuotas mensuales ----------
 const PLANES = {
   inicial:   { nombre: "Inicial",   limite: 2,   sello: true  },
   esencial:  { nombre: "Esencial",  limite: 15,  sello: false },
@@ -127,104 +116,98 @@ const PLANES = {
   elite:     { nombre: "Élite",     limite: 150, sello: false },
 };
 
-// ---------- Base de datos simple en archivo ----------
-const RUTA_DATOS = path.join(__dirname, "data");
-const RUTA_DB = path.join(RUTA_DATOS, "db.json");
-if (!fs.existsSync(RUTA_DATOS)) fs.mkdirSync(RUTA_DATOS, { recursive: true });
-if (!fs.existsSync(RUTA_DB)) fs.writeFileSync(RUTA_DB, JSON.stringify({ usuarios: [], videos: [] }, null, 2));
-
-function leerDB() {
-  if (!fs.existsSync(RUTA_DB)) {
-    if (!fs.existsSync(RUTA_DATOS)) fs.mkdirSync(RUTA_DATOS, { recursive: true });
-    fs.writeFileSync(RUTA_DB, JSON.stringify({ usuarios: [], videos: [] }, null, 2));
-  }
-  return JSON.parse(fs.readFileSync(RUTA_DB, "utf-8"));
-}
-function guardarDB(db) {
-  fs.writeFileSync(RUTA_DB, JSON.stringify(db, null, 2));
-}
 function mesActual() {
   return new Date().toISOString().slice(0, 7);
 }
 
-// ---------- App ----------
+async function cuotaDe(usuarioId, plan) {
+  const infoPlan = PLANES[plan] || PLANES.inicial;
+  const { count } = await supabaseAdmin
+    .from("videos")
+    .select("id", { count: "exact", head: true })
+    .eq("usuario_id", usuarioId)
+    .eq("mes", mesActual())
+    .neq("estado", "fallido");
+  return { usados: count || 0, limite: infoPlan.limite, plan: infoPlan.nombre };
+}
+
 const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-// ---------- Autenticación ----------
-function crearToken(usuario) {
-  return jwt.sign({ id: usuario.id, email: usuario.email }, JWT_SECRETO, { expiresIn: "30d" });
-}
-
-function autenticar(req, res, next) {
+async function autenticar(req, res, next) {
   const auth = req.headers.authorization || "";
   const token = auth.startsWith("Bearer ") ? auth.slice(7) : (req.query.t || "");
   if (!token) return res.status(401).json({ error: "Inicia sesión para continuar." });
-  try {
-    const datos = jwt.verify(token, JWT_SECRETO);
-    const db = leerDB();
-    const usuario = db.usuarios.find((u) => u.id === datos.id);
-    if (!usuario) return res.status(401).json({ error: "Tu sesión ya no es válida. Inicia sesión de nuevo." });
-    req.usuario = usuario;
-    next();
-  } catch {
+  const { data, error } = await supabaseAdmin.auth.getUser(token);
+  if (error || !data?.user) {
     return res.status(401).json({ error: "Tu sesión expiró. Inicia sesión de nuevo." });
   }
+  req.usuario = {
+    id: data.user.id,
+    email: data.user.email,
+    nombre: data.user.user_metadata?.nombre || "",
+  };
+  next();
 }
 
-function cuotaDe(usuario, db) {
-  const plan = PLANES[usuario.plan] || PLANES.inicial;
-  const usados = db.videos.filter(
-    (v) => v.usuarioId === usuario.id && v.mes === mesActual() && v.estado !== "fallido"
-  ).length;
-  return { usados, limite: plan.limite, plan: plan.nombre };
-}
-
-// ---------- API: cuentas ----------
 app.post("/api/registro", async (req, res) => {
   const { nombre, email, clave } = req.body || {};
   if (!nombre || !email || !clave) return res.status(400).json({ error: "Completa nombre, correo y contraseña." });
   if (String(clave).length < 6) return res.status(400).json({ error: "La contraseña debe tener al menos 6 caracteres." });
-  const correo = String(email).trim().toLowerCase();
-  const db = leerDB();
-  if (db.usuarios.some((u) => u.email === correo)) {
-    return res.status(409).json({ error: "Ya existe una cuenta con este correo. Inicia sesión." });
+
+  const { error: errorCreacion } = await supabaseAdmin.auth.admin.createUser({
+    email: String(email).trim().toLowerCase(),
+    password: String(clave),
+    email_confirm: true,
+    user_metadata: { nombre: String(nombre).trim() },
+  });
+  if (errorCreacion) {
+    console.error("ERROR DE REGISTRO:", errorCreacion.message);
+    const mensaje = /already|registrad/i.test(errorCreacion.message)
+      ? "Ya existe una cuenta con este correo. Inicia sesión."
+      : "No pudimos crear tu cuenta. Inténtalo de nuevo.";
+    return res.status(409).json({ error: mensaje });
   }
-  const usuario = {
-    id: crypto.randomUUID(),
-    nombre: String(nombre).trim(),
-    email: correo,
-    hash: await bcrypt.hash(String(clave), 10),
-    plan: "inicial",
-    creado: new Date().toISOString(),
-  };
-  db.usuarios.push(usuario);
-  guardarDB(db);
-  res.json({ token: crearToken(usuario), nombre: usuario.nombre });
+
+  const { data, error } = await supabasePublic.auth.signInWithPassword({
+    email: String(email).trim().toLowerCase(),
+    password: String(clave),
+  });
+  if (error || !data?.session) {
+    return res.status(500).json({ error: "Tu cuenta se creó, pero no pudimos iniciar tu sesión. Intenta iniciar sesión manualmente." });
+  }
+  res.json({ token: data.session.access_token, nombre: String(nombre).trim() });
 });
 
 app.post("/api/login", async (req, res) => {
   const { email, clave } = req.body || {};
-  const db = leerDB();
-  const usuario = db.usuarios.find((u) => u.email === String(email || "").trim().toLowerCase());
-  if (!usuario || !(await bcrypt.compare(String(clave || ""), usuario.hash))) {
+  const { data, error } = await supabasePublic.auth.signInWithPassword({
+    email: String(email || "").trim().toLowerCase(),
+    password: String(clave || ""),
+  });
+  if (error || !data?.session) {
+    console.error("ERROR DE LOGIN COMPLETO:", JSON.stringify(error, null, 2));
     return res.status(401).json({ error: "Correo o contraseña incorrectos." });
   }
-  res.json({ token: crearToken(usuario), nombre: usuario.nombre });
+  res.json({ token: data.session.access_token, nombre: data.user.user_metadata?.nombre || "" });
 });
 
-app.get("/api/yo", autenticar, (req, res) => {
-  const db = leerDB();
+app.get("/api/yo", autenticar, async (req, res) => {
+  const { data: perfil } = await supabaseAdmin
+    .from("perfiles")
+    .select("plan")
+    .eq("id", req.usuario.id)
+    .single();
+  const plan = perfil?.plan || "inicial";
   res.json({
     nombre: req.usuario.nombre,
     email: req.usuario.email,
-    plan: req.usuario.plan,
-    cuota: cuotaDe(req.usuario, db),
+    plan,
+    cuota: await cuotaDe(req.usuario.id, plan),
   });
 });
 
-// ---------- API: producción de videos ----------
 const DURACIONES = {
   corto: { etiqueta: "Corto (~30 s)" },
   medio: { etiqueta: "Medio (~60 s)" },
@@ -242,9 +225,7 @@ app.post("/api/guion", autenticar, async (req, res) => {
     res.json({ guion, terminos });
   } catch (e) {
     console.error("Error redactando con Groq:", e.message);
-    res.status(502).json({
-      error: "No pudimos redactar el guion en este momento. Verifica la clave de Groq en tu configuración e inténtalo de nuevo.",
-    });
+    res.status(502).json({ error: "No pudimos redactar el guion en este momento. Verifica la clave de Groq e inténtalo de nuevo." });
   }
 });
 
@@ -253,15 +234,17 @@ app.post("/api/videos", autenticar, async (req, res) => {
   if (!tema || String(tema).trim().length < 5) {
     return res.status(400).json({ error: "Escribe el tema de tu video (mínimo 5 caracteres)." });
   }
-  const db = leerDB();
-  const cuota = cuotaDe(req.usuario, db);
+
+  const { data: perfil } = await supabaseAdmin.from("perfiles").select("plan").eq("id", req.usuario.id).single();
+  const plan = perfil?.plan || "inicial";
+  const cuota = await cuotaDe(req.usuario.id, plan);
   if (cuota.usados >= cuota.limite) {
     return res.status(402).json({
       error: `Alcanzaste el límite de tu membresía ${cuota.plan} (${cuota.limite} videos este mes). Sube de nivel para seguir produciendo.`,
     });
   }
-  const dur = DURACIONES[duracion] || DURACIONES.corto;
 
+  const dur = DURACIONES[duracion] || DURACIONES.corto;
   let guionFinal = String(guion || "").trim();
   let terminosFinales = Array.isArray(terminos) ? terminos.filter(Boolean) : [];
   try {
@@ -269,9 +252,7 @@ app.post("/api/videos", autenticar, async (req, res) => {
     if (!terminosFinales.length) terminosFinales = await redactarPalabrasClave(tema, guionFinal);
   } catch (e) {
     console.error("Error redactando con Groq:", e.message);
-    return res.status(502).json({
-      error: "No pudimos redactar el guion en este momento. Verifica la clave de Groq en tu configuración e inténtalo de nuevo.",
-    });
+    return res.status(502).json({ error: "No pudimos redactar el guion en este momento. Verifica la clave de Groq e inténtalo de nuevo." });
   }
 
   const carga = {
@@ -310,81 +291,115 @@ app.post("/api/videos", autenticar, async (req, res) => {
     if (!r.ok || !respuesta?.data?.task_id) throw new Error(JSON.stringify(respuesta));
   } catch (e) {
     console.error("Error hablando con el motor:", e.message);
-    return res.status(502).json({
-      error: "El motor de producción no está disponible. Verifica que la ventana del motor (api) esté abierta e inténtalo de nuevo.",
-    });
+    return res.status(502).json({ error: "El motor de producción no está disponible. Verifica que la ventana del motor (api) esté abierta e inténtalo de nuevo." });
   }
 
-  const video = {
-    id: crypto.randomUUID(),
-    usuarioId: req.usuario.id,
-    tema: carga.video_subject,
-    voz: carga.voice_name,
-    duracion: dur.etiqueta,
-    taskId: respuesta.data.task_id,
-    estado: "produciendo",
-    progreso: 0,
-    urls: [],
-    mes: mesActual(),
-    creado: new Date().toISOString(),
-  };
-  db.videos.push(video);
-  guardarDB(db);
+  const { data: video, error } = await supabaseAdmin
+    .from("videos")
+    .insert({
+      usuario_id: req.usuario.id,
+      tema: carga.video_subject,
+      voz: carga.voice_name,
+      duracion: dur.etiqueta,
+      task_id: respuesta.data.task_id,
+      estado: "produciendo",
+      progreso: 0,
+      urls: [],
+      mes: mesActual(),
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error guardando el video en Supabase:", error.message);
+    return res.status(500).json({ error: "El video se envió a producir, pero no pudimos registrarlo. Escríbenos si no aparece en tu lista." });
+  }
   res.json({ ok: true, video });
 });
 
-// Consulta el estado en el motor y lo sincroniza
 async function sincronizarVideo(video) {
   if (video.estado === "listo" || video.estado === "fallido") return video;
   try {
-    const r = await fetch(`${MOTOR_URL}/api/v1/tasks/${video.taskId}`);
+    const r = await fetch(`${MOTOR_URL}/api/v1/tasks/${video.task_id}`);
     const j = await r.json();
     const tarea = j?.data;
     if (!tarea) return video;
-    if (tarea.state === 1) {
-      video.estado = "listo";
-      video.progreso = 100;
-      video.urls = tarea.videos || [];
+
+    if (tarea.state === 1 && tarea.videos?.length) {
+      const rutaMotor = tarea.videos[0];
+      const urlMotor = rutaMotor.startsWith("http") ? rutaMotor : `${MOTOR_URL}${rutaMotor.startsWith("/") ? "" : "/"}${rutaMotor}`;
+      const rOrigen = await fetch(urlMotor);
+      const bytes = Buffer.from(await rOrigen.arrayBuffer());
+      const rutaStorage = `${video.usuario_id}/${video.id}.mp4`;
+      const { error: errorSubida } = await supabaseAdmin.storage.from("videos").upload(rutaStorage, bytes, {
+        contentType: "video/mp4",
+        upsert: true,
+      });
+      if (errorSubida) throw new Error("no se pudo subir a Supabase Storage: " + errorSubida.message);
+      const { data: publico } = supabaseAdmin.storage.from("videos").getPublicUrl(rutaStorage);
+
+      const { data: actualizado } = await supabaseAdmin
+        .from("videos")
+        .update({ estado: "listo", progreso: 100, urls: [publico.publicUrl] })
+        .eq("id", video.id)
+        .select()
+        .single();
+      return actualizado || video;
     } else if (tarea.state === -1) {
-      video.estado = "fallido";
+      const { data: actualizado } = await supabaseAdmin
+        .from("videos").update({ estado: "fallido" }).eq("id", video.id).select().single();
+      return actualizado || video;
     } else {
-      video.progreso = Math.round(tarea.progress || 0);
+      const progreso = Math.round(tarea.progress || 0);
+      if (progreso !== video.progreso) {
+        await supabaseAdmin.from("videos").update({ progreso }).eq("id", video.id);
+      }
+      return { ...video, progreso };
     }
-  } catch {
-    /* motor apagado: se mantiene el último estado conocido */
+  } catch (e) {
+    console.error("Error sincronizando video:", e.message);
+    return video;
   }
-  return video;
 }
 
 app.get("/api/videos", autenticar, async (req, res) => {
-  const db = leerDB();
-  const mios = db.videos.filter((v) => v.usuarioId === req.usuario.id);
-  for (const v of mios) await sincronizarVideo(v);
-  guardarDB(db);
-  mios.sort((a, b) => (a.creado < b.creado ? 1 : -1));
-  res.json({ videos: mios, cuota: cuotaDe(req.usuario, db) });
+  const { data: perfil } = await supabaseAdmin.from("perfiles").select("plan").eq("id", req.usuario.id).single();
+  const plan = perfil?.plan || "inicial";
+  const { data: videos } = await supabaseAdmin
+    .from("videos")
+    .select("*")
+    .eq("usuario_id", req.usuario.id)
+    .order("creado_en", { ascending: false });
+
+  const sincronizados = await Promise.all((videos || []).map(sincronizarVideo));
+  res.json({ videos: sincronizados, cuota: await cuotaDe(req.usuario.id, plan) });
 });
 
 app.get("/api/videos/:id/descargar", autenticar, async (req, res) => {
-  const db = leerDB();
-  const video = db.videos.find((v) => v.id === req.params.id && v.usuarioId === req.usuario.id);
+  const { data: video } = await supabaseAdmin
+    .from("videos")
+    .select("*")
+    .eq("id", req.params.id)
+    .eq("usuario_id", req.usuario.id)
+    .single();
   if (!video) return res.status(404).json({ error: "Este video no existe en tu cuenta." });
-  await sincronizarVideo(video);
-  guardarDB(db);
-  if (video.estado !== "listo" || !video.urls.length) {
+
+  const actualizado = await sincronizarVideo(video);
+  if (actualizado.estado !== "listo" || !actualizado.urls?.length) {
     return res.status(409).json({ error: "Tu video aún está en producción. Vuelve en un momento." });
   }
+
+  const { data: perfil } = await supabaseAdmin.from("perfiles").select("plan").eq("id", req.usuario.id).single();
+  const esGratis = (perfil?.plan || "inicial") === "inicial";
+  // Plan pago: sin marca de agua que aplicar, así que mandamos directo al archivo en la nube.
+  if (!esGratis) {
+    return res.redirect(actualizado.urls[0]);
+  }
+
   try {
-    const ruta = video.urls[0];
-    const url = ruta.startsWith("http") ? ruta : `${MOTOR_URL}${ruta.startsWith("/") ? "" : "/"}${ruta}`;
-    const r = await fetch(url);
-    if (!r.ok) throw new Error("no disponible");
-
-    // Se guarda primero en disco: el filtro de marca de agua necesita un archivo real, no un flujo.
+    const rCrudo = await fetch(actualizado.urls[0]);
     const rutaTemporal = path.join(os.tmpdir(), `viraliza-origen-${crypto.randomUUID()}.mp4`);
-    fs.writeFileSync(rutaTemporal, Buffer.from(await r.arrayBuffer()));
-
-    const esGratis = (req.usuario.plan || "inicial") === "inicial";
+    fs.writeFileSync(rutaTemporal, Buffer.from(await rCrudo.arrayBuffer()));
     const rutaFinal = esGratis ? await aplicarMarcaDeAgua(rutaTemporal) : rutaTemporal;
 
     res.setHeader("Content-Type", "video/mp4");
@@ -396,14 +411,14 @@ app.get("/api/videos/:id/descargar", autenticar, async (req, res) => {
       if (rutaFinal !== rutaTemporal) fs.unlink(rutaFinal, () => {});
     });
   } catch {
-    res.status(502).json({ error: "No pudimos traer el archivo del motor. Verifica que el motor esté encendido." });
+    res.status(502).json({ error: "No pudimos preparar tu descarga. Inténtalo de nuevo en un momento." });
   }
 });
 
-// ---------- Arranque ----------
 app.listen(PUERTO, () => {
   console.log("——————————————————————————————————————");
   console.log(`  VIRALIZA · corriendo en http://localhost:${PUERTO}`);
   console.log(`  Motor de producción: ${MOTOR_URL}`);
+  console.log(`  Supabase: ${SUPABASE_URL || "(sin configurar)"}`);
   console.log("——————————————————————————————————————");
 });

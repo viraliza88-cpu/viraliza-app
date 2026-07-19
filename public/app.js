@@ -23,7 +23,7 @@ const API = {
       },
     });
     const j = await r.json().catch(() => ({}));
-    if (r.status === 401) { this.cerrarSesion(); return null; }
+    if (r.status === 401 && ruta !== "/api/login" && ruta !== "/api/registro") { this.cerrarSesion(); return null; }
     if (!r.ok) throw new Error(j.error || "Algo no salió bien. Inténtalo de nuevo.");
     return j;
   },
@@ -229,7 +229,7 @@ const Panel = {
     }
     cont.innerHTML = videos
       .map((v) => {
-        const fecha = new Date(v.creado).toLocaleDateString("es-CO", {
+        const fecha = new Date(v.creado_en || v.creado).toLocaleDateString("es-CO", {
           day: "numeric", month: "short", hour: "2-digit", minute: "2-digit",
         });
         const estado =
