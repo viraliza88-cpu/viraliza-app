@@ -94,3 +94,390 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
 .plantillas{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
 .chip-plantilla{background:none;border:1px solid var(--line-soft);color:var(--muted);font-family:"Jost",sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;padding:9px 16px;cursor:pointer;transition:border-color .2s,color .2s}
 .chip-plantilla:hover{border-color:var(--gold);color:var(--gold)}
+/* Pestañas del panel */
+.tabs-panel{display:flex;gap:4px;border-bottom:1px solid var(--line-soft);margin:30px 0 34px;overflow-x:auto}
+.tab-btn{background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);font-family:"Jost",sans-serif;font-size:12.5px;letter-spacing:2px;text-transform:uppercase;padding:14px 20px;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s}
+.tab-btn:hover{color:var(--ink)}
+.tab-btn.activo{color:var(--gold);border-bottom-color:var(--gold)}
+.tab-panel{display:none}
+.tab-panel.activo{display:block;animation:aparecer .25s ease}
+@keyframes aparecer{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.videos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.planes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.producir-envoltura{max-width:640px;margin:0 auto}
+.redes-envoltura{max-width:480px}
+
+@media (max-width:640px){
+  .videos-grid,.planes-grid{grid-template-columns:1fr}
+}
+/* Lista de música con previsualización */
+.lista-musica{display:grid;gap:8px;max-height:260px;overflow-y:auto;margin-bottom:8px;border:1px solid var(--line-soft);padding:10px}
+.opcion-musica{display:flex;align-items:center;gap:12px;padding:9px 10px;cursor:pointer;border:1px solid transparent}
+.opcion-musica:hover{border-color:var(--line)}
+.opcion-musica.seleccionada{border-color:var(--gold);background:rgba(214,178,94,.06)}
+.opcion-musica .radio{width:16px;height:16px;border-radius:50%;border:1px solid var(--line);flex-shrink:0;position:relative}
+.opcion-musica.seleccionada .radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--gold)}
+.opcion-musica .nombre{flex:1;font-size:14.5px;color:var(--ink)}
+.boton-escuchar{background:none;border:1px solid var(--line);color:var(--gold);font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:6px 12px;cursor:pointer;flex-shrink:0}
+.boton-escuchar:hover{border-color:var(--gold)}
+.categoria-musica{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin:10px 0 2px;padding-top:8px;border-top:1px solid var(--line-soft)}
+.categoria-musica:first-child{border-top:0;margin-top:0;padding-top:0}
+.opcion-material .radio{border-radius:3px}
+.opcion-material.seleccionada .radio::after{border-radius:1px}
+/* Galería de imágenes de banco */
+.galeria-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;max-height:280px;overflow-y:auto;margin-bottom:12px;border:1px solid var(--line-soft);padding:10px}
+.galeria-item{position:relative;aspect-ratio:9/16;overflow:hidden;cursor:pointer;border:2px solid transparent}
+.galeria-item img{width:100%;height:100%;object-fit:cover;display:block}
+.galeria-item.elegida{border-color:var(--gold)}
+.galeria-item.elegida::after{content:"✓";position:absolute;top:6px;right:6px;background:var(--gold);color:#141209;width:22px;height:22px;display:grid;place-items:center;font-size:13px;font-weight:600}
+
+/* Botón de eliminar material */
+.boton-eliminar{background:none;border:1px solid var(--line-soft);color:var(--muted);font-size:15px;line-height:1;padding:5px 10px;cursor:pointer;flex-shrink:0}
+.boton-eliminar:hover{border-color:var(--err);color:var(--err)}
+/* Inspiración rápida — reemplaza los chips genéricos de nicho */
+.inspiracion-titulo{font-family:"Playfair Display",serif;font-weight:600;font-size:19px;margin-bottom:4px}
+.inspiracion-sub{color:var(--muted);font-size:14px;margin-bottom:16px}
+.chips-inspiracion{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px}
+.chip-inspiracion{background:none;border:1px solid var(--line);color:var(--ink);font-family:"Jost",sans-serif;font-size:13.5px;padding:11px 20px;cursor:pointer;transition:all .2s ease;border-radius:2px}
+.chip-inspiracion:hover{border-color:var(--gold);color:var(--gold);background:rgba(214,178,94,.05)}
+.tema-encabezado{font-family:"Playfair Display",serif;font-weight:600;font-size:22px;margin-bottom:6px}
+.tema-encabezado em{font-style:italic;color:var(--gold)}
+.guia-uso{margin-bottom:30px}
+.guia-uso-titulo{font-family:"Playfair Display",serif;font-weight:600;font-size:19px;margin-bottom:4px}
+.guia-uso-sub{color:var(--muted);font-size:14px;margin-bottom:18px}
+.guia-pasos{display:grid;gap:14px}
+.guia-paso{display:flex;gap:14px;align-items:flex-start}
+.guia-paso .numero{flex-shrink:0;width:26px;height:26px;border:1px solid var(--gold);color:var(--gold);border-radius:50%;display:grid;place-items:center;font-size:12.5px;font-family:"Jost",sans-serif}
+.guia-paso .texto{font-size:14px;color:#C9C4B8;line-height:1.6}
+.guia-paso .texto b{color:var(--ink);font-weight:600}
+.chip-inspiracion.seleccionado-animo{border-color:var(--gold);color:var(--gold);background:rgba(214,178,94,.08)}
+
+/* ============================================================
+   VIRALIZA · Wizard de producción — estilos nuevos
+   Agregar al final de estilos.css (no reemplaza nada)
+   ============================================================ */
+
+/* Barra de progreso del wizard */
+.wizard-progreso {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 36px;
+}
+.wizard-paso-indicador {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  position: relative;
+}
+.wizard-paso-indicador::after {
+  content: "";
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  width: 100%;
+  height: 1px;
+  background: var(--line);
+  z-index: 0;
+}
+.wizard-paso-indicador:last-child::after { display: none; }
+.wizard-paso-circulo {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-family: "Jost", sans-serif;
+  color: var(--muted);
+  background: var(--bg);
+  position: relative;
+  z-index: 1;
+  transition: all .25s ease;
+}
+.wizard-paso-indicador.activo .wizard-paso-circulo {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.wizard-paso-indicador.completo .wizard-paso-circulo {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #141209;
+}
+.wizard-paso-label {
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-family: "Jost", sans-serif;
+  white-space: nowrap;
+}
+.wizard-paso-indicador.activo .wizard-paso-label { color: var(--gold); }
+.wizard-paso-indicador.completo .wizard-paso-label { color: var(--ink); }
+
+/* Pantallas del wizard */
+.wizard-pantalla { display: none; }
+.wizard-pantalla.activa { display: block; animation: fadeIn .3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Tarjetas de selección */
+.tarjetas-grid {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.tarjetas-grid.col-3 { grid-template-columns: repeat(3, 1fr); }
+.tarjetas-grid.col-2 { grid-template-columns: repeat(2, 1fr); }
+
+.tarjeta-opcion {
+  border: 1px solid var(--line);
+  padding: 20px 16px;
+  cursor: pointer;
+  transition: all .2s ease;
+  text-align: center;
+  background: none;
+  border-radius: 3px;
+  position: relative;
+}
+.tarjeta-opcion:hover {
+  border-color: var(--gold);
+  background: rgba(214,178,94,.04);
+}
+.tarjeta-opcion.elegida {
+  border-color: var(--gold);
+  background: rgba(214,178,94,.08);
+}
+.tarjeta-opcion.elegida::after {
+  content: "✓";
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  color: var(--gold);
+  font-size: 13px;
+}
+.tarjeta-icono {
+  font-size: 28px;
+  margin-bottom: 10px;
+  display: block;
+  line-height: 1;
+}
+.tarjeta-titulo {
+  font-family: "Jost", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.tarjeta-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* Tarjetas de ánimo musical */
+.tarjetas-grid.animos { grid-template-columns: repeat(3, 1fr); }
+.tarjeta-opcion.animo-alegre:hover,
+.tarjeta-opcion.animo-alegre.elegida { border-color: #F0B429; background: rgba(240,180,41,.07); }
+.tarjeta-opcion.animo-energica:hover,
+.tarjeta-opcion.animo-energica.elegida { border-color: #E84855; background: rgba(232,72,85,.07); }
+.tarjeta-opcion.animo-corporativa:hover,
+.tarjeta-opcion.animo-corporativa.elegida { border-color: #4A90E2; background: rgba(74,144,226,.07); }
+.tarjeta-opcion.animo-motivacional:hover,
+.tarjeta-opcion.animo-motivacional.elegida { border-color: #7B61FF; background: rgba(123,97,255,.07); }
+.tarjeta-opcion.animo-cinematica:hover,
+.tarjeta-opcion.animo-cinematica.elegida { border-color: #D6B25E; background: rgba(214,178,94,.07); }
+.tarjeta-opcion.animo-calmada:hover,
+.tarjeta-opcion.animo-calmada.elegida { border-color: #27C79A; background: rgba(39,199,154,.07); }
+
+/* Lista de canciones en el wizard */
+.canciones-lista {
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  margin-top: 12px;
+}
+.canciones-lista .opcion-musica { border-bottom: 1px solid var(--line); }
+.canciones-lista .opcion-musica:last-child { border-bottom: none; }
+
+/* Subtítulos — preview en vivo */
+.subtitulos-preview {
+  background: #111;
+  border-radius: 4px;
+  padding: 28px 16px 16px;
+  text-align: center;
+  margin-bottom: 16px;
+  position: relative;
+  min-height: 80px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.subtitulos-preview-texto {
+  font-size: 18px;
+  font-weight: 700;
+  text-shadow: 0 1px 4px rgba(0,0,0,.8);
+  transition: color .2s, font-family .2s;
+  padding: 4px 12px;
+  border-radius: 2px;
+}
+
+/* Resumen antes de producir */
+.resumen-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.resumen-item {
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 12px 14px;
+}
+.resumen-item-label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.resumen-item-valor {
+  font-size: 14px;
+  color: var(--ink);
+  font-family: "Jost", sans-serif;
+}
+
+/* Botones de navegación del wizard */
+.wizard-nav {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.wizard-nav .btn-atras {
+  background: none;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: "Jost", sans-serif;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 12px 22px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.wizard-nav .btn-atras:hover { border-color: var(--gold); color: var(--gold); }
+
+/* Guion editable */
+.guion-box {
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 18px;
+  font-family: "Jost", sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink);
+  width: 100%;
+  min-height: 160px;
+  resize: vertical;
+  margin-bottom: 12px;
+}
+.guion-box:focus { border-color: var(--gold); outline: none; }
+
+/* Voces */
+.voces-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.voz-tab {
+  flex: 1;
+  padding: 10px 8px;
+  border: 1px solid var(--line);
+  background: none;
+  color: var(--muted);
+  font-family: "Jost", sans-serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .2s;
+  border-radius: 2px;
+  text-align: center;
+}
+.voz-tab:hover { border-color: var(--gold); color: var(--ink); }
+.voz-tab.activo { border-color: var(--gold); color: var(--gold); background: rgba(214,178,94,.07); }
+
+/* Toggle de subtítulos grande */
+.toggle-grande {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: border-color .2s;
+}
+.toggle-grande:hover { border-color: var(--gold); }
+.toggle-grande input[type="checkbox"] { display: none; }
+.toggle-switch {
+  width: 44px;
+  height: 24px;
+  background: var(--line);
+  border-radius: 12px;
+  position: relative;
+  transition: background .2s;
+  flex-shrink: 0;
+}
+.toggle-switch::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+  transition: transform .2s;
+}
+.toggle-grande.activo .toggle-switch { background: var(--gold); }
+.toggle-grande.activo .toggle-switch::after { transform: translateX(20px); }
+.toggle-grande-texto { flex: 1; }
+.toggle-grande-titulo { font-size: 14px; color: var(--ink); margin-bottom: 2px; }
+.toggle-grande-desc { font-size: 12px; color: var(--muted); }
+
+/* Colores de subtítulos */
+.colores-subtitulo {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.color-chip {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border-color .2s, transform .15s;
+}
+.color-chip:hover { transform: scale(1.12); }
+.color-chip.elegido { border-color: var(--gold); transform: scale(1.12); }
+
+@media (max-width: 640px) {
+  .tarjetas-grid.col-3 { grid-template-columns: 1fr; }
+  .tarjetas-grid.col-2 { grid-template-columns: 1fr; }
+  .tarjetas-grid.animos { grid-template-columns: repeat(2, 1fr); }
+  .resumen-grid { grid-template-columns: 1fr; }
+  .voces-tabs { flex-wrap: wrap; }
+}

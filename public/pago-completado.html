@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirmando tu pago — Viraliza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<main class="acceso">
+  <div class="caja">
+    <a class="logo" href="panel.html">Viraliza<i>.</i></a>
+    <div class="card gold" style="text-align:center">
+      <h1 class="serif" id="titulo" style="font-size:24px">Confirmando tu pago<span id="puntos">…</span></h1>
+      <p class="sub" id="detalle" style="margin-bottom:26px">Esto toma solo un momento.</p>
+      <a class="btn block" id="ir-panel" href="panel.html" style="display:none">Ir a mi panel</a>
+    </div>
+  </div>
+</main>
+
+<script src="app.js"></script>
+<script>
+(async () => {
+  const params = new URLSearchParams(location.search);
+  const idTransaccion = params.get("id");
+  const titulo = document.getElementById("titulo");
+  const detalle = document.getElementById("detalle");
+  const boton = document.getElementById("ir-panel");
+
+  if (!idTransaccion || !API.token()) {
+    titulo.innerHTML = 'No pudimos confirmar tu pago';
+    detalle.textContent = "Si ya pagaste, entra a tu panel en unos minutos y tu membresía debería estar activa.";
+    boton.style.display = "inline-flex";
+    return;
+  }
+
+  try {
+    const r = await API.pedir(`/api/pagos/confirmar?id=${encodeURIComponent(idTransaccion)}`);
+    if (r.estado === "APPROVED" && r.aplicado) {
+      titulo.innerHTML = 'Pago <em>aprobado</em>';
+      detalle.textContent = "Tu membresía ya está activa. ¡A producir!";
+    } else if (r.estado === "PENDING") {
+      titulo.innerHTML = 'Tu pago está <em>en proceso</em>';
+      detalle.textContent = "Puede tardar unos minutos en confirmarse. Revisa tu panel en un momento.";
+    } else {
+      titulo.innerHTML = 'El pago no se completó';
+      detalle.textContent = "Tu transacción no fue aprobada. Puedes intentarlo de nuevo desde tu panel.";
+    }
+  } catch (e) {
+    titulo.innerHTML = 'No pudimos confirmar tu pago';
+    detalle.textContent = e.message || "Intenta revisar tu panel en unos minutos.";
+  }
+  boton.style.display = "inline-flex";
+})();
+</script>
+</body>
+</html>
