@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 //  VIRALIZA · Lógica del navegador
 //  Wizard de producción en 5 pasos · v2.0
 // ============================================================
@@ -436,24 +436,16 @@ const W = {
 //  Panel — pestañas, voces, música, videos
 // ============================================================
 const VOCES_ESPANOL = [
-  { valor: "es-AR-ElenaNeural-Female", etiqueta: "Elena — femenina", pais: "Argentina" },
-  { valor: "es-AR-TomasNeural-Male", etiqueta: "Tomas — masculina", pais: "Argentina" },
-  { valor: "es-BO-SofiaNeural-Female", etiqueta: "Sofia — femenina", pais: "Bolivia" },
-  { valor: "es-BO-MarceloNeural-Male", etiqueta: "Marcelo — masculina", pais: "Bolivia" },
-  { valor: "es-CL-CatalinaNeural-Female", etiqueta: "Catalina — femenina", pais: "Chile" },
-  { valor: "es-CL-LorenzoNeural-Male", etiqueta: "Lorenzo — masculina", pais: "Chile" },
-  { valor: "es-CO-SalomeNeural-Female", etiqueta: "Salomé — femenina", pais: "Colombia" },
-  { valor: "es-CO-GonzaloNeural-Male", etiqueta: "Gonzalo — masculina", pais: "Colombia" },
-  { valor: "es-EC-AndreaNeural-Female", etiqueta: "Andrea — femenina", pais: "Ecuador" },
-  { valor: "es-EC-LuisNeural-Male", etiqueta: "Luis — masculina", pais: "Ecuador" },
-  { valor: "es-ES-ElviraNeural-Female", etiqueta: "Elvira — femenina", pais: "España" },
-  { valor: "es-ES-AlvaroNeural-Male", etiqueta: "Álvaro — masculina", pais: "España" },
-  { valor: "es-MX-DaliaNeural-Female", etiqueta: "Dalia — femenina", pais: "México" },
-  { valor: "es-MX-JorgeNeural-Male", etiqueta: "Jorge — masculina", pais: "México" },
-  { valor: "es-PE-CamilaNeural-Female", etiqueta: "Camila — femenina", pais: "Perú" },
-  { valor: "es-PE-AlexNeural-Male", etiqueta: "Alex — masculina", pais: "Perú" },
-  { valor: "es-VE-PaolaNeural-Female", etiqueta: "Paola — femenina", pais: "Venezuela" },
-  { valor: "es-VE-SebastianNeural-Male", etiqueta: "Sebastian — masculina", pais: "Venezuela" },
+  { valor: "es-CO-SalomeNeural-Female", etiqueta: "Salomé — Natural y cálida", pais: "🇨🇴 Colombia (Recomendada)" },
+  { valor: "es-CO-GonzaloNeural-Male", etiqueta: "Gonzalo — Serio y profesional", pais: "🇨🇴 Colombia (Recomendada)" },
+  { valor: "es-MX-DaliaNeural-Female", etiqueta: "Dalia — Energética y moderna", pais: "🌎 Latinoamérica" },
+  { valor: "es-MX-JorgeNeural-Male", etiqueta: "Jorge — Dinámico y confiable", pais: "🌎 Latinoamérica" },
+  { valor: "es-AR-ElenaNeural-Female", etiqueta: "Elena — Elegante y expresiva", pais: "🌎 Latinoamérica" },
+  { valor: "es-AR-TomasNeural-Male", etiqueta: "Tomas — Cercano y directo", pais: "🌎 Latinoamérica" },
+  { valor: "es-ES-ElviraNeural-Female", etiqueta: "Elvira — Clara y articulada", pais: "🌍 España" },
+  { valor: "es-ES-AlvaroNeural-Male", etiqueta: "Álvaro — Formal y seguro", pais: "🌍 España" },
+  { valor: "es-US-PalomaNeural-Female", etiqueta: "Paloma — Moderna y fresca", pais: "🌎 Bilingüe" },
+  { valor: "es-US-AlonsoNeural-Male", etiqueta: "Alonso — Versátil y neutral", pais: "🌎 Bilingüe" },
 ];
 
 const Panel = {

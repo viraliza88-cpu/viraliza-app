@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 //  VIRALIZA — Servidor principal
 //  Plataforma de producción de video · v1.0 (con Supabase)
 // ============================================================
@@ -120,13 +120,20 @@ async function redactarGuion(tema, duracion) {
     {
       role: "system",
       content:
-        "Escribes guiones para video corto vertical (TikTok/Reels) en español neutro latino. " +
-        "Suenan a una persona hablando de verdad, no a un texto leído: frases cortas, " +
-        "contracciones naturales, sin tecnicismos de redacción, sin listas ni signos raros. " +
-        "Arrancas con un gancho fuerte en la primera frase. Nada de introducciones tipo " +
-        "'hoy les voy a hablar de'. REGLA ABSOLUTA: el guion completo va 100% en español. " +
-        "Nunca uses una sola palabra en inglés, ni siquiera nombres de conceptos técnicos: " +
-        "tradúcelos siempre. Solo devuelves el guion, sin comillas ni explicaciones.",
+        "Eres el mejor guionista de videos virales para TikTok, Reels e Instagram en Colombia y Latinoamérica. " +
+        "Escribes guiones que atrapan desde el primer segundo y hacen que la gente no pueda dejar de ver. " +
+        "ESTRUCTURA OBLIGATORIA: " +
+        "1. GANCHO (primeras 2 frases): Una pregunta provocadora, dato sorprendente o afirmación controversial que enganche INMEDIATAMENTE. Nunca empieces con 'hoy', 'en este video', 'les voy a hablar'. " +
+        "2. DESARROLLO: Entrega el valor prometido en el gancho. Frases cortas. Ritmo rápido. Una idea por frase. " +
+        "3. CIERRE: Llamada a la acción clara o reflexión poderosa que genere comentarios o guardados. " +
+        "REGLAS DE ORO: " +
+        "- Habla como un colombiano real, no como un locutor. Usa 'bacano', 'chimba', 'parcero' solo si el tema lo pide. " +
+        "- Frases de máximo 10 palabras. El cerebro procesa mejor frases cortas. " +
+        "- Cada frase debe ser más interesante que la anterior. " +
+        "- Cero palabras de relleno: 'básicamente', 'literalmente', 'o sea'. " +
+        "- 100% en español. Cero anglicismos innecesarios. " +
+        "- El guion debe sonar EXACTAMENTE como lo diría una persona real frente a la cámara. " +
+        "Solo devuelves el guion listo para leer, sin títulos, sin comillas, sin explicaciones.",
     },
     {
       role: "user",
@@ -152,22 +159,24 @@ async function redactarPalabrasClave(tema, guion) {
     {
       role: "system",
       content:
-        "Generas términos de búsqueda en inglés para un banco de video de fotografía y video " +
-        "REAL (no animación, no renders 3D, no ilustraciones, no íconos, nada simbólico ni " +
-        "festivo ni artístico). REGLA CLAVE: cada término debe corresponder a un objeto, lugar, " +
-        "persona o acción que esté literalmente mencionado o directamente implicado por el guion " +
-        "que te paso. Prohibido inventar escenas que no tengan relación directa con el tema " +
-        "(nada de 'memories', 'tradition', 'celebration', 'family archive' salvo que el guion " +
-        "hable exactamente de eso). Si el tema es de dinero, trámites o negocios, usa términos " +
-        "como 'office desk', 'paperwork', 'calculator', 'laptop typing', 'money cash', " +
-        "'signing document', 'receipts', según corresponda al contenido real. " +
-        "MUY IMPORTANTE: entrega los términos EN EL MISMO ORDEN en que van apareciendo las ideas " +
-        "en el guion, de principio a fin — el primer término debe corresponder a lo primero que " +
-        "se dice, el último término a lo último que se dice. Así las imágenes del video van a " +
-        "coincidir con lo que se está narrando en cada momento, en vez de aparecer al azar. " +
-        "Responde solo con 8 términos cortos separados por coma, en inglés, sin numerar, en orden.",
+        "Eres un experto en producción de video viral para redes sociales. " +
+        "Tu tarea es generar términos de búsqueda en inglés MUY ESPECÍFICOS para encontrar " +
+        "video stock REAL y PROFESIONAL que coincida exactamente con el tema del video. " +
+        "REGLAS ESTRICTAS: " +
+        "1. Cada término debe describir una escena VISUAL CONCRETA y ESPECÍFICA que aparezca en el guion. " +
+        "2. Si el tema es espiritual o religioso (Ganesha, Buda, meditación), usa términos como " +
+        "'hindu temple ritual', 'incense meditation', 'sacred ceremony india', 'devotional prayer'. " +
+        "3. Si es de negocios: 'entrepreneur working laptop', 'business meeting colombia', 'startup office'. " +
+        "4. Si es de comida: el plato específico, 'chef cooking restaurant', 'food preparation'. " +
+        "5. Si es de fitness: el ejercicio específico, 'gym workout', 'running outdoor'. " +
+        "6. Si es de tecnología: el dispositivo o app específica, 'smartphone app', 'coding computer'. " +
+        "7. NUNCA uses términos genéricos como 'people', 'nature', 'city', 'background', 'abstract'. " +
+        "8. NUNCA uses animaciones, ilustraciones o renders 3D. " +
+        "9. Entrega los términos EN ORDEN NARRATIVO siguiendo el guion de principio a fin. " +
+        "10. Cada término debe ser en inglés, específico y buscable en Pexels o Pixabay. " +
+        "Responde SOLO con 8 términos separados por coma, sin numeración, sin explicaciones.",
     },
-    { role: "user", content: `Tema: "${tema}"\nGuion: "${guion}"` },
+    { role: "user", content: `Tema: "${tema}"\nGuion completo: "${guion}"` },
   ]);
   return texto.split(",").map((t) => t.trim()).filter(Boolean).slice(0, 8);
 }
@@ -812,6 +821,8 @@ app.post("/api/videos", autenticar, async (req, res) => {
     ligera: "BeVietnamPro-Medium.ttf",
     elegante: "Charm-Bold.ttf",
     moderna: "UTM Kabel KT.ttf",
+    redondeada: "BeVietnamPro-Medium.ttf",
+    viral: "BeVietnamPro-Bold.ttf",
   };
 
   let audioFinal = audioPersonalizado || undefined;
@@ -1020,3 +1031,5 @@ app.listen(PUERTO, () => {
   console.log(`  Supabase: ${SUPABASE_URL || "(sin configurar)"}`);
   console.log("——————————————————————————————————————");
 });
+
+

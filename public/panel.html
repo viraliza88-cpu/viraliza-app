@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -321,20 +321,28 @@
             <label>Estilo de letra</label>
             <div class="tarjetas-grid col-2" style="margin-bottom:0">
               <button class="tarjeta-opcion elegida" data-fuente="clasica" onclick="W.elegirFuenteSub(this)">
-                <div class="tarjeta-titulo" style="font-weight:700">Clásica</div>
-                <div class="tarjeta-desc">Gruesa y legible</div>
+                <div class="tarjeta-titulo" style="font-weight:700;font-size:16px">Clásica</div>
+                <div class="tarjeta-desc">Gruesa · ideal para TikTok</div>
               </button>
               <button class="tarjeta-opcion" data-fuente="ligera" onclick="W.elegirFuenteSub(this)">
-                <div class="tarjeta-titulo" style="font-weight:400">Ligera</div>
-                <div class="tarjeta-desc">Fina y moderna</div>
+                <div class="tarjeta-titulo" style="font-weight:300;font-size:16px">Ligera</div>
+                <div class="tarjeta-desc">Fina · estilo minimalista</div>
               </button>
               <button class="tarjeta-opcion" data-fuente="elegante" onclick="W.elegirFuenteSub(this)">
-                <div class="tarjeta-titulo" style="font-family:Georgia,serif">Elegante</div>
-                <div class="tarjeta-desc">Serif con carácter</div>
+                <div class="tarjeta-titulo" style="font-family:Georgia,serif;font-size:16px;font-style:italic">Elegante</div>
+                <div class="tarjeta-desc">Serif · videos premium</div>
               </button>
               <button class="tarjeta-opcion" data-fuente="moderna" onclick="W.elegirFuenteSub(this)">
-                <div class="tarjeta-titulo" style="font-family:Impact,sans-serif;letter-spacing:1px">Moderna</div>
-                <div class="tarjeta-desc">Impactante y directa</div>
+                <div class="tarjeta-titulo" style="font-family:Impact,sans-serif;font-size:16px;letter-spacing:2px">MODERNA</div>
+                <div class="tarjeta-desc">Impact · máximo impacto</div>
+              </button>
+              <button class="tarjeta-opcion" data-fuente="redondeada" onclick="W.elegirFuenteSub(this)">
+                <div class="tarjeta-titulo" style="font-family:Trebuchet MS,sans-serif;font-size:16px">Redondeada</div>
+                <div class="tarjeta-desc">Suave · amigable y cercana</div>
+              </button>
+              <button class="tarjeta-opcion" data-fuente="viral" onclick="W.elegirFuenteSub(this)">
+                <div class="tarjeta-titulo" style="font-family:Arial Black,sans-serif;font-size:14px;letter-spacing:-0.5px">VIRAL</div>
+                <div class="tarjeta-desc">Negrita extrema · máxima legibilidad</div>
               </button>
             </div>
           </div>
@@ -416,3 +424,4 @@
 <script>Panel.iniciar();</script>
 </body>
 </html>
+
