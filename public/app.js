@@ -554,6 +554,7 @@ const Panel = {
       inputNarracion.onchange = (e) => this.subirNarracion(e.target.files[0]);
     }
 
+
     const btnMaterial = document.getElementById("abrir-subir-material-wizard");
     const inputMaterial = document.getElementById("archivo-material-wizard");
     if (btnMaterial && inputMaterial) {
@@ -569,9 +570,9 @@ const Panel = {
     const cont = document.getElementById("lista-materiales-wizard");
     const btn = document.getElementById("abrir-subir-material-wizard");
     const yaSubidos = cont.querySelectorAll(".opcion-musica").length;
-    const cuantosFaltan = 10 - yaSubidos;
+    const cuantosFaltan = 8 - yaSubidos;
     if (cuantosFaltan <= 0) {
-      mostrarMensaje("Ya tienes el máximo de 10 archivos propios para este video.", "err");
+      mostrarMensaje("Ya tienes el máximo de 8 archivos propios para este video.", "err");
       return;
     }
     const aSubir = archivos.slice(0, cuantosFaltan);
@@ -612,7 +613,7 @@ const Panel = {
     btn.disabled = false;
     btn.textContent = "📁 Subir mis archivos";
     if (aSubir.length < archivos.length) {
-      mostrarMensaje(`Solo se subieron ${aSubir.length} de ${archivos.length} archivos (límite: 10).`, "err");
+      mostrarMensaje(`Solo se subieron ${aSubir.length} de ${archivos.length} archivos (límite: 8).`, "err");
     }
   },
 

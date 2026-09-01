@@ -134,6 +134,14 @@
               <div class="tarjeta-desc">Gran variedad de estilos y géneros visuales</div>
             </button>
           </div>
+          <label style="margin-top:14px">¿Tienes tus propias imágenes o videos? <span style="color:var(--muted);font-size:12px">(opcional · máx. 8)</span></label>
+          <div id="lista-materiales-wizard" style="border:1px solid var(--line);border-radius:3px;max-height:160px;overflow-y:auto;margin-bottom:8px;display:none"></div>
+          <div style="border:2px dashed var(--line);border-radius:4px;padding:16px;text-align:center;cursor:pointer" onclick="document.getElementById('archivo-material-wizard').click()">
+            <p style="font-size:22px;margin-bottom:4px">📁</p>
+            <p style="color:var(--gold);font-size:13px;margin-bottom:2px">Sube tus propios archivos</p>
+            <p class="ayuda" style="margin:0;font-size:11px">JPG, PNG, MP4 · Máx. 8 · Si no subes nada, usamos el banco automático</p>
+          </div>
+          <input type="file" id="archivo-material-wizard" accept="image/*,video/*" multiple style="display:none">
 
           <div class="wizard-nav">
             <button class="wizard-nav btn-atras" onclick="W.irA(1)">← Atrás</button>
