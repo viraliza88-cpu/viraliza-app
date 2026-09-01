@@ -265,7 +265,8 @@ app.get("/api/musicas/premium", autenticar, async (req, res) => {
   if (!etiqueta) return res.status(400).json({ error: "Ánimo no reconocido." });
   try {
     const url = `https://api.jamendo.com/v3.0/tracks/?client_id=${JAMENDO_CLIENT_ID}&format=json&tags=${etiqueta}&limit=12&audioformat=mp31&order=popularity_total`;
-    const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
+    let r = await fetch(url, { signal: AbortSignal.timeout(12000) });
+    if (!r.ok) r = await fetch(url, { signal: AbortSignal.timeout(12000) });
     const j = await r.json();
     if (j?.headers?.status !== "success") {
       console.error("Jamendo respondió con error:", JSON.stringify(j?.headers || j));
@@ -1031,5 +1032,6 @@ app.listen(PUERTO, () => {
   console.log(`  Supabase: ${SUPABASE_URL || "(sin configurar)"}`);
   console.log("——————————————————————————————————————");
 });
+
 
 
