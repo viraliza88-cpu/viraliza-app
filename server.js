@@ -735,6 +735,28 @@ app.post("/api/registro", async (req, res) => {
   if (error || !data?.session) {
     return res.status(500).json({ error: "Tu cuenta se creó, pero no pudimos iniciar tu sesión. Intenta iniciar sesión manualmente." });
   }
+  // Correo de bienvenida
+  try {
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${RESEND_API_KEY}` },
+      body: JSON.stringify({
+        from: RESEND_REMITENTE,
+        to: String(email).trim().toLowerCase(),
+        subject: "Bienvenido a Viraliza — tu estudio de video está listo",
+        html: `<div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;padding:40px 32px;background:#0C0C0E;color:#EDEAE2">
+          <h1 style="font-size:24px;margin-bottom:4px">Viraliza<span style="color:#D6B25E">.</span></h1>
+          <p style="color:#9B968B;font-size:13px;letter-spacing:1px;text-transform:uppercase;margin-bottom:28px">Tu estudio ya está activo</p>
+          <p style="font-size:17px;line-height:1.6;margin-bottom:20px">Hola <strong>${String(nombre).trim()}</strong>, bienvenido a Viraliza.</p>
+          <p style="font-size:15px;line-height:1.7;color:#C9C4B8;margin-bottom:24px">Tu cuenta está lista. Puedes producir tu primer video ahora mismo — escribe el tema, nosotros hacemos el resto.</p>
+          <a href="${SITIO_URL}/panel.html" style="display:inline-block;background:#D6B25E;color:#141209;padding:14px 28px;text-decoration:none;font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:600">Producir mi primer video</a>
+          <p style="font-size:13px;color:#9B968B;margin-top:32px">Si tienes preguntas, responde este correo y te ayudamos.</p>
+        </div>`,
+      }),
+    });
+  } catch (e) {
+    console.error("Error enviando bienvenida:", e.message);
+  }
   res.json({ token: data.session.access_token, nombre: String(nombre).trim() });
 });
 
