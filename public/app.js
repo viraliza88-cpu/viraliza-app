@@ -113,7 +113,7 @@ const W = {
     fuente: "pexels",
     guion: "",
     terminos: [],
-    voz: "es-CO-SalomeNeural-Female",
+    voz: "es-CO-SalomeNeural",
     modoVoz: "lista",
     vozPremiumId: "",
     audioPropio: "",
@@ -411,7 +411,7 @@ const W = {
       // Resetear el wizard
       this.estado = {
         tema: "", duracion: "corto", formato: "9:16", fuente: "pexels",
-        guion: "", terminos: [], voz: "es-CO-SalomeNeural-Female",
+        guion: "", terminos: [], voz: "es-CO-SalomeNeural",
         modoVoz: "lista", vozPremiumId: "", audioPropio: "",
         sinNarracion: false, musicaArchivo: "", musicaPremiumUrl: "",
         volumen: 20, subtitulosActivos: true,
@@ -436,16 +436,16 @@ const W = {
 //  Panel — pestañas, voces, música, videos
 // ============================================================
 const VOCES_ESPANOL = [
-  { valor: "es-CO-SalomeNeural-Female", etiqueta: "Salomé — Natural y cálida", pais: "🇨🇴 Colombia (Recomendada)" },
-  { valor: "es-CO-GonzaloNeural-Male", etiqueta: "Gonzalo — Serio y profesional", pais: "🇨🇴 Colombia (Recomendada)" },
-  { valor: "es-MX-DaliaNeural-Female", etiqueta: "Dalia — Energética y moderna", pais: "🌎 Latinoamérica" },
-  { valor: "es-MX-JorgeNeural-Male", etiqueta: "Jorge — Dinámico y confiable", pais: "🌎 Latinoamérica" },
-  { valor: "es-AR-ElenaNeural-Female", etiqueta: "Elena — Elegante y expresiva", pais: "🌎 Latinoamérica" },
-  { valor: "es-AR-TomasNeural-Male", etiqueta: "Tomas — Cercano y directo", pais: "🌎 Latinoamérica" },
-  { valor: "es-ES-ElviraNeural-Female", etiqueta: "Elvira — Clara y articulada", pais: "🌍 España" },
-  { valor: "es-ES-AlvaroNeural-Male", etiqueta: "Álvaro — Formal y seguro", pais: "🌍 España" },
-  { valor: "es-US-PalomaNeural-Female", etiqueta: "Paloma — Moderna y fresca", pais: "🌎 Bilingüe" },
-  { valor: "es-US-AlonsoNeural-Male", etiqueta: "Alonso — Versátil y neutral", pais: "🌎 Bilingüe" },
+  { valor: "es-CO-SalomeNeural", etiqueta: "Salomé — Natural y cálida", pais: "🇨🇴 Colombia (Recomendada)" },
+  { valor: "es-CO-GonzaloNeural", etiqueta: "Gonzalo — Serio y profesional", pais: "🇨🇴 Colombia (Recomendada)" },
+  { valor: "es-MX-DaliaNeural", etiqueta: "Dalia — Energética y moderna", pais: "🌎 Latinoamérica" },
+  { valor: "es-MX-JorgeNeural", etiqueta: "Jorge — Dinámico y confiable", pais: "🌎 Latinoamérica" },
+  { valor: "es-AR-ElenaNeural", etiqueta: "Elena — Elegante y expresiva", pais: "🌎 Latinoamérica" },
+  { valor: "es-AR-TomasNeural", etiqueta: "Tomas — Cercano y directo", pais: "🌎 Latinoamérica" },
+  { valor: "es-ES-ElviraNeural", etiqueta: "Elvira — Clara y articulada", pais: "🌍 España" },
+  { valor: "es-ES-AlvaroNeural", etiqueta: "Álvaro — Formal y seguro", pais: "🌍 España" },
+  { valor: "es-US-PalomaNeural", etiqueta: "Paloma — Moderna y fresca", pais: "🌎 Bilingüe" },
+  { valor: "es-US-AlonsoNeural", etiqueta: "Alonso — Versátil y neutral", pais: "🌎 Bilingüe" },
 ];
 
 const Panel = {
@@ -461,17 +461,72 @@ const Panel = {
     });
 
     // Voces estándar
-    const sel = document.getElementById("voz");
-    if (sel) {
-      const porPais = {};
-      VOCES_ESPANOL.forEach((v) => {
-        if (!porPais[v.pais]) porPais[v.pais] = [];
-        porPais[v.pais].push(v);
+    // Reemplazar el select por tarjetas con botón de escuchar
+    const contenedorVoz = document.getElementById("panel-voz-lista");
+    if (contenedorVoz) {
+      const audioPreview = document.createElement("audio");
+      audioPreview.id = "reproductor-voz-estandar";
+      audioPreview.style.display = "none";
+      contenedorVoz.appendChild(audioPreview);
+
+      const lista = document.createElement("div");
+      lista.className = "canciones-lista";
+      lista.style.maxHeight = "220px";
+      contenedorVoz.appendChild(lista);
+
+      const hiddenVoz = document.createElement("input");
+      hiddenVoz.type = "hidden";
+      hiddenVoz.id = "voz";
+      hiddenVoz.value = "es-CO-SalomeNeural";
+      contenedorVoz.appendChild(hiddenVoz);
+
+      VOCES_ESPANOL.forEach((v, idx) => {
+        const fila = document.createElement("div");
+        fila.className = "opcion-musica" + (idx === 0 ? " seleccionada" : "");
+        fila.dataset.valor = v.valor;
+        fila.innerHTML = `
+          <span class="radio"></span>
+          <span class="nombre">${v.etiqueta} <span style="color:var(--muted);font-size:11px">${v.pais}</span></span>
+          <button class="boton-escuchar" type="button">Escuchar</button>
+        `;
+        fila.querySelector(".nombre").onclick = fila.querySelector(".radio").onclick = () => {
+          document.querySelectorAll("#panel-voz-lista .opcion-musica").forEach(f => f.classList.remove("seleccionada"));
+          fila.classList.add("seleccionada");
+          document.getElementById("voz").value = v.valor;
+          W.estado.voz = v.valor;
+        };
+        const escuchar = fila.querySelector(".boton-escuchar");
+        let cargando = false;
+        escuchar.onclick = async (e) => {
+          e.stopPropagation();
+          if (cargando) return;
+          const audio = document.getElementById("reproductor-voz-estandar");
+          if (audio.dataset.actual === v.valor && !audio.paused) {
+            audio.pause(); escuchar.textContent = "Escuchar"; return;
+          }
+          document.querySelectorAll("#panel-voz-lista .boton-escuchar").forEach(b => b.textContent = "Escuchar");
+          escuchar.textContent = "Cargando…";
+          cargando = true;
+          try {
+            const r = await fetch(`/api/voces/preview?voz=${encodeURIComponent(v.valor)}`, {
+              headers: { Authorization: "Bearer " + API.token() }
+            });
+            if (!r.ok) throw new Error();
+            const blob = await r.blob();
+            audio.src = URL.createObjectURL(blob);
+            audio.dataset.actual = v.valor;
+            audio.play();
+            escuchar.textContent = "Pausar";
+            audio.onended = () => { escuchar.textContent = "Escuchar"; };
+          } catch {
+            escuchar.textContent = "Error";
+            setTimeout(() => { escuchar.textContent = "Escuchar"; }, 2000);
+          } finally {
+            cargando = false;
+          }
+        };
+        lista.appendChild(fila);
       });
-      sel.innerHTML = Object.entries(porPais)
-        .map(([pais, voces]) => `<optgroup label="${pais}">${voces.map(v=>`<option value="${v.valor}">${v.etiqueta}</option>`).join("")}</optgroup>`)
-        .join("");
-      sel.value = "es-CO-SalomeNeural-Female";
     }
 
     // Voces premium

@@ -120,20 +120,11 @@ async function redactarGuion(tema, duracion) {
     {
       role: "system",
       content:
-        "Eres el mejor guionista de videos virales para TikTok, Reels e Instagram en Colombia y Latinoamérica. " +
-        "Escribes guiones que atrapan desde el primer segundo y hacen que la gente no pueda dejar de ver. " +
-        "ESTRUCTURA OBLIGATORIA: " +
-        "1. GANCHO (primeras 2 frases): Una pregunta provocadora, dato sorprendente o afirmación controversial que enganche INMEDIATAMENTE. Nunca empieces con 'hoy', 'en este video', 'les voy a hablar'. " +
-        "2. DESARROLLO: Entrega el valor prometido en el gancho. Frases cortas. Ritmo rápido. Una idea por frase. " +
-        "3. CIERRE: Llamada a la acción clara o reflexión poderosa que genere comentarios o guardados. " +
-        "REGLAS DE ORO: " +
-        "- Habla como un colombiano real, no como un locutor. Usa 'bacano', 'chimba', 'parcero' solo si el tema lo pide. " +
-        "- Frases de máximo 10 palabras. El cerebro procesa mejor frases cortas. " +
-        "- Cada frase debe ser más interesante que la anterior. " +
-        "- Cero palabras de relleno: 'básicamente', 'literalmente', 'o sea'. " +
-        "- 100% en español. Cero anglicismos innecesarios. " +
-        "- El guion debe sonar EXACTAMENTE como lo diría una persona real frente a la cámara. " +
-        "Solo devuelves el guion listo para leer, sin títulos, sin comillas, sin explicaciones.",
+        "Guionista experto en videos virales para TikTok y Reels en Colombia. " +
+        "Estructura: 1) Gancho impactante en la primera frase (pregunta o dato sorprendente). " +
+        "2) Desarrollo con frases cortas y ritmo rápido. 3) Cierre con llamada a la acción. " +
+        "Habla como colombiano real. 100% español. Sin introducciones tipo 'hoy les voy a hablar'. " +
+        "Solo devuelve el guion, sin explicaciones.",
     },
     {
       role: "user",
@@ -159,22 +150,9 @@ async function redactarPalabrasClave(tema, guion) {
     {
       role: "system",
       content:
-        "Eres un experto en producción de video viral para redes sociales. " +
-        "Tu tarea es generar términos de búsqueda en inglés MUY ESPECÍFICOS para encontrar " +
-        "video stock REAL y PROFESIONAL que coincida exactamente con el tema del video. " +
-        "REGLAS ESTRICTAS: " +
-        "1. Cada término debe describir una escena VISUAL CONCRETA y ESPECÍFICA que aparezca en el guion. " +
-        "2. Si el tema es espiritual o religioso (Ganesha, Buda, meditación), usa términos como " +
-        "'hindu temple ritual', 'incense meditation', 'sacred ceremony india', 'devotional prayer'. " +
-        "3. Si es de negocios: 'entrepreneur working laptop', 'business meeting colombia', 'startup office'. " +
-        "4. Si es de comida: el plato específico, 'chef cooking restaurant', 'food preparation'. " +
-        "5. Si es de fitness: el ejercicio específico, 'gym workout', 'running outdoor'. " +
-        "6. Si es de tecnología: el dispositivo o app específica, 'smartphone app', 'coding computer'. " +
-        "7. NUNCA uses términos genéricos como 'people', 'nature', 'city', 'background', 'abstract'. " +
-        "8. NUNCA uses animaciones, ilustraciones o renders 3D. " +
-        "9. Entrega los términos EN ORDEN NARRATIVO siguiendo el guion de principio a fin. " +
-        "10. Cada término debe ser en inglés, específico y buscable en Pexels o Pixabay. " +
-        "Responde SOLO con 8 términos separados por coma, sin numeración, sin explicaciones.",
+        "Genera 8 términos de búsqueda en inglés para video stock REAL relacionado con el tema. " +
+        "Términos específicos y visuales, en orden narrativo del guion. " +
+        "Sin animaciones ni ilustraciones. Solo responde los términos separados por coma.",
     },
     { role: "user", content: `Tema: "${tema}"\nGuion completo: "${guion}"` },
   ]);
@@ -707,6 +685,30 @@ function generarSilencio(segundos) {
     });
   });
 }
+
+
+app.get("/api/voces/preview", autenticar, async (req, res) => {
+  const { voz } = req.query;
+  if (!voz) return res.status(400).json({ error: "Falta la voz." });
+  try {
+    const { spawn } = require("child_process");
+    const os = require("os");
+    const rutaSalida = path.join(os.tmpdir(), `preview-${crypto.randomUUID()}.mp3`);
+    const texto = "Hola, esta es una muestra de mi voz. Con Viraliza produces videos profesionales en minutos.";
+    await new Promise((resolve, reject) => {
+      const p = spawn("/var/www/MoneyPrinterTurbo/venv/bin/python3", ["/var/www/viraliza-app/preview_voz.py", voz, rutaSalida]);
+      p.on("close", (code) => code === 0 ? resolve() : reject(new Error("edge_tts falló")));
+      p.on("error", reject);
+    });
+    res.setHeader("Content-Type", "audio/mpeg");
+    const stream = fs.createReadStream(rutaSalida);
+    stream.pipe(res);
+    stream.on("close", () => fs.unlink(rutaSalida, () => {}));
+  } catch (e) {
+    console.error("Error generando preview de voz:", e.message);
+    res.status(502).json({ error: "No pudimos generar la muestra de voz." });
+  }
+});
 
 app.post("/api/registro", async (req, res) => {
   const { nombre, email, clave } = req.body || {};
