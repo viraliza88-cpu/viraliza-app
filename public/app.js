@@ -92,7 +92,12 @@ const Acceso = {
         respuesta = await API.pedir("/api/login", { method: "POST", body: JSON.stringify(cuerpo) });
       }
       API.guardarSesion(respuesta.token, respuesta.nombre);
-      location.href = "panel.html";
+      const plan = new URLSearchParams(location.search).get("plan");
+      if (plan && this.modo === "registro") {
+        location.href = "panel.html?pagar=" + plan;
+      } else {
+        location.href = "panel.html";
+      }
     } catch (e) {
       mostrarMensaje(e.message, "err");
     } finally {
