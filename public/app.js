@@ -897,28 +897,64 @@ const Panel = {
     }
     cont.innerHTML = videos.map(v => {
       const fecha = new Date(v.creado_en||v.creado).toLocaleDateString("es-CO",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+      const urlVideo = v.urls && v.urls[0] ? v.urls[0] : null;
       const estado = v.estado==="listo"
-        ? '<span class="estado listo">Listo</span>'
+        ? '<span class="estado listo">✓ Listo</span>'
         : v.estado==="fallido"
-          ? '<span class="estado fallido">Falló</span>'
-          : `<span class="estado produciendo">Produciendo · ${v.progreso}%</span>`;
-      const accion = v.estado==="listo"
-        ? `<a class="btn" href="/api/videos/${v.id}/descargar?t=${API.token()}">Descargar</a>
-           <button class="btn line" data-publicar="${v.id}" type="button" style="margin-left:8px">Publicar</button>`
-        : "";
+          ? '<span class="estado fallido">✗ Falló</span>'
+          : `<span class="estado produciendo">⏳ Produciendo · ${v.progreso}%</span>`;
       const barra = v.estado==="produciendo"
         ? `<div class="progreso"><i style="width:${v.progreso}%"></i></div>` : "";
+      const preview = urlVideo
+        ? `<div class="video-preview-wrap">
+            <video src="${urlVideo}" preload="metadata" controls playsinline></video>
+           </div>`
+        : `<div class="video-sin-preview"><span>🎬</span></div>`;
+      const badge = v.estado==="listo"
+        ? `<span class="video-estado-badge listo">✓ Listo</span>`
+        : v.estado==="fallido"
+          ? `<span class="video-estado-badge fallido">✗ Falló</span>`
+          : `<span class="video-estado-badge produciendo">⏳ ${v.progreso}%</span>`;
+      const acciones = v.estado==="listo" ? `
+        <div class="video-acciones">
+          <a class="btn" href="/api/videos/${v.id}/descargar?t=${API.token()}">⬇ Descargar</a>
+          <button class="btn line" data-publicar="${v.id}" type="button">📤 Publicar</button>
+          <button class="btn line btn-eliminar-video" data-eliminar="${v.id}" type="button">✕</button>
+        </div>` : v.estado==="fallido" ? `
+        <div class="video-acciones">
+          <button class="btn line btn-eliminar-video" data-eliminar="${v.id}" type="button">✕ Eliminar</button>
+        </div>` : `<div class="video-acciones">${barra}</div>`;
       return `<article class="video">
-        <div>
+        ${preview}
+        <div class="video-info">
           <p class="tema">${v.tema.replace(/</g,"&lt;")}</p>
           <p class="meta">${v.duracion} · ${fecha}</p>
+          ${badge}
         </div>
-        ${estado}${accion}${barra}
+        ${acciones}
       </article>`;
     }).join("");
     cont.querySelectorAll("button[data-publicar]").forEach(b => {
       b.onclick = () => this.publicarVideo(b.dataset.publicar, b);
     });
+    cont.querySelectorAll("button[data-eliminar]").forEach(b => {
+      b.onclick = () => this.eliminarVideo(b.dataset.eliminar, b);
+    });
+  },
+
+  async eliminarVideo(id, boton) {
+    if (!confirm("¿Eliminar este video? Esta acción no se puede deshacer.")) return;
+    boton.disabled = true;
+    boton.textContent = "Eliminando…";
+    try {
+      await API.pedir(`/api/videos/${id}`, { method: "DELETE" });
+      mostrarMensaje("Video eliminado.", "ok");
+      await this.refrescarVideos();
+    } catch(e) {
+      mostrarMensaje(e.message, "err");
+      boton.disabled = false;
+      boton.textContent = "🗑 Eliminar";
+    }
   },
 
   async publicarVideo(id, boton) {

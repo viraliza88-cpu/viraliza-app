@@ -1026,6 +1026,31 @@ app.get("/api/videos", autenticar, async (req, res) => {
   res.json({ videos: sincronizados, cuota: await cuotaDe(req.usuario.id, plan) });
 });
 
+app.delete("/api/videos/:id", autenticar, async (req, res) => {
+  try {
+    const { data: video } = await supabaseAdmin
+      .from("videos")
+      .select("urls, usuario_id")
+      .eq("id", req.params.id)
+      .eq("usuario_id", req.usuario.id)
+      .single();
+    if (!video) return res.status(404).json({ error: "Video no encontrado." });
+    // Eliminar de Supabase Storage
+    if (video.urls && video.urls[0]) {
+      const urlParts = video.urls[0].split("/videos/");
+      if (urlParts[1]) {
+        await supabaseAdmin.storage.from("videos").remove([decodeURIComponent(urlParts[1])]);
+      }
+    }
+    // Eliminar de la base de datos
+    await supabaseAdmin.from("videos").delete().eq("id", req.params.id).eq("usuario_id", req.usuario.id);
+    res.json({ ok: true });
+  } catch(e) {
+    console.error("Error eliminando video:", e.message);
+    res.status(500).json({ error: "No pudimos eliminar el video." });
+  }
+});
+
 app.get("/api/videos/:id/descargar", autenticar, async (req, res) => {
   const { data: video } = await supabaseAdmin
     .from("videos")
