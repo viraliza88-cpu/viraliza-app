@@ -29,6 +29,7 @@
       <button class="tab-btn" type="button" data-tab="videos">Mis videos</button>
       <button class="tab-btn" type="button" data-tab="membresia">Membresía</button>
       <button class="tab-btn" type="button" data-tab="redes">Redes sociales</button>
+      <button class="tab-btn" type="button" data-tab="cuenta">Mi cuenta</button>
     </nav>
 
     <p class="msg" id="mensaje"></p>
@@ -413,6 +414,41 @@
     </section>
 
     <!-- ===================== PESTAÑA: REDES ===================== -->
+    <section class="tab-panel" data-panel="cuenta">
+      <div class="card gold" style="max-width:520px;margin:0 auto">
+        <span class="eyebrow">Tu membresía</span>
+        <h2 class="serif" style="font-size:22px;margin-bottom:20px">Mi <em>cuenta</em></h2>
+
+        <div style="border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:16px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div>
+              <p style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Plan actual</p>
+              <p class="serif" style="font-size:22px" id="cuenta-plan-nombre">—</p>
+            </div>
+            <span id="cuenta-plan-badge" style="background:rgba(214,178,94,.12);color:var(--gold);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 14px;border-radius:20px">Activo</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div style="border:1px solid var(--line);border-radius:4px;padding:12px">
+              <p style="font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Videos este mes</p>
+              <p style="font-size:20px;font-family:'Jost',sans-serif"><span id="cuenta-usados">0</span> <span style="color:var(--muted);font-size:14px">/ <span id="cuenta-limite">0</span></span></p>
+            </div>
+            <div style="border:1px solid var(--line);border-radius:4px;padding:12px">
+              <p style="font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Renueva el</p>
+              <p style="font-size:15px;font-family:'Jost',sans-serif" id="cuenta-renovacion">—</p>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn block" onclick="Panel.cambiarPestana('membresia')" style="margin-bottom:10px">
+          Cambiar de plan
+        </button>
+        <button class="btn line block" id="btn-cancelar-plan" onclick="Panel.cancelarPlan()" style="border-color:rgba(232,72,85,.4);color:#E84855">
+          Cancelar membresía
+        </button>
+        <p class="ayuda" style="margin-top:10px;text-align:center">Al cancelar, conservas el acceso hasta que venza el período actual.</p>
+      </div>
+    </section>
+
     <section class="tab-panel" data-panel="redes">
       <div class="redes-envoltura card gold">
         <h2 class="serif" style="font-size:19px;margin-bottom:10px">Conecta tus redes</h2>

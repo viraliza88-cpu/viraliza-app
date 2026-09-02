@@ -500,6 +500,19 @@ app.get("/api/planes", (req, res) => {
   res.json({ planes: lista });
 });
 
+app.post("/api/cuenta/cancelar", autenticar, async (req, res) => {
+  try {
+    await supabaseAdmin
+      .from("perfiles")
+      .update({ plan: "Inicial", plan_expira: null, videos_este_mes: 0 })
+      .eq("id", req.usuario.id);
+    res.json({ ok: true });
+  } catch(e) {
+    console.error("Error cancelando plan:", e.message);
+    res.status(500).json({ error: "No pudimos cancelar tu membresía. Intenta de nuevo." });
+  }
+});
+
 app.post("/api/pagos/iniciar", autenticar, async (req, res) => {
   const { plan } = req.body || {};
   const infoPlan = PLANES[plan];

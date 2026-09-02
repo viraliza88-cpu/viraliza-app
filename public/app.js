@@ -639,6 +639,38 @@ const Panel = {
     document.getElementById("cuota-usados").textContent = cuota.usados;
     document.getElementById("cuota-limite").textContent = cuota.limite;
     this.pintarPlanes(cuota.plan);
+    // Actualizar página Mi cuenta
+    const elPlan = document.getElementById("cuenta-plan-nombre");
+    const elUsados = document.getElementById("cuenta-usados");
+    const elLimite = document.getElementById("cuenta-limite");
+    const elRenovacion = document.getElementById("cuenta-renovacion");
+    if (elPlan) elPlan.textContent = cuota.plan;
+    if (elUsados) elUsados.textContent = cuota.usados;
+    if (elLimite) elLimite.textContent = cuota.limite;
+    if (elRenovacion) {
+      if (cuota.expira) {
+        const fecha = new Date(cuota.expira).toLocaleDateString("es-CO", {day:"numeric", month:"long", year:"numeric"});
+        elRenovacion.textContent = fecha;
+      } else {
+        elRenovacion.textContent = cuota.plan === "Inicial" ? "Plan gratuito" : "—";
+      }
+    }
+  },
+
+  async cancelarPlan() {
+    if (!confirm("¿Seguro que quieres cancelar tu membresía? Conservarás el acceso hasta que venza el período actual.")) return;
+    const boton = document.getElementById("btn-cancelar-plan");
+    boton.disabled = true;
+    boton.textContent = "Cancelando…";
+    try {
+      await API.pedir("/api/cuenta/cancelar", { method: "POST" });
+      mostrarMensaje("Tu membresía fue cancelada. Conservas el acceso hasta que venza.", "ok");
+      await this.cargar();
+    } catch(e) {
+      mostrarMensaje(e.message, "err");
+      boton.disabled = false;
+      boton.textContent = "Cancelar membresía";
+    }
   },
 
   async pintarPlanes(planActual) {
