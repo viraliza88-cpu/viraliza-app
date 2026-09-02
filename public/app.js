@@ -109,6 +109,66 @@ const Acceso = {
 // ============================================================
 //  W — Wizard de producción en 5 pasos
 // ============================================================
+
+const TEMAS_POR_NICHO = {
+  restaurante: [
+    "El plato secreto que todos piden en nuestro restaurante",
+    "3 razones por las que nuestros clientes siempre vuelven",
+    "Así preparamos nuestro plato estrella desde cero",
+    "¿Por qué somos el restaurante favorito del barrio?",
+    "El ingrediente especial que hace diferente nuestra cocina",
+  ],
+  inmobiliaria: [
+    "3 errores que cometen los compradores primerizos en Medellín",
+    "Por qué es el mejor momento para comprar apartamento en Colombia",
+    "Los 5 barrios más valorizados de Medellín en 2025",
+    "Qué revisar antes de firmar un contrato de arrendamiento",
+    "Cómo financiar tu apartamento sin endeudarte de más",
+  ],
+  gimnasio: [
+    "El error más común que arruina tus resultados en el gimnasio",
+    "3 ejercicios que debes hacer si quieres ver resultados rápido",
+    "Por qué la dieta importa más que el ejercicio",
+    "Cómo empezar en el gimnasio sin sentirte perdido",
+    "Los suplementos que realmente funcionan y los que no",
+  ],
+  belleza: [
+    "3 tips para que tu manicure dure más de dos semanas",
+    "El ritual de skincare que transformó la piel de nuestras clientas",
+    "Por qué el corte de cabello adecuado cambia todo tu look",
+    "Los errores de maquillaje que envejecen tu rostro",
+    "Cómo cuidar tu cabello teñido sin que se maltrate",
+  ],
+  tienda: [
+    "Los productos más vendidos de nuestra tienda este mes",
+    "Por qué nuestros clientes nos recomiendan con sus amigos",
+    "Novedad: llegó lo que tanto esperabas a nuestra tienda",
+    "3 razones para comprar local en lugar de importado",
+    "Así garantizamos la calidad de todo lo que vendemos",
+  ],
+  agencia: [
+    "Por qué tu negocio necesita videos cortos ya mismo",
+    "3 errores que cometen las marcas en redes sociales",
+    "Cómo pasamos de 0 a 10.000 seguidores en 3 meses",
+    "El tipo de contenido que más vende en TikTok e Instagram",
+    "Por qué el video corto es el rey del marketing digital",
+  ],
+  educacion: [
+    "3 técnicas de estudio que doblan tu rendimiento académico",
+    "Por qué aprender esto puede cambiar tu vida profesional",
+    "El método que usan los mejores estudiantes del mundo",
+    "Cómo estudiar menos y recordar más",
+    "Las habilidades más demandadas en el mercado laboral hoy",
+  ],
+  salud: [
+    "3 hábitos que están dañando tu salud sin que lo sepas",
+    "Por qué el sueño es el mejor medicamento que existe",
+    "Los alimentos que debes eliminar de tu dieta ya",
+    "Cómo mejorar tu energía sin tomar suplementos",
+    "La verdad sobre las dietas que nadie te cuenta",
+  ],
+};
+
 const W = {
   pasoActual: 1,
   estado: {
@@ -155,6 +215,26 @@ const W = {
   },
 
   // ---- Paso 1 ----
+  elegirNicho(btn) {
+    document.querySelectorAll(".chip-nicho").forEach(b => b.classList.remove("activo"));
+    btn.classList.add("activo");
+    const nicho = btn.dataset.nicho;
+    const temas = TEMAS_POR_NICHO[nicho] || [];
+    const cont = document.getElementById("lista-temas-sugeridos");
+    const wrap = document.getElementById("temas-sugeridos");
+    cont.innerHTML = temas.map(t => `
+      <button class="tema-sugerido-btn" onclick="W.usarTema('${t.replace(/'/g, "\'")}')" type="button">
+        💡 ${t}
+      </button>
+    `).join("");
+    wrap.style.display = temas.length ? "block" : "none";
+  },
+
+  usarTema(tema) {
+    document.getElementById("tema").value = tema;
+    document.getElementById("tema").focus();
+  },
+
   elegirDuracion(btn) {
     document.querySelectorAll("[data-duracion]").forEach((b) => b.classList.remove("elegida"));
     btn.classList.add("elegida");

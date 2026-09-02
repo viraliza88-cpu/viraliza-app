@@ -658,3 +658,44 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
   background: rgba(232,72,85,.08) !important;
   border-color: #E84855 !important;
 }
+
+/* Chips de nicho */
+.chip-nicho {
+  background: none;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: "Jost", sans-serif;
+  font-size: 12px;
+  letter-spacing: .5px;
+  padding: 8px 14px;
+  cursor: pointer;
+  border-radius: 20px;
+  transition: all .2s;
+}
+.chip-nicho:hover {
+  border-color: var(--gold);
+  color: var(--ink);
+}
+.chip-nicho.activo {
+  border-color: var(--gold);
+  background: rgba(214,178,94,.1);
+  color: var(--gold);
+}
+.tema-sugerido-btn {
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 10px 14px;
+  text-align: left;
+  cursor: pointer;
+  color: var(--ink);
+  font-family: "Jost", sans-serif;
+  font-size: 13px;
+  transition: all .2s;
+  width: 100%;
+}
+.tema-sugerido-btn:hover {
+  border-color: var(--gold);
+  background: rgba(214,178,94,.05);
+  color: var(--gold);
+}

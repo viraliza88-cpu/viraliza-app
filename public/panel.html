@@ -68,6 +68,23 @@
           <h2 class="serif" style="font-size:22px;margin-bottom:6px">¿Qué quieres <em>contar</em> hoy?</h2>
           <p class="ayuda" style="margin-bottom:22px">Una frase basta — nosotros escribimos el guion completo.</p>
 
+          <p style="font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">¿Cuál es tu tipo de negocio?</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px" id="chips-nicho">
+            <button class="chip-nicho" data-nicho="restaurante" onclick="W.elegirNicho(this)" type="button">🍽 Restaurante</button>
+            <button class="chip-nicho" data-nicho="inmobiliaria" onclick="W.elegirNicho(this)" type="button">🏠 Inmobiliaria</button>
+            <button class="chip-nicho" data-nicho="gimnasio" onclick="W.elegirNicho(this)" type="button">💪 Gimnasio</button>
+            <button class="chip-nicho" data-nicho="belleza" onclick="W.elegirNicho(this)" type="button">💅 Belleza</button>
+            <button class="chip-nicho" data-nicho="tienda" onclick="W.elegirNicho(this)" type="button">🛍 Tienda</button>
+            <button class="chip-nicho" data-nicho="agencia" onclick="W.elegirNicho(this)" type="button">📱 Agencia</button>
+            <button class="chip-nicho" data-nicho="educacion" onclick="W.elegirNicho(this)" type="button">📚 Educación</button>
+            <button class="chip-nicho" data-nicho="salud" onclick="W.elegirNicho(this)" type="button">🏥 Salud</button>
+          </div>
+
+          <div id="temas-sugeridos" style="display:none;margin-bottom:16px">
+            <p style="font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Ideas para tu video — toca una para usarla</p>
+            <div style="display:flex;flex-direction:column;gap:6px" id="lista-temas-sugeridos"></div>
+          </div>
+
           <input id="tema" type="text" maxlength="160"
             placeholder="Ej: 3 errores al comprar apartamento en Medellín"
             style="font-size:16px;padding:16px 18px">
