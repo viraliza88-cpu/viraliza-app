@@ -555,11 +555,9 @@ const Panel = {
     }
 
 
-    const btnMaterial = document.getElementById("abrir-subir-material-wizard");
     const inputMaterial = document.getElementById("archivo-material-wizard");
-    if (btnMaterial && inputMaterial) {
-      btnMaterial.onclick = () => inputMaterial.click();
-      inputMaterial.onchange = (e) => this.subirMaterialesWizard(Array.from(e.target.files));
+    if (inputMaterial) {
+      inputMaterial.onchange = (e) => Panel.subirMaterialesWizard(Array.from(e.target.files));
     }
 
     this.cargar();
@@ -568,7 +566,6 @@ const Panel = {
   async subirMaterialesWizard(archivos) {
     if (!archivos.length) return;
     const cont = document.getElementById("lista-materiales-wizard");
-    const btn = document.getElementById("abrir-subir-material-wizard");
     const yaSubidos = cont.querySelectorAll(".opcion-musica").length;
     const cuantosFaltan = 8 - yaSubidos;
     if (cuantosFaltan <= 0) {
@@ -576,8 +573,6 @@ const Panel = {
       return;
     }
     const aSubir = archivos.slice(0, cuantosFaltan);
-    btn.disabled = true;
-    btn.textContent = "Subiendo…";
     cont.style.display = "block";
     for (const archivo of aSubir) {
       try {
@@ -610,8 +605,6 @@ const Panel = {
         mostrarMensaje(e.message, "err");
       }
     }
-    btn.disabled = false;
-    btn.textContent = "📁 Subir mis archivos";
     if (aSubir.length < archivos.length) {
       mostrarMensaje(`Solo se subieron ${aSubir.length} de ${archivos.length} archivos (límite: 8).`, "err");
     }

@@ -244,7 +244,10 @@ app.get("/api/musicas/premium", autenticar, async (req, res) => {
   try {
     const url = `https://api.jamendo.com/v3.0/tracks/?client_id=${JAMENDO_CLIENT_ID}&format=json&tags=${etiqueta}&limit=12&audioformat=mp31&order=popularity_total`;
     let r = await fetch(url, { signal: AbortSignal.timeout(12000) });
-    if (!r.ok) r = await fetch(url, { signal: AbortSignal.timeout(12000) });
+    if (!r.ok || !(await r.clone().json().then(j => j?.results?.length).catch(() => 0))) {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      r = await fetch(url, { signal: AbortSignal.timeout(12000) });
+    }
     const j = await r.json();
     if (j?.headers?.status !== "success") {
       console.error("Jamendo respondió con error:", JSON.stringify(j?.headers || j));
@@ -850,7 +853,20 @@ app.post("/api/videos", autenticar, async (req, res) => {
     viral: "BeVietnamPro-Bold.ttf",
   };
 
-  let audioFinal = audioPersonalizado || undefined;
+  let audioFinal = undefined;
+  if (audioPersonalizado && fs.existsSync(audioPersonalizado)) {
+    try {
+      const taskPreId = crypto.randomUUID();
+      const taskPreDir = path.join(MOTOR_CARPETA, "storage", "tasks", taskPreId);
+      fs.mkdirSync(taskPreDir, { recursive: true });
+      const audioDest = path.join(taskPreDir, "audio.mp3");
+      fs.copyFileSync(audioPersonalizado, audioDest);
+      audioFinal = audioDest;
+    } catch (e) {
+      console.error("Error preparando audio personalizado:", e.message);
+      audioFinal = audioPersonalizado;
+    }
+  }
   if (sinNarracion && !audioPersonalizado) {
     try {
       audioFinal = await generarSilencio(SEGUNDOS_POR_DURACION[duracion] || 30);
@@ -895,7 +911,7 @@ app.post("/api/videos", autenticar, async (req, res) => {
     voice_name: vozPremium ? `elevenlabs:${vozPremium}:premium` : (voz || "es-CO-SalomeNeural-Female"),
     voice_rate: 0.98,
     voice_volume: 1.0,
-    custom_audio_file: audioFinal,
+    custom_audio_file: audioFinal || null,
     bgm_type: "random",
     bgm_file: bgmArchivoFinal,
     bgm_volume: typeof bgmVolumen === "number" ? Math.max(0, Math.min(1, bgmVolumen)) : 0.2,
@@ -921,6 +937,7 @@ app.post("/api/videos", autenticar, async (req, res) => {
     console.error("Error hablando con el motor:", e.message);
     return res.status(502).json({ error: "El motor de producción no está disponible. Verifica que la ventana del motor (api) esté abierta e inténtalo de nuevo." });
   }
+
 
   const { data: video, error } = await supabaseAdmin
     .from("videos")
