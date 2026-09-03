@@ -1141,7 +1141,22 @@ const Admin = {
   iniciar() {
     if (!API.token()) { location.href = "login.html"; return; }
     document.getElementById("salir").onclick = () => API.cerrarSesion();
+    this.cargarAnalytics();
     this.cargar();
+  },
+  async cargarAnalytics() {
+    try {
+      const d = await API.pedir("/api/admin/analytics");
+      const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+      set("stat-total-usuarios", d.total);
+      set("stat-usuarios-pagos", d.pagos);
+      set("stat-videos-mes", d.videosMes);
+      set("stat-ingresos", "$" + d.ingresos.toLocaleString("es-CO") + " COP");
+      set("stat-plan-inicial", d.porPlan.inicial);
+      set("stat-plan-esencial", d.porPlan.esencial);
+      set("stat-plan-signature", d.porPlan.signature);
+      set("stat-plan-elite", d.porPlan.elite);
+    } catch(e) { console.error("Analytics:", e.message); }
   },
   async cargar() {
     try {

@@ -685,6 +685,36 @@ app.get("/api/planes", (req, res) => {
   res.json({ planes: lista });
 });
 
+app.get("/api/admin/analytics", autenticar, async (req, res) => {
+  try {
+    const ADMINS = (process.env.ADMIN_EMAILS || "estebanrendon27@gmail.com,viraliza88@gmail.com").split(",");
+    if (!ADMINS.includes(req.usuario.email)) return res.status(403).json({ error: "Acceso denegado." });
+
+    const { data: perfiles } = await supabaseAdmin.from("perfiles").select("plan");
+    const total = (perfiles || []).length;
+    const pagos = (perfiles || []).filter(p => p.plan && p.plan !== "Inicial").length;
+    const { count: videosMes } = await supabaseAdmin.from("videos").select("*", { count: "exact", head: true });
+    const videosTotal = videosMes || 0;
+
+    const porPlan = { inicial: 0, esencial: 0, signature: 0, elite: 0 };
+    perfiles.forEach(p => {
+      const plan = (p.plan || "Inicial").toLowerCase();
+      if (plan === "inicial") porPlan.inicial++;
+      else if (plan === "esencial") porPlan.esencial++;
+      else if (plan === "signature") porPlan.signature++;
+      else if (plan === "élite" || plan === "elite") porPlan.elite++;
+    });
+
+    const PRECIOS = { esencial: 39900, signature: 89900, elite: 199900 };
+    const ingresos = (porPlan.esencial * PRECIOS.esencial) + (porPlan.signature * PRECIOS.signature) + (porPlan.elite * PRECIOS.elite);
+
+    res.json({ total, pagos, videosMes, videosTotal, porPlan, ingresos });
+  } catch(e) {
+    console.error("Error analytics:", e.message);
+    res.status(500).json({ error: "Error obteniendo analytics." });
+  }
+});
+
 app.post("/api/cuenta/cancelar", autenticar, async (req, res) => {
   try {
     await supabaseAdmin
