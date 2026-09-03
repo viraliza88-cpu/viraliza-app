@@ -3,418 +3,650 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Viraliza — Videos de nivel superior para tu marca</title>
-<meta name="description" content="Escribe el tema. Nuestro sistema produce el guion, la voz y el video listo para TikTok, Reels y Shorts. Tú solo publicas y vendes.">
+<title>Viraliza — Tu estudio de video profesional</title>
+<meta name="description" content="Videos profesionales para TikTok, Reels e Instagram en minutos. Guion, voz, música y subtítulos incluidos.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#0C0C0E; --bg2:#121114; --ink:#EDEAE2; --muted:#9B968B;
-  --gold:#D6B25E; --gold-deep:#A8873C; --ivory:#F4EFE6; --ivory-ink:#161513;
-  --line:rgba(214,178,94,.22); --line-soft:rgba(237,234,226,.1);
-}
-*{margin:0;padding:0;box-sizing:border-box}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#D6B25E;--gold2:#E8C96A;--gold3:rgba(214,178,94,.12);--bg:#09090B;--bg2:#0F0F12;--bg3:#141418;--ink:#F0EDE5;--muted:#8A8480;--line:rgba(255,255,255,.07);--line2:rgba(214,178,94,.25)}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:"Jost",system-ui,sans-serif;font-size:17px;font-weight:300;line-height:1.7;letter-spacing:.2px}
-a{color:inherit;text-decoration:none}
-:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
-.wrap{max-width:1140px;margin:0 auto;padding:0 24px}
-.serif{font-family:"Playfair Display",serif;font-weight:600;letter-spacing:0}
-.eyebrow{display:inline-block;color:var(--gold);font-size:12px;font-weight:500;letter-spacing:4px;text-transform:uppercase;margin-bottom:22px}
-.rule{width:56px;height:1px;background:var(--gold);margin:0 0 26px}
-.center .rule{margin:0 auto 26px}
-
-/* ---------- Botones ---------- */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;background:var(--gold);color:#141209;font-weight:500;font-size:14px;letter-spacing:2.5px;text-transform:uppercase;padding:17px 34px;border:1px solid var(--gold);cursor:pointer;transition:background .2s ease,color .2s ease,letter-spacing .2s ease}
-.btn:hover{background:transparent;color:var(--gold);letter-spacing:3.5px}
-.btn.line{background:transparent;color:var(--ink);border-color:var(--line-soft)}
-.btn.line:hover{border-color:var(--gold);color:var(--gold)}
-.btn.onlight{background:var(--ivory-ink);color:var(--ivory);border-color:var(--ivory-ink)}
-.btn.onlight:hover{background:transparent;color:var(--ivory-ink)}
-
-/* ---------- Nav ---------- */
-.nav{position:sticky;top:0;z-index:50;background:rgba(12,12,14,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--line-soft)}
-.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:78px}
-.logo{font-family:"Playfair Display",serif;font-weight:600;font-size:21px;letter-spacing:3px;text-transform:uppercase}
-.logo i{font-style:normal;color:var(--gold)}
-.nav-links{display:flex;gap:34px;font-size:13px;font-weight:400;letter-spacing:2px;text-transform:uppercase}
-.nav-links a{color:var(--muted);transition:color .2s}
-.nav-links a:hover{color:var(--gold)}
-.nav .btn{padding:12px 24px;font-size:12px}
-
-/* ---------- Hero ---------- */
-.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line-soft)}
-.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(760px 480px at 78% 30%,rgba(214,178,94,.10),transparent 65%);pointer-events:none}
-.hero .wrap{display:grid;grid-template-columns:1.08fr .92fr;gap:48px;align-items:center;padding-top:92px;padding-bottom:100px;position:relative}
-.hero h1{font-size:clamp(38px,4.8vw,62px);line-height:1.12;font-weight:600;margin-bottom:24px}
-.hero h1 em{font-style:italic;color:var(--gold)}
-.hero p.sub{font-size:18.5px;color:var(--muted);max-width:500px;margin-bottom:38px;font-weight:300}
-.hero-ctas{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:30px}
-.trust{display:flex;gap:26px;flex-wrap:wrap;color:var(--muted);font-size:13.5px;letter-spacing:.5px}
-.trust span::before{content:"—";color:var(--gold);margin-right:9px}
-
-/* ---------- Teléfono ---------- */
-.stage{display:flex;justify-content:center;position:relative}
-.phone{width:272px;aspect-ratio:9/18.5;background:#000;border:1px solid var(--gold-deep);border-radius:38px;box-shadow:0 0 0 8px #0A0A0B,0 0 0 9px rgba(214,178,94,.25),0 40px 90px rgba(0,0,0,.75),0 0 110px rgba(214,178,94,.12);position:relative;overflow:hidden}
-.screen{position:absolute;inset:0;background:
-  radial-gradient(240px 200px at 75% 20%,rgba(214,178,94,.30),transparent 65%),
-  radial-gradient(280px 240px at 15% 75%,rgba(120,96,44,.28),transparent 60%),
-  linear-gradient(180deg,#17130B 0%,#000 100%)}
-.chip{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.5);border:1px solid var(--line);color:var(--gold);font-size:10.5px;font-weight:500;letter-spacing:2px;text-transform:uppercase;padding:7px 14px;border-radius:2px;white-space:nowrap}
-.chip i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold);margin-right:8px;animation:pulse 1.6s ease-in-out infinite}
-.caps{position:absolute;left:18px;right:18px;bottom:100px;height:130px}
-.cap{position:absolute;inset:auto 0 0 0;text-align:center;font-family:"Playfair Display",serif;font-weight:600;font-size:21px;line-height:1.35;color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.8);opacity:0;animation:capcycle 10.5s infinite}
-.cap em{font-style:italic;color:var(--gold)}
-.cap:nth-child(2){animation-delay:3.5s}
-.cap:nth-child(3){animation-delay:7s}
-.bar{position:absolute;left:18px;right:18px;bottom:72px;height:2px;background:rgba(237,234,226,.15)}
-.bar i{display:block;height:100%;width:40%;background:var(--gold);animation:load 10.5s linear infinite}
-.hud{position:absolute;left:18px;right:18px;bottom:24px;display:flex;justify-content:space-between;align-items:center;font-size:11.5px;letter-spacing:1px;color:var(--muted)}
-.hud .name{color:var(--ink);font-weight:500}
-.float{position:absolute;background:var(--bg2);border:1px solid var(--line);color:var(--ink);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;padding:12px 18px}
-.float b{color:var(--gold);font-weight:500}
-.float.f1{top:9%;right:-3%}
-.float.f2{bottom:13%;left:-7%}
-@keyframes capcycle{0%{opacity:0;transform:translateY(12px)}5%,28%{opacity:1;transform:translateY(0)}34%,100%{opacity:0;transform:translateY(-8px)}}
-@keyframes load{from{width:3%}to{width:97%}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
-
-/* ---------- Cinta ---------- */
-.ticker{border-bottom:1px solid var(--line-soft);overflow:hidden;padding:20px 0;background:var(--bg2)}
-.track{display:flex;gap:0;width:max-content;animation:slide 30s linear infinite;font-family:"Playfair Display",serif;font-style:italic;font-size:16px;color:var(--muted);white-space:nowrap}
-.track span{padding:0 28px}
-.track span::after{content:"✦";color:var(--gold);margin-left:56px;font-style:normal;font-size:11px}
-@keyframes slide{to{transform:translateX(-50%)}}
-
-/* ---------- Secciones ---------- */
-section{padding:104px 0}
-h2{font-size:clamp(30px,3.6vw,44px);font-weight:600;line-height:1.18;margin-bottom:18px}
-h2 em{font-style:italic;color:var(--gold)}
-.lead{color:var(--muted);font-size:18px;max-width:620px}
-.center{text-align:center}
-.center .lead{margin:0 auto}
-
-/* Pasos — sección marfil */
-.light{background:var(--ivory);color:var(--ivory-ink)}
-.light .lead{color:#6E685C}
-.light h2 em{color:var(--gold-deep)}
-.light .eyebrow{color:var(--gold-deep)}
-.light .rule{background:var(--gold-deep)}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:56px;border-top:1px solid rgba(22,21,19,.14)}
-.step{padding:38px 30px 10px;border-left:1px solid rgba(22,21,19,.14)}
-.step:first-child{border-left:0}
-.step .n{font-family:"Playfair Display",serif;font-style:italic;font-size:17px;color:var(--gold-deep);display:block;margin-bottom:16px}
-.step h3{font-family:"Playfair Display",serif;font-weight:600;font-size:22px;margin-bottom:10px}
-.step p{color:#6E685C;font-size:15.5px}
-
-/* Beneficios */
-.bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:56px}
-.bcard{background:var(--bg2);border:1px solid var(--line-soft);border-top:1px solid var(--gold-deep);padding:32px 28px;transition:border-color .25s ease,transform .25s ease}
-.bcard:hover{border-color:var(--line);transform:translateY(-4px)}
-.bcard h3{font-family:"Playfair Display",serif;font-weight:600;font-size:19px;margin-bottom:10px}
-.bcard p{color:var(--muted);font-size:15px}
-
-/* Nichos */
-.chips{display:flex;flex-wrap:wrap;gap:14px;margin-top:40px}
-.nchip{border:1px solid var(--line);color:var(--ink);padding:13px 26px;font-size:13px;letter-spacing:2px;text-transform:uppercase;transition:background .2s,color .2s}
-.nchip:hover{background:var(--gold);color:#141209;border-color:var(--gold)}
-
-/* Precios */
-.plans{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:60px;align-items:stretch}
-.plan{background:var(--bg2);border:1px solid var(--line-soft);padding:36px 28px;display:flex;flex-direction:column;text-align:left;transition:border-color .25s}
-.plan:hover{border-color:var(--line)}
-.plan .pname{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;font-weight:500}
-.plan .price{font-family:"Playfair Display",serif;font-weight:600;font-size:32px;line-height:1}
-.plan .per{color:var(--muted);font-size:13px;letter-spacing:1px;margin:8px 0 24px}
-.plan ul{list-style:none;margin:0 0 30px;display:grid;gap:11px;font-size:14.5px;color:var(--muted)}
-.plan li::before{content:"—";color:var(--gold);margin-right:10px}
-.plan .btn{margin-top:auto;width:100%}
-.plan.pop{background:var(--ivory);color:var(--ivory-ink);border:1px solid var(--gold);position:relative;transform:translateY(-14px)}
-.plan.pop .price{color:var(--ivory-ink)}
-.plan.pop .per,.plan.pop ul{color:#6E685C}
-.plan.pop .pname{color:var(--gold-deep)}
-.plan.pop .badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--gold);color:#141209;font-weight:500;font-size:10.5px;letter-spacing:2.5px;padding:7px 18px;text-transform:uppercase;white-space:nowrap}
-.plans-note{text-align:center;color:var(--muted);font-size:13.5px;letter-spacing:1px;margin-top:34px}
-
-/* FAQ */
-.faq{max-width:740px;margin:52px auto 0;text-align:left}
-.faq details{border-bottom:1px solid var(--line-soft);padding:24px 4px}
-.faq details:first-child{border-top:1px solid var(--line-soft)}
-.faq summary{font-family:"Playfair Display",serif;font-weight:600;font-size:19px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"+";color:var(--gold);font-size:24px;font-weight:300;transition:transform .2s}
-.faq details[open] summary::after{transform:rotate(45deg)}
-.faq details p{margin-top:14px;color:var(--muted);font-size:15.5px}
-
-/* CTA final */
-.cta-final{background:var(--ivory);color:var(--ivory-ink);padding:84px 40px;text-align:center;position:relative}
-.cta-final::before,.cta-final::after{content:"";position:absolute;left:50%;transform:translateX(-50%);width:1px;height:36px;background:var(--gold-deep)}
-.cta-final::before{top:0}
-.cta-final::after{bottom:0}
-.cta-final h2 em{color:var(--gold-deep)}
-.cta-final p{color:#6E685C;font-size:18px;max-width:520px;margin:0 auto 36px}
-
-/* Footer */
-footer{padding:60px 0 44px;color:var(--muted);font-size:13px;letter-spacing:1px;border-top:1px solid var(--line-soft)}
-footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
-footer .logo{font-size:16px}
-footer a:hover{color:var(--gold)}
-
-/* ---------- Responsive ---------- */
-@media (max-width:960px){
+body{background:var(--bg);color:var(--ink);font-family:"Jost",sans-serif;font-weight:400;line-height:1.6;overflow-x:hidden}
+.serif{font-family:"Playfair Display",serif}
+em{font-style:italic;color:var(--gold)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 28px}
+.eyebrow{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:18px}
+.btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--gold);color:#09090B;font-family:"Jost",sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;text-decoration:none;padding:18px 40px;transition:all .3s;border:none;cursor:pointer;position:relative;overflow:hidden}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(214,178,94,.3)}
+.btn-secondary{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line2);color:var(--gold);font-family:"Jost",sans-serif;font-size:11px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;text-decoration:none;padding:16px 32px;transition:all .3s;background:none;cursor:pointer}
+.btn-secondary:hover{border-color:var(--gold);background:var(--gold3)}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:22px 0;transition:all .4s}
+nav.scrolled{background:rgba(9,9,11,.96);backdrop-filter:blur(20px);padding:16px 0;border-bottom:1px solid var(--line)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:"Playfair Display",serif;font-size:24px;color:var(--ink);text-decoration:none}
+.nav-logo span{color:var(--gold)}
+.nav-links{display:flex;gap:40px;list-style:none}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;transition:color .2s}
+.nav-links a:hover{color:var(--ink)}
+.nav-actions{display:flex;gap:14px;align-items:center}
+.nav-login{color:var(--muted);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;transition:color .2s}
+.nav-login:hover{color:var(--gold)}
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:140px 0 100px}
+.hero-orb1{position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(214,178,94,.07) 0%,transparent 70%);top:-150px;left:-150px;pointer-events:none}
+.hero-orb2{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(214,178,94,.05) 0%,transparent 70%);bottom:-150px;right:-100px;pointer-events:none}
+.hero-line{position:absolute;top:0;left:50%;width:1px;height:100%;background:linear-gradient(to bottom,transparent,var(--line2),transparent)}
+.hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;position:relative;z-index:1}
+.hero-label{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line2);padding:10px 20px;margin-bottom:36px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.hero-label::before{content:"";width:5px;height:5px;background:var(--gold);border-radius:50%;flex-shrink:0;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-size:clamp(44px,5.5vw,72px);line-height:1.1;letter-spacing:-1.5px;margin-bottom:28px;font-family:"Playfair Display",serif;font-weight:600}
+.hero-desc{font-size:17px;color:var(--muted);line-height:1.8;font-weight:300;margin-bottom:44px;max-width:440px}
+.hero-ctas{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:60px}
+.hero-proof{display:flex;gap:32px;padding-top:32px;border-top:1px solid var(--line)}
+.hero-proof-item{display:flex;flex-direction:column;gap:2px}
+.hero-proof-num{font-family:"Playfair Display",serif;font-size:26px;color:var(--gold)}
+.hero-proof-label{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.hero-visual{position:relative}
+.hero-phone-wrap{display:flex;justify-content:center;align-items:flex-start;gap:20px;padding-top:20px}
+.phone{background:var(--bg3);border:1px solid var(--line);border-radius:36px;overflow:hidden;padding:10px;box-shadow:0 60px 120px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.06)}
+.phone-main{width:220px}
+.phone-sm{width:160px;margin-top:60px;opacity:.7}
+.phone-screen{background:#000;border-radius:28px;aspect-ratio:9/16;position:relative;overflow:hidden;display:flex;align-items:flex-end}
+.phone-gradient{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.1) 0%,rgba(0,0,0,.75) 100%)}
+.phone-content{position:relative;z-index:1;padding:20px;width:100%}
+.phone-tag{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:1px;margin-bottom:8px;display:block}
+.phone-text{font-family:"Playfair Display",serif;font-size:13px;color:#fff;line-height:1.4;margin-bottom:12px}
+.phone-bar{background:var(--gold);color:#09090B;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:7px 12px;border-radius:3px;display:inline-block}
+.phone-bg-img{position:absolute;inset:0;background:linear-gradient(135deg,#1a1a2e 0%,#0d1117 50%,#1a0a00 100%);display:flex;align-items:center;justify-content:center;font-size:52px;opacity:.35}
+.hero-floating-card{position:absolute;background:var(--bg3);border:1px solid var(--line);padding:14px 18px;border-radius:4px;white-space:nowrap;backdrop-filter:blur(10px)}
+.hero-floating-card.card1{top:8%;right:-10px;animation:float1 6s ease-in-out infinite}
+.hero-floating-card.card2{bottom:18%;left:-20px;animation:float2 8s ease-in-out infinite}
+@keyframes float1{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes float2{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
+.fc-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;display:block}
+.fc-value{font-size:15px;color:var(--ink);font-family:"Playfair Display",serif}
+.fc-sub{font-size:10px;color:var(--gold);margin-top:3px;display:block}
+.ticker{padding:18px 0;background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden}
+.ticker-inner{display:flex;white-space:nowrap;animation:ticker 35s linear infinite}
+.ticker-item{padding:0 40px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:inline-flex;align-items:center;gap:20px}
+.ticker-item span{color:var(--gold)}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.incluye{padding:120px 0}
+.incluye-header{text-align:center;margin-bottom:80px}
+.incluye-header h2{font-size:clamp(32px,4vw,52px);margin-bottom:16px;font-family:"Playfair Display",serif}
+.incluye-header p{color:var(--muted);max-width:500px;margin:0 auto;font-size:16px;font-weight:300}
+.incluye-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line)}
+.incluye-item{background:var(--bg);padding:48px 36px;position:relative;overflow:hidden;transition:background .3s}
+.incluye-item::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .3s}
+.incluye-item:hover{background:var(--bg2)}
+.incluye-item:hover::before{opacity:1}
+.incluye-num{position:absolute;top:28px;right:28px;font-family:"Playfair Display",serif;font-size:52px;color:rgba(214,178,94,.08);line-height:1;font-style:italic}
+.incluye-icon{width:52px;height:52px;border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:24px}
+.incluye-item h3{font-family:"Playfair Display",serif;font-size:20px;margin-bottom:12px;font-weight:600}
+.incluye-item p{color:var(--muted);font-size:14px;line-height:1.8}
+.incluye-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px}
+.incluye-tag{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;border:1px solid var(--line);color:var(--muted);padding:4px 10px}
+.como{padding:120px 0;background:var(--bg2)}
+.como-inner{display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:start}
+.como-steps{display:flex;flex-direction:column}
+.como-step{display:flex;gap:28px;padding:32px 0;border-bottom:1px solid var(--line);transition:all .3s}
+.como-step:last-child{border-bottom:none}
+.como-step:hover .como-step-content h3{color:var(--gold)}
+.como-step-num{font-family:"Playfair Display",serif;font-size:36px;color:var(--line2);line-height:1;flex-shrink:0;width:48px;font-style:italic;transition:color .3s}
+.como-step:hover .como-step-num{color:var(--gold)}
+.como-step-content h3{font-size:18px;margin-bottom:8px;transition:color .3s;font-family:"Playfair Display",serif}
+.como-step-content p{color:var(--muted);font-size:14px;line-height:1.7}
+.step-time{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-top:8px;display:block}
+.como-visual{position:sticky;top:100px}
+.como-mockup{background:var(--bg3);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.como-mockup-top{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.mockup-dots{display:flex;gap:6px}
+.mockup-dot{width:10px;height:10px;border-radius:50%}
+.como-mockup-body{padding:28px}
+.mockup-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:block}
+.mockup-input{background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:14px 16px;font-family:"Jost",sans-serif;font-size:14px;color:var(--ink);margin-bottom:20px;width:100%}
+.mockup-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.mockup-chip{border:1px solid var(--line);color:var(--muted);font-size:11px;letter-spacing:1px;padding:6px 14px}
+.mockup-chip.active{background:var(--gold);color:#09090B;border-color:var(--gold)}
+.mockup-progress{background:var(--line);height:3px;margin-bottom:8px;overflow:hidden}
+.mockup-progress-bar{height:100%;background:var(--gold);width:0;transition:width .1s linear}
+.mockup-status{font-size:11px;color:var(--gold);letter-spacing:1px;text-transform:uppercase}
+.planes{padding:120px 0}
+.planes-header{text-align:center;margin-bottom:72px}
+.planes-header h2{font-size:clamp(32px,4vw,52px);margin-bottom:16px;font-family:"Playfair Display",serif}
+.planes-header p{color:var(--muted);font-size:16px;font-weight:300}
+.planes-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:var(--line);border:1px solid var(--line)}
+.plan{background:var(--bg);padding:44px 32px;display:flex;flex-direction:column;position:relative;transition:background .3s}
+.plan:hover{background:var(--bg2)}
+.plan.featured{background:var(--bg3);border-top:2px solid var(--gold)}
+.plan-featured-label{position:absolute;top:-1px;left:0;right:0;text-align:center;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#09090B;background:var(--gold);padding:6px}
+.plan-tier{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:20px;display:block}
+.plan-price{font-family:"Playfair Display",serif;font-size:36px;color:var(--ink);line-height:1;margin-bottom:6px}
+.plan-price-detail{font-size:13px;color:var(--muted);margin-bottom:28px;display:block;font-weight:300}
+.plan-divider{height:1px;background:var(--line);margin-bottom:28px}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:36px;flex:1}
+.plan-features li{font-size:13px;color:var(--muted);display:flex;gap:10px;align-items:flex-start;line-height:1.5}
+.plan-features li::before{content:"";width:14px;height:14px;border:1px solid var(--line2);flex-shrink:0;margin-top:1px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%23D6B25E' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") center/10px no-repeat}
+.plan-features li strong{color:var(--ink)}
+.plan-cta{display:block;text-align:center;padding:14px;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;font-family:"Jost",sans-serif;font-weight:600;text-decoration:none;transition:all .25s;border:1px solid var(--line);color:var(--muted)}
+.plan-cta:hover{border-color:var(--gold);color:var(--gold)}
+.plan.featured .plan-cta{background:var(--gold);color:#09090B;border-color:var(--gold)}
+.plan.featured .plan-cta:hover{background:var(--gold2)}
+.planes-nota{text-align:center;margin-top:28px;color:var(--muted);font-size:13px;display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+.planes-nota span{display:flex;align-items:center;gap:6px}
+.planes-nota span::before{content:"✓";color:var(--gold);font-size:11px}
+.nichos{padding:100px 0;background:var(--bg2);overflow:hidden}
+.nichos-header{text-align:center;margin-bottom:60px}
+.nichos-scroll{display:flex;gap:12px;overflow-x:auto;padding:0 28px 20px;scrollbar-width:none}
+.nichos-scroll::-webkit-scrollbar{display:none}
+.nicho-card{background:var(--bg);border:1px solid var(--line);padding:28px 24px;flex-shrink:0;width:200px;transition:all .3s}
+.nicho-card:hover{border-color:var(--line2);transform:translateY(-4px)}
+.nicho-card-icon{font-size:28px;margin-bottom:12px;display:block}
+.nicho-card-name{font-family:"Playfair Display",serif;font-size:15px;margin-bottom:6px}
+.nicho-card-desc{font-size:12px;color:var(--muted);line-height:1.6}
+.faq{padding:120px 0}
+.faq-inner{display:grid;grid-template-columns:1fr 1.5fr;gap:80px;align-items:start}
+.faq-left h2{font-size:clamp(30px,4vw,48px);font-family:"Playfair Display",serif;margin-bottom:16px;line-height:1.2}
+.faq-left p{color:var(--muted);font-size:15px;line-height:1.8;margin-bottom:32px;font-weight:300}
+.faq-list{display:flex;flex-direction:column;border:1px solid var(--line)}
+.faq-q-wrap{border-bottom:1px solid var(--line);background:var(--bg)}
+.faq-q-wrap:last-child{border-bottom:none}
+.faq-q-wrap.open{background:var(--bg2)}
+.faq-q-btn{width:100%;padding:22px 28px;display:flex;justify-content:space-between;align-items:center;gap:20px;cursor:pointer;background:none;border:none;text-align:left}
+.faq-q-text{font-size:15px;color:var(--ink)}
+.faq-q-icon{width:28px;height:28px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:16px;flex-shrink:0;transition:all .3s}
+.faq-q-wrap.open .faq-q-icon{background:var(--gold);color:#09090B;border-color:var(--gold);transform:rotate(45deg)}
+.faq-answer{display:none;padding:0 28px 22px;font-size:14px;color:var(--muted);line-height:1.8}
+.faq-q-wrap.open .faq-answer{display:block}
+.cta-final{padding:140px 0;text-align:center;position:relative;overflow:hidden;background:var(--bg2)}
+.cta-final-lines{position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,black 0%,transparent 100%)}
+.cta-final-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(214,178,94,.07) 0%,transparent 70%);left:50%;top:50%;transform:translate(-50%,-50%)}
+.cta-final-inner{position:relative;z-index:1}
+.cta-final h2{font-size:clamp(36px,5.5vw,68px);font-family:"Playfair Display",serif;line-height:1.1;letter-spacing:-1px;margin-bottom:24px}
+.cta-final p{color:var(--muted);font-size:18px;max-width:480px;margin:0 auto 48px;font-weight:300;line-height:1.7}
+.cta-final-ctas{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:40px}
+.cta-guarantees{display:flex;gap:28px;justify-content:center;flex-wrap:wrap}
+.cta-guarantee{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:7px}
+.cta-guarantee::before{content:"—";color:var(--gold)}
+footer{padding:56px 0;border-top:1px solid var(--line)}
+.footer-top{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:60px;margin-bottom:48px;padding-bottom:48px;border-bottom:1px solid var(--line)}
+.footer-brand-logo{font-family:"Playfair Display",serif;font-size:26px;text-decoration:none;color:var(--ink);display:block;margin-bottom:16px}
+.footer-brand-logo span{color:var(--gold)}
+.footer-brand-desc{color:var(--muted);font-size:14px;line-height:1.7;font-weight:300}
+.footer-col-title{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:20px;display:block}
+.footer-links{display:flex;flex-direction:column;gap:12px}
+.footer-links a{color:var(--muted);text-decoration:none;font-size:14px;transition:color .2s}
+.footer-links a:hover{color:var(--gold)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.footer-copy,.footer-made{color:var(--muted);font-size:13px}
+.footer-made span{color:var(--gold)}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+@media(max-width:900px){
   .nav-links{display:none}
-  .hero .wrap{grid-template-columns:1fr;padding-top:60px;padding-bottom:70px}
-  .stage{margin-top:24px}
-  .float.f2{left:2%}
-  .steps{grid-template-columns:1fr;border-top:0}
-  .step{border-left:0;border-top:1px solid rgba(22,21,19,.14);padding:30px 6px 6px}
-  .bgrid{grid-template-columns:1fr}
-  .plans{grid-template-columns:1fr 1fr}
-  .plan.pop{transform:none}
-  section{padding:76px 0}
+  .hero-inner{grid-template-columns:1fr;text-align:center}
+  .hero-desc{max-width:100%}
+  .hero-ctas{justify-content:center}
+  .hero-proof{justify-content:center}
+  .hero-visual{display:none}
+  .como-inner{grid-template-columns:1fr}
+  .como-visual{display:none}
+  .planes-grid{grid-template-columns:1fr 1fr}
+  .faq-inner{grid-template-columns:1fr}
+  .footer-top{grid-template-columns:1fr}
+  .footer-bottom{flex-direction:column;text-align:center}
+  .incluye-grid{grid-template-columns:1fr}
 }
-@media (max-width:600px){
-  .plans{grid-template-columns:1fr}
-  .phone{width:238px}
-}
-@media (prefers-reduced-motion:reduce){
-  .track,.cap,.bar i,.chip i{animation:none}
-  .cap{opacity:1;position:static}
-  .caps{display:grid;gap:8px;height:auto}
-}
+@media(max-width:600px){.planes-grid{grid-template-columns:1fr}.hero-proof{flex-wrap:wrap;gap:20px}}
 </style>
 </head>
 <body>
-
-<nav class="nav">
-  <div class="wrap">
-    <a class="logo" href="#">Viraliza<i>.</i></a>
-    <div class="nav-links">
-      <a href="#como">El método</a>
-      <a href="#beneficios">La experiencia</a>
-      <a href="#planes">Membresías</a>
-      <a href="#faq">Preguntas</a>
+<nav id="navbar">
+  <div class="wrap nav-inner">
+    <a class="nav-logo" href="#">Viraliza<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="#incluye">Qué incluye</a></li>
+      <li><a href="#como">Cómo funciona</a></li>
+      <li><a href="#planes">Planes</a></li>
+      <li><a href="#faq">Preguntas</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="login.html" class="nav-login">Entrar</a>
+      <a href="login.html?modo=registro" class="btn-primary" style="padding:12px 24px;font-size:10px">Empezar gratis</a>
     </div>
-    <a class="btn" href="login.html">Solicitar acceso</a>
   </div>
 </nav>
-
-<header class="hero">
+<section class="hero">
+  <div class="hero-orb1"></div>
+  <div class="hero-orb2"></div>
+  <div class="hero-line"></div>
   <div class="wrap">
-    <div>
-      <span class="eyebrow">El nuevo estándar del video corto</span>
-      <h1 class="serif">Tu marca, publicando como las <em>grandes</em>. Todos los días.</h1>
-      <p class="sub">Escribe el tema. Nuestro sistema produce el guion, la voz profesional y el video con subtítulos, listo para TikTok, Reels y Shorts. Tú solo publicas y vendes.</p>
-      <div class="hero-ctas">
-        <a class="btn" href="#planes">Producir mi primer video</a>
-        <a class="btn line" href="#como">Conocer el método</a>
-      </div>
-      <div class="trust">
-        <span>Sin tarjeta para empezar</span>
-        <span>Videos listos en minutos</span>
-        <span>Cancela cuando quieras</span>
-      </div>
-    </div>
-    <div class="stage">
-      <div class="phone">
-        <div class="screen"></div>
-        <span class="chip"><i></i>Produciendo tu video</span>
-        <div class="caps">
-          <p class="cap serif">Tu negocio, presente <em>todos los días</em></p>
-          <p class="cap serif">Guion, voz y edición <em>impecables</em></p>
-          <p class="cap serif">Listo para <em>dominar el feed</em></p>
+    <div class="hero-inner">
+      <div>
+        <div class="hero-label">Estudio de producción · Medellín, Colombia</div>
+        <h1 class="serif">Tu negocio,<br>presente en el<br><em>feed todos</em><br>los días</h1>
+        <p class="hero-desc">Escribe el tema de tu video. Nosotros producimos el guion, la voz profesional, las imágenes, la música y los subtítulos. En minutos, no en semanas.</p>
+        <div class="hero-ctas">
+          <a href="login.html?modo=registro" class="btn-primary">Producir mi primer video</a>
+          <a href="#como" class="btn-secondary">Ver cómo funciona</a>
         </div>
-        <div class="bar"><i></i></div>
-        <div class="hud">
-          <span class="name">@tumarca</span>
-          <span>Video 12 de 15 · Este mes</span>
+        <div class="hero-proof">
+          <div class="hero-proof-item"><span class="hero-proof-num serif">2 min</span><span class="hero-proof-label">Por video</span></div>
+          <div class="hero-proof-item"><span class="hero-proof-num serif">45+</span><span class="hero-proof-label">Voces reales</span></div>
+          <div class="hero-proof-item"><span class="hero-proof-num serif">$0</span><span class="hero-proof-label">Para empezar</span></div>
         </div>
       </div>
-      <span class="float f1">Voz profesional <b>lista</b></span>
-      <span class="float f2">Subtítulos <b>de autor</b></span>
+      <div class="hero-visual">
+        <div class="hero-phone-wrap">
+          <div class="phone phone-main">
+            <div class="phone-screen">
+              <div class="phone-bg-img">🎬</div>
+              <div class="phone-gradient"></div>
+              <div class="phone-content">
+                <span class="phone-tag">@mirestaurante</span>
+                <p class="phone-text">El plato que nadie pide pero todos deberían probar</p>
+                <span class="phone-bar">Viraliza Studio</span>
+              </div>
+            </div>
+          </div>
+          <div class="phone phone-sm">
+            <div class="phone-screen">
+              <div class="phone-bg-img">🏠</div>
+              <div class="phone-gradient"></div>
+              <div class="phone-content">
+                <span class="phone-tag">@inmobiliaria</span>
+                <p class="phone-text" style="font-size:11px">3 errores al comprar en Medellín</p>
+                <span class="phone-bar" style="font-size:8px">Viraliza</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-floating-card card1">
+          <span class="fc-label">Video producido en</span>
+          <div class="fc-value">2 min 14 seg</div>
+          <span class="fc-sub">✓ Listo para publicar</span>
+        </div>
+        <div class="hero-floating-card card2">
+          <span class="fc-label">Voz seleccionada</span>
+          <div class="fc-value">Salomé — Colombia</div>
+          <span class="fc-sub">45+ voces disponibles</span>
+        </div>
+      </div>
     </div>
   </div>
-</header>
-
-<div class="ticker" aria-hidden="true">
-  <div class="track">
-    <span>Inmobiliarias</span><span>Restaurantes</span><span>Tiendas online</span><span>Agencias</span><span>Firmas profesionales</span><span>Gimnasios</span><span>Belleza</span><span>Creadores</span>
-    <span>Inmobiliarias</span><span>Restaurantes</span><span>Tiendas online</span><span>Agencias</span><span>Firmas profesionales</span><span>Gimnasios</span><span>Belleza</span><span>Creadores</span>
+</section>
+<div class="ticker">
+  <div class="ticker-inner">
+    <div class="ticker-item">Guion profesional <span>✦</span></div>
+    <div class="ticker-item">Voz en español <span>✦</span></div>
+    <div class="ticker-item">Música de fondo <span>✦</span></div>
+    <div class="ticker-item">Subtítulos automáticos <span>✦</span></div>
+    <div class="ticker-item">Formato 9:16 vertical <span>✦</span></div>
+    <div class="ticker-item">Listo en 2 minutos <span>✦</span></div>
+    <div class="ticker-item">Paga en pesos colombianos <span>✦</span></div>
+    <div class="ticker-item">Publica directo en TikTok <span>✦</span></div>
+    <div class="ticker-item">Guion profesional <span>✦</span></div>
+    <div class="ticker-item">Voz en español <span>✦</span></div>
+    <div class="ticker-item">Música de fondo <span>✦</span></div>
+    <div class="ticker-item">Subtítulos automáticos <span>✦</span></div>
+    <div class="ticker-item">Formato 9:16 vertical <span>✦</span></div>
+    <div class="ticker-item">Listo en 2 minutos <span>✦</span></div>
+    <div class="ticker-item">Paga en pesos colombianos <span>✦</span></div>
+    <div class="ticker-item">Publica directo en TikTok <span>✦</span></div>
   </div>
 </div>
-
-<section id="como" class="light">
-  <div class="wrap center">
-    <span class="eyebrow">El método</span>
-    <h2 class="serif">De una idea a un video publicado.<br>En <em>tres movimientos</em>.</h2>
-    <div class="rule" style="margin-top:26px"></div>
-    <p class="lead">Sin cámaras, sin editores, sin semanas de espera. Un proceso diseñado para que produzcas al nivel de las marcas que admiras.</p>
-    <div class="steps">
-      <article class="step">
-        <span class="n">Movimiento I</span>
-        <h3>Escribe el tema</h3>
-        <p>"Cinco errores al comprar apartamento en Medellín". Con una frase basta. Si ya tienes tu guion, también puedes usarlo.</p>
-      </article>
-      <article class="step">
-        <span class="n">Movimiento II</span>
-        <h3>El sistema produce</h3>
-        <p>Guion con estructura de venta, voz profesional en español, imágenes seleccionadas y subtítulos de alto impacto. Formato vertical impecable.</p>
-      </article>
-      <article class="step">
-        <span class="n">Movimiento III</span>
-        <h3>Publica y vende</h3>
-        <p>Descarga tu video en alta definición o publícalo directo en TikTok, Instagram y YouTube desde tu panel privado.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
-<section id="beneficios">
+<section class="incluye" id="incluye">
   <div class="wrap">
-    <span class="eyebrow">La experiencia</span>
-    <h2 class="serif">Un estudio de producción completo,<br><em>trabajando solo para ti</em></h2>
-    <div class="rule" style="margin-top:26px"></div>
-    <p class="lead">Un equipo de contenido cuesta millones al mes. Viraliza te entrega el mismo resultado, cada día, por una fracción.</p>
-    <div class="bgrid">
-      <div class="bcard"><h3>Voces que suenan a marca grande</h3><p>Locuciones profesionales en español, masculinas y femeninas, con la calidez de una producción de estudio.</p></div>
-      <div class="bcard"><h3>Guiones que venden</h3><p>Cada video sigue la estructura de los videos que triunfan: gancho, desarrollo y llamado a la acción.</p></div>
-      <div class="bcard"><h3>Formato vertical impecable</h3><p>Alta definición 9:16, subtítulos elegantes y música de fondo. Al nivel de lo mejor que aparece en tu feed.</p></div>
-      <div class="bcard"><h3>Publicación directa</h3><p>Conecta tus cuentas y publica en TikTok, Instagram y YouTube Shorts sin salir de tu panel.</p></div>
-      <div class="bcard"><h3>Tu sello en cada pieza</h3><p>Tu logo, tus colores y tu estilo, aplicados con consistencia en cada video que produces.</p></div>
-      <div class="bcard"><h3>Pagos locales, factura en regla</h3><p>Paga en pesos con tarjeta, PSE o Nequi, y recibe tu factura electrónica automáticamente.</p></div>
+    <div class="incluye-header reveal">
+      <span class="eyebrow">Todo incluido</span>
+      <h2 class="serif">Un video completo,<br><em>producido por ti</em></h2>
+      <p>Cada video que produces incluye todo esto desde el primer día. Sin extras, sin sorpresas.</p>
+    </div>
+    <div class="incluye-grid">
+      <div class="incluye-item reveal">
+        <span class="incluye-num">01</span>
+        <div class="incluye-icon">✍️</div>
+        <h3>Guion con estructura viral</h3>
+        <p>Escribes el tema en una frase. Nosotros construimos el guion completo con gancho, desarrollo y llamado a la acción — la estructura exacta de los videos que más se comparten.</p>
+        <div class="incluye-tags"><span class="incluye-tag">Gancho</span><span class="incluye-tag">Desarrollo</span><span class="incluye-tag">CTA</span></div>
+      </div>
+      <div class="incluye-item reveal reveal-delay-1">
+        <span class="incluye-num">02</span>
+        <div class="incluye-icon">🎙️</div>
+        <h3>Narración profesional</h3>
+        <p>Elige entre más de 45 voces en español — Colombia, México, Argentina, España. Escucha una muestra antes de decidir. O sube tu propia grabación de voz.</p>
+        <div class="incluye-tags"><span class="incluye-tag">45+ voces</span><span class="incluye-tag">Tu narración</span><span class="incluye-tag">Sin voz</span></div>
+      </div>
+      <div class="incluye-item reveal reveal-delay-2">
+        <span class="incluye-num">03</span>
+        <div class="incluye-icon">🎬</div>
+        <h3>Imágenes y video de banco</h3>
+        <p>Seleccionamos clips reales relacionados con tu tema. O sube hasta 8 archivos propios para que el video muestre exactamente lo que quieres mostrar.</p>
+        <div class="incluye-tags"><span class="incluye-tag">Banco Prime</span><span class="incluye-tag">Banco Plus</span><span class="incluye-tag">Tus fotos</span></div>
+      </div>
+      <div class="incluye-item reveal">
+        <span class="incluye-num">04</span>
+        <div class="incluye-icon">🎵</div>
+        <h3>Música de fondo premium</h3>
+        <p>Elige el ánimo — alegre, enérgica, corporativa, motivacional, cinemática o calmada — y te sugerimos canciones reales de alta calidad. O sube tu propia música.</p>
+        <div class="incluye-tags"><span class="incluye-tag">6 ánimos</span><span class="incluye-tag">Tu canción</span><span class="incluye-tag">Volumen libre</span></div>
+      </div>
+      <div class="incluye-item reveal reveal-delay-1">
+        <span class="incluye-num">05</span>
+        <div class="incluye-icon">💬</div>
+        <h3>Subtítulos elegantes</h3>
+        <p>Activa los subtítulos y elige entre 6 estilos de letra con 6 colores predefinidos o el color exacto que quieras. Los subtítulos aumentan la retención hasta un 40%.</p>
+        <div class="incluye-tags"><span class="incluye-tag">6 estilos</span><span class="incluye-tag">Color libre</span><span class="incluye-tag">On/Off</span></div>
+      </div>
+      <div class="incluye-item reveal reveal-delay-2">
+        <span class="incluye-num">06</span>
+        <div class="incluye-icon">📐</div>
+        <h3>Tres formatos de video</h3>
+        <p>Vertical 9:16 para TikTok, Reels y Shorts. Horizontal 16:9 para YouTube y Facebook. Cuadrado 1:1 para el feed de Instagram. Todos en alta definición.</p>
+        <div class="incluye-tags"><span class="incluye-tag">9:16</span><span class="incluye-tag">16:9</span><span class="incluye-tag">1:1</span></div>
+      </div>
     </div>
   </div>
 </section>
-
-<section style="padding-top:0">
+<section class="como" id="como">
   <div class="wrap">
-    <span class="eyebrow">Para quién</span>
-    <h2 class="serif">Si tu negocio vive de que lo vean,<br>esto es <em>para ti</em></h2>
-    <div class="rule" style="margin-top:26px"></div>
-    <p class="lead">El feed premia a quien publica constante y con calidad. Estas son las marcas que más crecen con video corto:</p>
-    <div class="chips">
-      <span class="nchip">Inmobiliarias</span>
-      <span class="nchip">Restaurantes</span>
-      <span class="nchip">Tiendas online</span>
-      <span class="nchip">Agencias</span>
-      <span class="nchip">Firmas profesionales</span>
-      <span class="nchip">Gimnasios</span>
-      <span class="nchip">Belleza</span>
-      <span class="nchip">Creadores</span>
+    <div class="como-inner">
+      <div>
+        <span class="eyebrow reveal">El proceso</span>
+        <h2 class="serif reveal" style="font-size:clamp(32px,4vw,50px);margin-bottom:48px">Cinco pasos.<br><em>Un video listo.</em></h2>
+        <div class="como-steps">
+          <div class="como-step reveal">
+            <div class="como-step-num">1</div>
+            <div class="como-step-content">
+              <h3>Escribe tu idea</h3>
+              <p>Una frase es suficiente. Elige de nuestras plantillas por tipo de negocio o escribe la tuya.</p>
+              <span class="step-time">30 segundos</span>
+            </div>
+          </div>
+          <div class="como-step reveal reveal-delay-1">
+            <div class="como-step-num">2</div>
+            <div class="como-step-content">
+              <h3>Elige formato e imágenes</h3>
+              <p>Vertical, horizontal o cuadrado. Banco de imágenes automático o tus propias fotos y videos.</p>
+              <span class="step-time">20 segundos</span>
+            </div>
+          </div>
+          <div class="como-step reveal reveal-delay-2">
+            <div class="como-step-num">3</div>
+            <div class="como-step-content">
+              <h3>Lee y ajusta el guion</h3>
+              <p>El guion aparece listo para editar. Si no te convence, pide otro con un clic.</p>
+              <span class="step-time">1-2 minutos</span>
+            </div>
+          </div>
+          <div class="como-step reveal">
+            <div class="como-step-num">4</div>
+            <div class="como-step-content">
+              <h3>Elige voz, música y subtítulos</h3>
+              <p>Escucha la voz antes de elegir. Selecciona el ánimo musical y el estilo de subtítulos.</p>
+              <span class="step-time">1 minuto</span>
+            </div>
+          </div>
+          <div class="como-step reveal reveal-delay-1">
+            <div class="como-step-num">5</div>
+            <div class="como-step-content">
+              <h3>Produce, descarga y publica</h3>
+              <p>En 2-5 minutos tu video aparece en tu panel listo para ver, descargar o publicar directo en redes.</p>
+              <span class="step-time">2-5 minutos</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="como-visual">
+        <div class="como-mockup reveal">
+          <div class="como-mockup-top">
+            <div class="mockup-dots">
+              <div class="mockup-dot" style="background:#FF5F57"></div>
+              <div class="mockup-dot" style="background:#FFBD2E"></div>
+              <div class="mockup-dot" style="background:#28CA41"></div>
+            </div>
+            <span style="font-size:11px;color:var(--muted);margin-left:12px;letter-spacing:1px">viralizacol.com · Panel</span>
+          </div>
+          <div class="como-mockup-body">
+            <span class="mockup-label">Tu idea en una frase</span>
+            <div class="mockup-input">3 errores al comprar apartamento en Medellín</div>
+            <span class="mockup-label">Duración del video</span>
+            <div class="mockup-chips">
+              <span class="mockup-chip active">30 segundos</span>
+              <span class="mockup-chip">60 segundos</span>
+              <span class="mockup-chip">90 segundos</span>
+            </div>
+            <span class="mockup-label">Produciendo tu video</span>
+            <div class="mockup-progress"><div class="mockup-progress-bar" id="progress-bar"></div></div>
+            <span class="mockup-status" id="mockup-status">Generando guion...</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
-
-<section id="planes" style="padding-top:0">
-  <div class="wrap center">
-    <span class="eyebrow">Membresías</span>
-    <h2 class="serif">Elige tu nivel de <em>producción</em></h2>
-    <div class="rule" style="margin-top:26px"></div>
-    <p class="lead">Sin permanencias ni letra pequeña. Sube, baja o cancela tu membresía en un clic.</p>
-    <div class="plans">
-      <article class="plan">
-        <p class="pname">Inicial</p>
-        <p class="price serif">$0</p>
-        <p class="per">Para siempre</p>
-        <ul>
-          <li>2 videos al mes</li>
+<section class="nichos">
+  <div class="wrap">
+    <div class="nichos-header reveal">
+      <span class="eyebrow">Para quién es</span>
+      <h2 class="serif" style="font-size:clamp(30px,4vw,48px)">Si tu negocio vive de que<br><em>lo vean</em>, esto es para ti</h2>
+    </div>
+  </div>
+  <div class="nichos-scroll">
+    <div class="nicho-card"><span class="nicho-card-icon">🍽️</span><div class="nicho-card-name">Restaurantes</div><p class="nicho-card-desc">Muestra tus platos y atrae más clientes con videos de tus preparaciones.</p></div>
+    <div class="nicho-card"><span class="nicho-card-icon">🏠</span><div class="nicho-card-name">Inmobiliarias</div><p class="nicho-card-desc">Educa a compradores y vendedores con contenido de valor sobre el mercado.</p></div>
+    <div class="nicho-card"><span class="nicho-card-icon">💪</span><div class="nicho-card-name">Gimnasios</div><p class="nicho-card-desc">Tips de entrenamiento y nutrición que generan comunidad real.</p></div>
+    <div class="nicho-card"><span class="nicho-card-icon">💅</span><div class="nicho-card-name">Belleza</div><p class="nicho-card-desc">Tutoriales y tendencias que convierten seguidores en clientes.</p></div>
+    <div class="nicho-card"><span class="nicho-card-icon">🛍️</span><div class="nicho-card-name">Tiendas online</div><p class="nicho-card-desc">Muestra tus productos con videos que generan urgencia de compra.</p></div>
+    <div class="nicho-card"><span class="nicho-card-icon">📱</span><div class="nicho-card-name">Agencias</div><p class="nicho-card-desc">Produce contenido para múltiples clientes en minutos, no en días.</p></div>
+    <div class="nicho-card"><span class="nicho-card-icon">📚</span><div class="nicho-card-name">Educación</div><p class="nicho-card-desc">Conocimiento que posiciona tu marca como referente del sector.</p></div>
+    <div class="nicho-card"><span class="nicho-card-icon">🏥</span><div class="nicho-card-name">Salud</div><p class="nicho-card-desc">Educa a tu audiencia y construye confianza con contenido de valor.</p></div>
+    <div class="nicho-card"><span class="nicho-card-icon">🏨</span><div class="nicho-card-name">Turismo</div><p class="nicho-card-desc">Muestra destinos y experiencias que emocionan y generan reservas.</p></div>
+    <div class="nicho-card"><span class="nicho-card-icon">💼</span><div class="nicho-card-name">Emprendedores</div><p class="nicho-card-desc">Construye tu marca personal con contenido que genera autoridad.</p></div>
+  </div>
+</section>
+<section class="planes" id="planes">
+  <div class="wrap">
+    <div class="planes-header reveal">
+      <span class="eyebrow">Membresías</span>
+      <h2 class="serif">Elige tu nivel<br><em>de producción</em></h2>
+      <p>Sin permanencias. Sin letra pequeña. Cambia o cancela cuando quieras desde tu panel.</p>
+    </div>
+    <div class="planes-grid">
+      <div class="plan reveal">
+        <span class="plan-tier">Inicial</span>
+        <div class="plan-price">$0</div>
+        <span class="plan-price-detail">Para siempre · Sin tarjeta</span>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li><strong>2 videos</strong> al mes</li>
           <li>Con sello Viraliza</li>
-          <li>Voces estándar</li>
+          <li>Voces estándar (45+)</li>
+          <li>Formatos 9:16, 16:9, 1:1</li>
           <li>Descarga en HD</li>
+          <li>Banco Prime y Plus</li>
         </ul>
-        <a class="btn line" href="login.html?modo=registro">Crear cuenta</a>
-      </article>
-      <article class="plan">
-        <p class="pname">Esencial</p>
-        <p class="price serif">$39.900</p>
-        <p class="per">COP / mes</p>
-        <ul>
-          <li>15 videos al mes</li>
-          <li>Sin sello, 100% tu marca</li>
-          <li>Voces estándar</li>
+        <a href="login.html?modo=registro" class="plan-cta">Crear cuenta gratis</a>
+      </div>
+      <div class="plan reveal reveal-delay-1">
+        <span class="plan-tier">Esencial</span>
+        <div class="plan-price">$39.900 <span style="font-size:15px;font-family:Jost,sans-serif;font-weight:300">COP</span></div>
+        <span class="plan-price-detail">por mes · Cancela cuando quieras</span>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li><strong>15 videos</strong> al mes</li>
+          <li>Sin sello, <strong>100% tu marca</strong></li>
+          <li>Voces estándar (45+)</li>
+          <li>Sube tus propias imágenes</li>
+          <li>Sube tu propia música</li>
           <li>Soporte por WhatsApp</li>
         </ul>
-        <a class="btn line" href="login.html?modo=registro&plan=esencial">Elegir Esencial</a>
-      </article>
-      <article class="plan pop">
-        <span class="badge">El elegido</span>
-        <p class="pname">Signature</p>
-        <p class="price serif">$89.900</p>
-        <p class="per">COP / mes</p>
-        <ul>
-          <li>50 videos al mes</li>
-          <li>Voces premium</li>
+        <a href="login.html?modo=registro&plan=esencial" class="plan-cta">Elegir Esencial</a>
+      </div>
+      <div class="plan featured reveal reveal-delay-2">
+        <div class="plan-featured-label">El más elegido</div>
+        <span class="plan-tier">Signature</span>
+        <div class="plan-price">$89.900 <span style="font-size:15px;font-family:Jost,sans-serif;font-weight:300">COP</span></div>
+        <span class="plan-price-detail">por mes · Cancela cuando quieras</span>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li><strong>50 videos</strong> al mes</li>
+          <li>Sin sello, 100% tu marca</li>
+          <li>Voces premium ultra realistas</li>
           <li>Tu logo y tus colores</li>
           <li>Publicación directa a redes</li>
           <li>Soporte prioritario</li>
         </ul>
-        <a class="btn onlight" href="login.html?modo=registro&plan=signature">Elegir Signature</a>
-      </article>
-      <article class="plan">
-        <p class="pname">Élite</p>
-        <p class="price serif">$199.900</p>
-        <p class="per">COP / mes</p>
-        <ul>
-          <li>150 videos al mes</li>
-          <li>Hasta 5 usuarios</li>
-          <li>Marcas ilimitadas</li>
-          <li>Acceso por API</li>
+        <a href="login.html?modo=registro&plan=signature" class="plan-cta">Elegir Signature</a>
+      </div>
+      <div class="plan reveal reveal-delay-3">
+        <span class="plan-tier">Élite</span>
+        <div class="plan-price">$199.900 <span style="font-size:15px;font-family:Jost,sans-serif;font-weight:300">COP</span></div>
+        <span class="plan-price-detail">por mes · Para equipos y agencias</span>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li><strong>150 videos</strong> al mes</li>
+          <li>Sin sello, 100% tu marca</li>
+          <li>Voces premium ultra realistas</li>
+          <li>Sube tus propias imágenes</li>
+          <li>Publicación directa a redes</li>
+          <li>Soporte prioritario 24/7</li>
         </ul>
-        <a class="btn line" href="login.html?modo=registro&plan=elite">Elegir Élite</a>
-      </article>
+        <a href="login.html?modo=registro&plan=elite" class="plan-cta">Elegir Élite</a>
+      </div>
     </div>
-    <p class="plans-note">Tarjeta · PSE · Nequi — Precios en pesos colombianos</p>
-  </div>
-</section>
-
-<section id="faq" style="padding-top:0">
-  <div class="wrap center">
-    <span class="eyebrow">Preguntas frecuentes</span>
-    <h2 class="serif">Lo que todos preguntan<br>antes de <em>entrar</em></h2>
-    <div class="faq">
-      <details>
-        <summary>¿Necesito saber de edición de video?</summary>
-        <p>No. Escribes el tema y el sistema produce todo lo demás. Si sabes escribir un mensaje, sabes usar Viraliza.</p>
-      </details>
-      <details>
-        <summary>¿Los videos son míos? ¿Puedo usarlos para vender?</summary>
-        <p>Sí. Cada video que produces es completamente tuyo: publícalo, páutalo o úsalo donde quieras, sin restricciones.</p>
-      </details>
-      <details>
-        <summary>¿En cuánto tiempo está listo un video?</summary>
-        <p>Entre 2 y 5 minutos según la duración. Lo pides, te tomas un tinto, y al volver ya está listo en tu panel.</p>
-      </details>
-      <details>
-        <summary>¿Cómo pago desde Colombia?</summary>
-        <p>Con tarjeta de crédito o débito, PSE o Nequi, en pesos colombianos, y recibes tu factura electrónica automáticamente.</p>
-      </details>
-      <details>
-        <summary>¿Puedo cancelar cuando quiera?</summary>
-        <p>Sí, en un clic desde tu panel, sin llamadas ni trámites. Los videos que ya produjiste siguen siendo tuyos para siempre.</p>
-      </details>
+    <div class="planes-nota">
+      <span>Tarjeta crédito/débito</span>
+      <span>PSE</span>
+      <span>Nequi</span>
+      <span>Precios en pesos colombianos</span>
     </div>
   </div>
 </section>
-
-<section style="padding:0 0 104px">
+<section class="faq" id="faq">
   <div class="wrap">
-    <div class="cta-final">
-      <span class="eyebrow" style="color:var(--gold-deep)">Empieza hoy</span>
-      <h2 class="serif">Las marcas que dominan el feed<br>no graban más. <em>Producen mejor.</em></h2>
-      <p>Tu primer video puede estar listo en los próximos cinco minutos. Sin tarjeta, sin compromiso.</p>
-      <a class="btn onlight" href="login.html?modo=registro">Producir mi primer video</a>
+    <div class="faq-inner">
+      <div class="faq-left reveal">
+        <span class="eyebrow">Preguntas</span>
+        <h2 class="serif">Todo lo que<br><em>quieres saber</em><br>antes de entrar</h2>
+        <p>Si tienes más preguntas escríbenos a hola@viralizacol.com y te respondemos el mismo día.</p>
+        <a href="login.html?modo=registro" class="btn-primary">Empezar gratis ahora</a>
+      </div>
+      <div class="faq-list reveal reveal-delay-1">
+        <div class="faq-q-wrap">
+          <button class="faq-q-btn" onclick="toggleFaq(this.parentElement)">
+            <span class="faq-q-text">¿Necesito saber de edición o diseño?</span>
+            <div class="faq-q-icon">+</div>
+          </button>
+          <div class="faq-answer">Para nada. Solo escribes el tema — una frase — y el sistema produce todo automáticamente. Si sabes escribir un mensaje de WhatsApp, sabes usar Viraliza.</div>
+        </div>
+        <div class="faq-q-wrap">
+          <button class="faq-q-btn" onclick="toggleFaq(this.parentElement)">
+            <span class="faq-q-text">¿En cuánto tiempo está listo el video?</span>
+            <div class="faq-q-icon">+</div>
+          </button>
+          <div class="faq-answer">Entre 2 y 5 minutos según la duración. Lo pides, te tomas un tinto, y al volver ya está listo en tu panel para ver, descargar o publicar.</div>
+        </div>
+        <div class="faq-q-wrap">
+          <button class="faq-q-btn" onclick="toggleFaq(this.parentElement)">
+            <span class="faq-q-text">¿Los videos son míos? ¿Puedo usarlos para vender?</span>
+            <div class="faq-q-icon">+</div>
+          </button>
+          <div class="faq-answer">Sí, 100%. Cada video que produces es completamente tuyo. Publícalo, páutalo, véndelo o úsalo donde quieras — sin restricciones ni regalías.</div>
+        </div>
+        <div class="faq-q-wrap">
+          <button class="faq-q-btn" onclick="toggleFaq(this.parentElement)">
+            <span class="faq-q-text">¿Puedo subir mis propias imágenes o mi propia voz?</span>
+            <div class="faq-q-icon">+</div>
+          </button>
+          <div class="faq-answer">Sí a ambas. Sube hasta 8 imágenes o videos propios y graba tu propia narración en audio. El video usará exactamente lo que tú subas.</div>
+        </div>
+        <div class="faq-q-wrap">
+          <button class="faq-q-btn" onclick="toggleFaq(this.parentElement)">
+            <span class="faq-q-text">¿Cómo pago desde Colombia?</span>
+            <div class="faq-q-icon">+</div>
+          </button>
+          <div class="faq-answer">Con tarjeta de crédito o débito, PSE o Nequi — en pesos colombianos. Tu membresía se activa al instante y recibes el comprobante por correo.</div>
+        </div>
+        <div class="faq-q-wrap">
+          <button class="faq-q-btn" onclick="toggleFaq(this.parentElement)">
+            <span class="faq-q-text">¿Puedo cancelar cuando quiera?</span>
+            <div class="faq-q-icon">+</div>
+          </button>
+          <div class="faq-answer">Sí, en un clic desde tu panel en Mi cuenta. Sin llamadas ni trámites. Conservas el acceso hasta que venza el período pagado y los videos son tuyos para siempre.</div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
-
+<section class="cta-final">
+  <div class="cta-final-lines"></div>
+  <div class="cta-final-glow"></div>
+  <div class="wrap cta-final-inner">
+    <span class="eyebrow reveal">Empieza hoy</span>
+    <h2 class="serif reveal">Las marcas que dominan<br>el feed <em>no graban más.</em><br>Producen mejor.</h2>
+    <p class="reveal">Tu primer video puede estar listo en los próximos cinco minutos. Sin tarjeta, sin compromiso.</p>
+    <div class="cta-final-ctas reveal">
+      <a href="login.html?modo=registro" class="btn-primary">Producir mi primer video gratis</a>
+      <a href="#planes" class="btn-secondary">Ver todos los planes</a>
+    </div>
+    <div class="cta-guarantees reveal">
+      <span class="cta-guarantee">Sin tarjeta para empezar</span>
+      <span class="cta-guarantee">Video listo en 2 minutos</span>
+      <span class="cta-guarantee">Cancela cuando quieras</span>
+      <span class="cta-guarantee">Soporte en español</span>
+    </div>
+  </div>
+</section>
 <footer>
   <div class="wrap">
-    <span class="logo serif">Viraliza<i style="color:var(--gold)">.</i></span>
-    <span>Medellín, Colombia</span>
-    <span><a href="terminos.html">Términos</a> · <a href="privacidad.html">Privacidad</a> · <a href="#">Contacto</a></span>
+    <div class="footer-top">
+      <div>
+        <a class="footer-brand-logo" href="#">Viraliza<span>.</span></a>
+        <p class="footer-brand-desc">Tu estudio de producción de video profesional. Videos para TikTok, Reels e Instagram en minutos. Hecho en Medellín, Colombia.</p>
+      </div>
+      <div>
+        <span class="footer-col-title">Producto</span>
+        <div class="footer-links">
+          <a href="#incluye">Qué incluye</a>
+          <a href="#como">Cómo funciona</a>
+          <a href="#planes">Planes y precios</a>
+          <a href="#faq">Preguntas frecuentes</a>
+        </div>
+      </div>
+      <div>
+        <span class="footer-col-title">Legal</span>
+        <div class="footer-links">
+          <a href="terminos.html">Términos de uso</a>
+          <a href="privacidad.html">Política de privacidad</a>
+          <a href="mailto:hola@viralizacol.com">Contacto</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Viraliza. Todos los derechos reservados.</p>
+      <p class="footer-made">Hecho con <span>♥</span> en Medellín, Colombia</p>
+    </div>
   </div>
 </footer>
-
+<script>
+window.addEventListener('scroll',()=>{document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>60);});
+function toggleFaq(item){const isOpen=item.classList.contains('open');document.querySelectorAll('.faq-q-wrap').forEach(i=>i.classList.remove('open'));if(!isOpen)item.classList.add('open');}
+const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.12});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+let progress=0;
+const statuses=['Generando guion...','Sintetizando voz...','Descargando imágenes...','Agregando música...','Renderizando video...','¡Listo para publicar!'];
+const bar=document.getElementById('progress-bar');
+const statusEl=document.getElementById('mockup-status');
+function animateProgress(){
+  if(progress<100){progress+=0.3;if(bar)bar.style.width=progress+'%';if(statusEl)statusEl.textContent=statuses[Math.min(Math.floor(progress/17),5)];requestAnimationFrame(animateProgress);}
+  else{setTimeout(()=>{progress=0;if(bar)bar.style.width='0%';animateProgress();},2000);}
+}
+setTimeout(animateProgress,1500);
+</script>
 </body>
 </html>
