@@ -754,6 +754,11 @@ const Panel = {
     if (elPlan) elPlan.textContent = cuota.plan;
     if (elUsados) elUsados.textContent = cuota.usados;
     if (elLimite) elLimite.textContent = cuota.limite;
+    // Actualizar contador en navbar
+    const navUsados = document.getElementById("nav-usados");
+    const navLimite = document.getElementById("nav-limite");
+    if (navUsados) navUsados.textContent = cuota.usados;
+    if (navLimite) navLimite.textContent = cuota.limite;
     if (elRenovacion) {
       if (cuota.expira) {
         const fecha = new Date(cuota.expira).toLocaleDateString("es-CO", {day:"numeric", month:"long", year:"numeric"});
@@ -762,6 +767,12 @@ const Panel = {
         elRenovacion.textContent = cuota.plan === "Inicial" ? "Plan gratuito" : "—";
       }
     }
+  },
+
+  cerrarOnboarding() {
+    const modal = document.getElementById('modal-onboarding');
+    if (modal) modal.style.display = 'none';
+    localStorage.setItem('viraliza_onboarding', '1');
   },
 
   async cancelarPlan() {
