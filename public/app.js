@@ -288,11 +288,16 @@ const W = {
 
   // ---- Paso 3 ----
   async generarGuion() {
+    if (!this._intentosGuion) this._intentosGuion = 0;
+    const MAX_INTENTOS = 5;
     const ta = document.getElementById("guion-editable");
     const loading = document.getElementById("guion-loading");
+    const btn = document.getElementById("btn-regenerar");
+    const contadorEl = document.getElementById("guion-contador");
     ta.style.display = "none";
-    loading.style.display = "block";
-    document.getElementById("btn-regenerar").disabled = true;
+    if (loading) { loading.style.display = "block"; loading.textContent = "Redactando tu guion..."; }
+    if (btn) btn.disabled = true;
+    limpiarMensaje();
     try {
       const datos = await API.pedir("/api/guion", {
         method: "POST",
@@ -301,14 +306,32 @@ const W = {
       this.estado.guion = datos.guion || "";
       this.estado.terminos = datos.terminos || [];
       ta.value = this.estado.guion;
+      this._intentosGuion++;
+      if (contadorEl) {
+        const restantes = MAX_INTENTOS - this._intentosGuion;
+        contadorEl.textContent = restantes > 0 ? `${restantes} generaciones restantes` : "Límite alcanzado — edita el guion a tu gusto";
+      }
+      if (btn) {
+        if (this._intentosGuion >= MAX_INTENTOS) {
+          btn.disabled = true;
+          btn.textContent = "Límite alcanzado";
+        } else {
+          btn.disabled = false;
+          btn.textContent = `↺ Generar otro guion`;
+        }
+      }
     } catch (e) {
-      mostrarMensaje(e.message, "err");
+      mostrarMensaje("No pudimos generar el guion. Intenta de nuevo.", "err");
+      if (btn) { btn.disabled = false; btn.textContent = "↺ Generar otro guion"; }
     } finally {
       ta.style.display = "block";
-      loading.style.display = "none";
-      document.getElementById("btn-regenerar").disabled = false;
+      if (loading) loading.style.display = "none";
     }
     if (this.pasoActual !== 3) this._mostrarPaso(3);
+  },
+
+  regenerarGuion() {
+    this.generarGuion();
   },
 
   // ---- Paso 4: voz ----
@@ -417,14 +440,18 @@ const W = {
   },
 
   elegirFuenteSub(btn) {
-    document.querySelectorAll("[data-fuente='clasica'],[data-fuente='ligera'],[data-fuente='elegante'],[data-fuente='moderna']")
+    document.querySelectorAll("[data-fuente]")
       .forEach(b=>b.classList.remove("elegida"));
     btn.classList.add("elegida");
     this.estado.subtitulosFuente = btn.dataset.fuente;
     document.getElementById("subtitulos-fuente").value = btn.dataset.fuente;
     const mapaFuentes = {
-      clasica: "inherit", ligera: "inherit",
-      elegante: "Georgia, serif", moderna: "Impact, sans-serif",
+      clasica: "inherit",
+      ligera: "inherit",
+      elegante: "Georgia, serif",
+      moderna: "Impact, sans-serif",
+      redondeada: "Trebuchet MS, sans-serif",
+      viral: "Arial Black, sans-serif",
     };
     document.getElementById("preview-subtitulo").style.fontFamily = mapaFuentes[btn.dataset.fuente] || "inherit";
   },
@@ -1022,11 +1049,22 @@ const Panel = {
             <video src="${urlVideo}" preload="metadata" controls playsinline></video>
            </div>`
         : `<div class="video-sin-preview"><span>🎬</span></div>`;
+      const mensajesProduccion = [
+        "Escribiendo el guion...",
+        "Sintetizando la voz...",
+        "Buscando las imágenes perfectas...",
+        "Componiendo la música...",
+        "Añadiendo subtítulos...",
+        "Renderizando el video...",
+        "Últimos toques...",
+        "¡Casi listo!",
+      ];
+      const idxMensaje = Math.min(Math.floor((v.progreso || 0) / 13), mensajesProduccion.length - 1);
       const badge = v.estado==="listo"
         ? `<span class="video-estado-badge listo">✓ Listo</span>`
         : v.estado==="fallido"
           ? `<span class="video-estado-badge fallido">✗ Falló</span>`
-          : `<span class="video-estado-badge produciendo">⏳ ${v.progreso}%</span>`;
+          : `<span class="video-estado-badge produciendo">⏳ ${v.progreso}% · ${mensajesProduccion[idxMensaje]}</span>`;
       const acciones = v.estado==="listo" ? `
         <div class="video-acciones">
           <a class="btn" href="/api/videos/${v.id}/descargar?t=${API.token()}">⬇ Descargar</a>

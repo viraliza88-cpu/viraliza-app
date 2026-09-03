@@ -868,16 +868,11 @@ app.post("/api/videos", autenticar, async (req, res) => {
 
   let audioFinal = undefined;
   if (audioPersonalizado && fs.existsSync(audioPersonalizado)) {
-    try {
-      const taskPreId = crypto.randomUUID();
-      const taskPreDir = path.join(MOTOR_CARPETA, "storage", "tasks", taskPreId);
-      fs.mkdirSync(taskPreDir, { recursive: true });
-      const audioDest = path.join(taskPreDir, "audio.mp3");
-      fs.copyFileSync(audioPersonalizado, audioDest);
-      audioFinal = audioDest;
-    } catch (e) {
-      console.error("Error preparando audio personalizado:", e.message);
+    const stat = fs.statSync(audioPersonalizado);
+    if (stat.size > 0) {
       audioFinal = audioPersonalizado;
+    } else {
+      console.error("Audio personalizado vacío:", audioPersonalizado);
     }
   }
   if (sinNarracion && !audioPersonalizado) {
