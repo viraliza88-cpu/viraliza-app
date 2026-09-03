@@ -192,6 +192,41 @@ async function planEfectivo(perfil) {
 }
 
 const app = express();
+
+// Headers de seguridad
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  next();
+});
+
+// Rate limiting — protección contra abuso
+const intentosPorIP = new Map();
+function rateLimiter(maxPorMinuto = 60) {
+  return (req, res, next) => {
+    const ip = req.ip || req.connection.remoteAddress;
+    const ahora = Date.now();
+    const ventana = 60 * 1000;
+    if (!intentosPorIP.has(ip)) intentosPorIP.set(ip, []);
+    const intentos = intentosPorIP.get(ip).filter(t => ahora - t < ventana);
+    intentos.push(ahora);
+    intentosPorIP.set(ip, intentos);
+    if (intentos.length > maxPorMinuto) {
+      return res.status(429).json({ error: "Demasiadas solicitudes. Espera un momento." });
+    }
+    next();
+  };
+}
+
+// Limpiar IPs viejas cada 5 minutos
+setInterval(() => {
+  const ahora = Date.now();
+  for (const [ip, intentos] of intentosPorIP.entries()) {
+    if (intentos.every(t => ahora - t > 60000)) intentosPorIP.delete(ip);
+  }
+}, 5 * 60 * 1000);
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -726,7 +761,7 @@ app.get("/api/voces/preview", autenticar, async (req, res) => {
   }
 });
 
-app.post("/api/registro", async (req, res) => {
+app.post("/api/registro", rateLimiter(10), async (req, res) => {
   const { nombre, email, clave } = req.body || {};
   if (!nombre || !email || !clave) return res.status(400).json({ error: "Completa nombre, correo y contraseña." });
   if (String(clave).length < 6) return res.status(400).json({ error: "La contraseña debe tener al menos 6 caracteres." });
@@ -776,7 +811,7 @@ app.post("/api/registro", async (req, res) => {
   res.json({ token: data.session.access_token, nombre: String(nombre).trim() });
 });
 
-app.post("/api/login", async (req, res) => {
+app.post("/api/login", rateLimiter(15), async (req, res) => {
   const { email, clave } = req.body || {};
   const { data, error } = await supabasePublic.auth.signInWithPassword({
     email: String(email || "").trim().toLowerCase(),
@@ -810,7 +845,7 @@ const DURACIONES = {
   largo: { etiqueta: "Largo (~90 s)" },
 };
 
-app.post("/api/guion", autenticar, async (req, res) => {
+app.post("/api/guion", rateLimiter(20), autenticar, async (req, res) => {
   const { tema, duracion } = req.body || {};
   if (!tema || String(tema).trim().length < 5) {
     return res.status(400).json({ error: "Escribe el tema de tu video (mínimo 5 caracteres)." });
