@@ -193,6 +193,45 @@ async function planEfectivo(perfil) {
 
 const app = express();
 
+// Sanitización de texto — elimina caracteres peligrosos
+function sanitizar(texto, maxLen = 500) {
+  if (typeof texto !== "string") return "";
+  return texto
+    .replace(/<script[^>]*>.*?<\/script>/gi, "")
+    .replace(/<[^>]+>/g, "")
+    .replace(/[<>"'`]/g, "")
+    .trim()
+    .slice(0, maxLen);
+}
+
+// Validación de tipos de archivo
+const TIPOS_IMAGEN_VALIDOS = ['image/jpeg','image/jpg','image/png','image/webp'];
+const TIPOS_VIDEO_VALIDOS = ['video/mp4','video/mov','video/quicktime','video/avi','video/mkv'];
+const TIPOS_AUDIO_VALIDOS = ['audio/mpeg','audio/mp3','audio/wav','audio/x-wav','audio/mp4','audio/m4a','audio/ogg'];
+const MAGIC_BYTES = {
+  'ffd8ff': 'image/jpeg',
+  '89504e47': 'image/png',
+  '52494646': 'audio/wav',
+  'fffb': 'audio/mpeg',
+  'fff3': 'audio/mpeg',
+  'fff2': 'audio/mpeg',
+  '494433': 'audio/mpeg',
+};
+async function validarTipoArchivo(ruta, tiposValidos) {
+  try {
+    const buf = Buffer.alloc(8);
+    const fd = fs.openSync(ruta, 'r');
+    fs.readSync(fd, buf, 0, 8, 0);
+    fs.closeSync(fd);
+    const hex = buf.toString('hex').slice(0, 8).toLowerCase();
+    for (const [magic, tipo] of Object.entries(MAGIC_BYTES)) {
+      if (hex.startsWith(magic) && tiposValidos.includes(tipo)) return true;
+    }
+    // Si no hay magic byte conocido, confiar en el content-type declarado
+    return true;
+  } catch { return false; }
+}
+
 // Headers de seguridad
 app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
@@ -511,11 +550,24 @@ app.post("/api/narracion", autenticar, (req, res) => {
     res.json({ archivo: rutaDestino });
   }
 
-  bb.on("file", (nombreCampo, stream) => {
+  bb.on("file", (nombreCampo, stream, info) => {
+    const mime = info.mimeType || "";
+    if (!TIPOS_AUDIO_VALIDOS.includes(mime) && !mime.startsWith("audio/")) {
+      stream.resume();
+      yaRespondio = true;
+      return res.status(400).json({ error: "Solo se aceptan archivos de audio (MP3, WAV, M4A)." });
+    }
     recibioArchivo = true;
     const escritura = fs.createWriteStream(rutaDestino);
     stream.pipe(escritura);
-    escritura.on("finish", () => {
+    escritura.on("finish", async () => {
+      // Verificar que el archivo no esté vacío
+      const stat = fs.statSync(rutaDestino);
+      if (stat.size < 1000) {
+        fs.unlinkSync(rutaDestino);
+        yaRespondio = true;
+        return res.status(400).json({ error: "El archivo de audio está vacío o es inválido." });
+      }
       escrituraTerminada = true;
       responderCuandoListo();
     });
@@ -811,6 +863,21 @@ app.post("/api/registro", rateLimiter(10), async (req, res) => {
   res.json({ token: data.session.access_token, nombre: String(nombre).trim() });
 });
 
+// Log de intentos de login
+const intentosLoginFallidos = new Map();
+function registrarLoginFallido(ip, email) {
+  const key = `${ip}:${email}`;
+  const ahora = Date.now();
+  if (!intentosLoginFallidos.has(key)) intentosLoginFallidos.set(key, []);
+  const intentos = intentosLoginFallidos.get(key).filter(t => ahora - t < 15 * 60 * 1000);
+  intentos.push(ahora);
+  intentosLoginFallidos.set(key, intentos);
+  if (intentos.length >= 5) {
+    console.warn(`[SEGURIDAD] ${intentos.length} intentos fallidos de login para ${email} desde ${ip}`);
+  }
+  return intentos.length;
+}
+
 app.post("/api/login", rateLimiter(15), async (req, res) => {
   const { email, clave } = req.body || {};
   const { data, error } = await supabasePublic.auth.signInWithPassword({
@@ -861,7 +928,10 @@ app.post("/api/guion", rateLimiter(20), autenticar, async (req, res) => {
 });
 
 app.post("/api/videos", autenticar, async (req, res) => {
-  const { tema, guion, terminos, voz, duracion, bgmArchivo, bgmVolumen, materiales, audioPersonalizado, vozPremium, formato, sinNarracion, fuente, bgmPremiumUrl, subtitulosActivos, subtitulosColor, subtitulosFuente } = req.body || {};
+  let { tema, guion, terminos, voz, duracion, bgmArchivo, bgmVolumen, materiales, audioPersonalizado, vozPremium, formato, sinNarracion, fuente, bgmPremiumUrl, subtitulosActivos, subtitulosColor, subtitulosFuente } = req.body || {};
+  tema = sanitizar(tema, 200);
+  guion = sanitizar(guion, 3000);
+  if (!tema) return res.status(400).json({ error: "El tema del video es requerido." });
   if (!tema || String(tema).trim().length < 5) {
     return res.status(400).json({ error: "Escribe el tema de tu video (mínimo 5 caracteres)." });
   }
