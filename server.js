@@ -193,6 +193,104 @@ async function planEfectivo(perfil) {
 
 const app = express();
 
+// ============================================================
+// SEGURIDAD TOTAL — Protección contra ataques
+// ============================================================
+
+// 1. Bloqueo de IPs maliciosas conocidas y bots
+const IP_BLOQUEADAS = new Set();
+const USER_AGENTS_BLOQUEADOS = [
+  'sqlmap', 'nikto', 'nmap', 'masscan', 'zgrab', 'python-requests/2',
+  'curl/', 'wget/', 'scrapy', 'ahrefsbot', 'semrushbot', 'dotbot'
+];
+app.use((req, res, next) => {
+  const ip = req.ip || req.connection.remoteAddress;
+  const ua = (req.headers['user-agent'] || '').toLowerCase();
+  if (IP_BLOQUEADAS.has(ip)) return res.status(403).json({ error: "Acceso denegado." });
+  if (USER_AGENTS_BLOQUEADOS.some(bot => ua.includes(bot))) {
+    console.warn(`[SEGURIDAD] Bot bloqueado: ${ua} desde ${ip}`);
+    return res.status(403).send("Forbidden");
+  }
+  next();
+});
+
+// 2. Protección contra fuerza bruta global
+const intentosBruta = new Map();
+app.use((req, res, next) => {
+  if (!req.path.startsWith('/api/')) return next();
+  const ip = req.ip || req.connection.remoteAddress;
+  const ahora = Date.now();
+  if (!intentosBruta.has(ip)) intentosBruta.set(ip, { count: 0, reset: ahora + 60000 });
+  const datos = intentosBruta.get(ip);
+  if (ahora > datos.reset) { datos.count = 0; datos.reset = ahora + 60000; }
+  datos.count++;
+  if (datos.count > 200) {
+    IP_BLOQUEADAS.add(ip);
+    console.warn(`[SEGURIDAD] IP bloqueada por fuerza bruta: ${ip}`);
+    return res.status(429).json({ error: "IP bloqueada por exceso de solicitudes." });
+  }
+  next();
+});
+
+// 3. Protección contra payload gigante (DoS)
+app.use((req, res, next) => {
+  const contentLength = parseInt(req.headers['content-length'] || '0');
+  if (contentLength > 150 * 1024 * 1024) {
+    return res.status(413).json({ error: "Archivo demasiado grande." });
+  }
+  next();
+});
+
+// 4. Detección de inyección SQL y NoSQL
+function detectarInyeccion(texto) {
+  if (typeof texto !== 'string') return false;
+  const patrones = [
+    /(select|insert|update|delete|drop|union|exec)/i,
+    /(-{2}|\/\*|\*\/|xp_|sp_)/i,
+    /(\$where|\$ne|\$gt|\$lt|\$or|\$and|\$regex)/i,
+    /(javascript:|data:|vbscript:)/i,
+    /(\.\.[\/\\]){2,}/i,
+  ];
+  return patrones.some(p => p.test(texto));
+}
+app.use((req, res, next) => {
+  const checkObj = (obj) => {
+    for (const val of Object.values(obj || {})) {
+      if (typeof val === 'string' && detectarInyeccion(val)) {
+        const ip = req.ip || req.connection.remoteAddress;
+        console.warn(`[SEGURIDAD] Posible inyección desde ${ip}: ${val.slice(0, 100)}`);
+        return true;
+      }
+    }
+    return false;
+  };
+  if (checkObj(req.body) || checkObj(req.query)) {
+    return res.status(400).json({ error: "Solicitud inválida." });
+  }
+  next();
+});
+
+// 5. Protección CSRF — solo log por ahora
+app.use((req, res, next) => {
+  if (req.method === 'GET' || req.method === 'OPTIONS') return next();
+  const origin = req.headers.origin || req.headers.referer || '';
+  const dominiosPermitidos = ['https://viralizacol.com', 'http://localhost:3000', 'https://www.viralizacol.com'];
+  if (origin && !dominiosPermitidos.some(d => origin.startsWith(d))) {
+    console.warn(`[SEGURIDAD] Origen sospechoso: ${origin}`);
+  }
+  next();
+});
+
+// 6. Limpiar IPs y datos viejos cada 10 minutos
+setInterval(() => {
+  const ahora = Date.now();
+  for (const [ip, datos] of intentosBruta.entries()) {
+    if (ahora > datos.reset + 60000) intentosBruta.delete(ip);
+  }
+  // Auto-desbloquear IPs después de 1 hora
+  setTimeout(() => IP_BLOQUEADAS.clear(), 3600000);
+}, 10 * 60 * 1000);
+
 // Sanitización de texto — elimina caracteres peligrosos
 function sanitizar(texto, maxLen = 500) {
   if (typeof texto !== "string") return "";
