@@ -215,6 +215,63 @@ const W = {
   },
 
   // ---- Paso 1 ----
+  async buscarImagenes() {
+    const q = document.getElementById("busqueda-imagenes").value.trim();
+    if (!q) return mostrarMensaje("Escribe qué quieres buscar.", "err");
+    const fuente = this.estado.fuente || "pexels";
+    const grid = document.getElementById("grid-imagenes");
+    const resultadosDiv = document.getElementById("resultados-imagenes");
+    grid.innerHTML = '<p class="ayuda" style="grid-column:1/-1;text-align:center;padding:20px">Buscando...</p>';
+    resultadosDiv.style.display = "block";
+    try {
+      const { resultados } = await API.pedir(`/api/imagenes/buscar?q=${encodeURIComponent(q)}&fuente=${fuente}`);
+      if (!resultados.length) {
+        grid.innerHTML = '<p class="ayuda" style="grid-column:1/-1;text-align:center;padding:20px">No encontramos imágenes. Prueba otro término.</p>';
+        return;
+      }
+      grid.innerHTML = "";
+      resultados.forEach(img => {
+        const div = document.createElement("div");
+        div.style.cssText = "position:relative;cursor:pointer;border:2px solid transparent;border-radius:4px;overflow:hidden;background:#111";
+        div.dataset.url = img.url;
+        div.dataset.ancho = img.ancho;
+        div.dataset.alto = img.alto;
+        const imgEl = document.createElement("img");
+        imgEl.src = img.thumb;
+        imgEl.style.cssText = "width:100%;height:130px;object-fit:cover;display:block;transition:transform .2s";
+        imgEl.onmouseover = () => imgEl.style.transform = "scale(1.05)";
+        imgEl.onmouseout = () => imgEl.style.transform = "scale(1)";
+        const check = document.createElement("div");
+        check.style.cssText = "position:absolute;top:4px;right:4px;width:22px;height:22px;background:var(--gold);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:12px;color:#000;font-weight:bold";
+        check.textContent = "✓";
+        div.appendChild(imgEl);
+        div.appendChild(check);
+        div.onclick = () => {
+          const seleccionadas = grid.querySelectorAll(".seleccionada-img").length;
+          if (div.classList.contains("seleccionada-img")) {
+            div.classList.remove("seleccionada-img");
+            div.style.borderColor = "transparent";
+            check.style.display = "none";
+          } else {
+            if (seleccionadas >= 8) return mostrarMensaje("Máximo 8 imágenes.", "err");
+            div.classList.add("seleccionada-img");
+            div.style.borderColor = "var(--gold)";
+            check.style.display = "flex";
+          }
+          const total = grid.querySelectorAll(".seleccionada-img").length;
+          document.getElementById("imagenes-seleccionadas-count").textContent = `${total} imagen${total !== 1 ? "es" : ""} seleccionada${total !== 1 ? "s" : ""}`;
+          // Actualizar materiales del estado
+          this.estado.imagenesSeleccionadas = Array.from(grid.querySelectorAll(".seleccionada-img")).map(el => ({
+            url: el.dataset.url, ancho: parseInt(el.dataset.ancho), alto: parseInt(el.dataset.alto)
+          }));
+        };
+        grid.appendChild(div);
+      });
+    } catch(e) {
+      grid.innerHTML = '<p class="ayuda" style="grid-column:1/-1;text-align:center;padding:20px">Error buscando. Intenta de nuevo.</p>';
+    }
+  },
+
   elegirNicho(btn) {
     document.querySelectorAll(".chip-nicho").forEach(b => b.classList.remove("activo"));
     btn.classList.add("activo");
@@ -1056,8 +1113,8 @@ const Panel = {
       const barra = v.estado==="produciendo"
         ? `<div class="progreso"><i style="width:${v.progreso}%"></i></div>` : "";
       const preview = urlVideo
-        ? `<div class="video-preview-wrap">
-            <video src="${urlVideo}" preload="metadata" controls playsinline></video>
+        ? `<div class="video-preview-wrap" style="position:relative;width:100%;background:#000;display:flex;justify-content:center">
+            <video src="${urlVideo}" preload="metadata" controls playsinline style="max-width:100%;max-height:500px;width:auto;height:auto;display:block"></video>
            </div>`
         : `<div class="video-sin-preview"><span>🎬</span></div>`;
       const mensajesProduccion = [

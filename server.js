@@ -438,6 +438,29 @@ app.get("/api/musicas/premium", autenticar, async (req, res) => {
   }
 });
 
+app.get("/api/imagenes/buscar", autenticar, async (req, res) => {
+  const { q, fuente } = req.query;
+  if (!q) return res.status(400).json({ error: "Falta el término de búsqueda." });
+  try {
+    let resultados = [];
+    if (fuente === "pixabay") {
+      const PIXABAY_KEY = "56825063-f25e3add3c74283312d66b099";
+      const r = await fetch(`https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(q)}&image_type=photo&per_page=18&safesearch=true&lang=es`, { signal: AbortSignal.timeout(8000) });
+      const j = await r.json();
+      resultados = (j.hits || []).map(h => ({ url: h.webformatURL, thumb: h.previewURL, ancho: h.imageWidth, alto: h.imageHeight }));
+    } else {
+      const PEXELS_KEY = process.env.PEXELS_API_KEY;
+      const r = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(q)}&per_page=18&locale=es-ES`, { headers: { Authorization: PEXELS_KEY }, signal: AbortSignal.timeout(8000) });
+      const j = await r.json();
+      resultados = (j.photos || []).map(p => ({ url: p.src.large, thumb: p.src.medium, ancho: p.width, alto: p.height }));
+    }
+    res.json({ resultados });
+  } catch(e) {
+    console.error("Error buscando imágenes:", e.message);
+    res.status(502).json({ error: "No pudimos buscar imágenes. Intenta de nuevo." });
+  }
+});
+
 app.post("/api/galeria/buscar", autenticar, async (req, res) => {
   if (!PEXELS_API_KEY) return res.status(500).json({ error: "Falta configurar PEXELS_API_KEY en .env" });
   const { terminos, orientacion } = req.body || {};
@@ -1056,7 +1079,11 @@ app.post("/api/guion", rateLimiter(20), autenticar, async (req, res) => {
 });
 
 app.post("/api/videos", autenticar, async (req, res) => {
-  let { tema, guion, terminos, voz, duracion, bgmArchivo, bgmVolumen, materiales, audioPersonalizado, vozPremium, formato, sinNarracion, fuente, bgmPremiumUrl, subtitulosActivos, subtitulosColor, subtitulosFuente } = req.body || {};
+  let { tema, guion, terminos, voz, duracion, bgmArchivo, bgmVolumen, materiales, audioPersonalizado, vozPremium, formato, sinNarracion, fuente, bgmPremiumUrl, subtitulosActivos, subtitulosColor, subtitulosFuente, imagenesSeleccionadas } = req.body || {};
+  // Si hay imágenes seleccionadas del buscador visual, usarlas como materiales
+  if (imagenesSeleccionadas && imagenesSeleccionadas.length > 0 && (!materiales || !materiales.length)) {
+    materiales = imagenesSeleccionadas.map(img => img.url);
+  }
   tema = sanitizar(tema, 200);
   guion = sanitizar(guion, 3000);
   if (!tema) return res.status(400).json({ error: "El tema del video es requerido." });
