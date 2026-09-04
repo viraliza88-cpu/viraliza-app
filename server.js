@@ -1082,7 +1082,22 @@ app.post("/api/videos", autenticar, async (req, res) => {
   let { tema, guion, terminos, voz, duracion, bgmArchivo, bgmVolumen, materiales, audioPersonalizado, vozPremium, formato, sinNarracion, fuente, bgmPremiumUrl, subtitulosActivos, subtitulosColor, subtitulosFuente, imagenesSeleccionadas } = req.body || {};
   // Si hay imágenes seleccionadas del buscador visual, usarlas como materiales
   if (imagenesSeleccionadas && imagenesSeleccionadas.length > 0 && (!materiales || !materiales.length)) {
-    materiales = imagenesSeleccionadas.map(img => img.url);
+    try {
+      const materialesSubidos = [];
+      for (const img of imagenesSeleccionadas.slice(0, 8)) {
+        try {
+          const rImg = await fetch(img.url, { signal: AbortSignal.timeout(15000) });
+          if (!rImg.ok) continue;
+          const bytes = await rImg.arrayBuffer();
+          const formData = new FormData();
+          formData.append("file", new Blob([bytes], { type: "image/jpeg" }), `imagen-${crypto.randomUUID()}.jpg`);
+          const rMotor = await fetch(`${MOTOR_URL}/api/v1/video_materials`, { method: "POST", body: formData });
+          const j = await rMotor.json();
+          if (j?.data?.file) materialesSubidos.push(j.data.file);
+        } catch(e) { console.error("Error descargando imagen:", e.message); }
+      }
+      if (materialesSubidos.length > 0) materiales = materialesSubidos;
+    } catch(e) { console.error("Error procesando imágenes:", e.message); }
   }
   tema = sanitizar(tema, 200);
   guion = sanitizar(guion, 3000);
