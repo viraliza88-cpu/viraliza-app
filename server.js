@@ -128,7 +128,7 @@ async function redactarGuion(tema, duracion) {
     },
     {
       role: "user",
-      content: `Tema: "${tema}". Extensión objetivo: ${palabras} palabras, ni más ni menos. Recuerda: todo en español, ni una sola palabra en inglés.`,
+      content: `Escribe un guion de ventas en español para este tema: "${tema}". Extensión: ${palabras} palabras. IMPORTANTE: No uses signos de interrogación ni exclamación. No uses frases como "Sabías que" o "Hoy te traigo". Usa solo afirmaciones directas y profesionales. Solo devuelve el guion, nada más.`,
     },
   ]);
   return texto.replace(/^["']|["']$/g, "").trim();
