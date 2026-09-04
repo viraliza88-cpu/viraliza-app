@@ -145,12 +145,12 @@
 
           <label>Banco de imágenes</label>
           <div class="tarjetas-grid col-2">
-            <button class="tarjeta-opcion elegida" data-fuente="pexels" onclick="W.elegirFuente(this)">
+            <button class="tarjeta-opcion elegida" data-banco="pexels" onclick="W.elegirFuente(this)">
               <span class="tarjeta-icono">🌟</span>
               <div class="tarjeta-titulo">Banco Prime</div>
               <div class="tarjeta-desc">Catálogo premium con millones de clips profesionales</div>
             </button>
-            <button class="tarjeta-opcion" data-fuente="pixabay" onclick="W.elegirFuente(this)">
+            <button class="tarjeta-opcion" data-banco="pixabay" onclick="W.elegirFuente(this)">
               <span class="tarjeta-icono">✨</span>
               <div class="tarjeta-titulo">Banco Plus</div>
               <div class="tarjeta-desc">Gran variedad de estilos y géneros visuales</div>
@@ -335,7 +335,7 @@
           </div>
           <input type="hidden" id="subtitulos-activos" value="1">
 
-          <div id="opciones-subtitulos">
+          <div id="opciones-subtitulos" style="display:block">
             <!-- Preview en vivo -->
             <div class="subtitulos-preview">
               <span class="subtitulos-preview-texto" id="preview-subtitulo">

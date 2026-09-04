@@ -215,6 +215,27 @@ const W = {
   },
 
   // ---- Paso 1 ----
+  limpiarSeleccionImagenes() {
+    const grid = document.getElementById("grid-imagenes");
+    if (grid) {
+      grid.querySelectorAll(".seleccionada-img").forEach(el => {
+        el.classList.remove("seleccionada-img");
+        el.style.borderColor = "transparent";
+        const check = el.querySelector("div");
+        if (check) check.style.display = "none";
+      });
+    }
+    this.estado.imagenesSeleccionadas = [];
+    const count = document.getElementById("imagenes-seleccionadas-count");
+    if (count) count.textContent = "0 imágenes seleccionadas";
+    const bancoBtns = document.querySelectorAll("[data-banco]");
+    bancoBtns.forEach(b => { b.style.opacity = "1"; b.style.pointerEvents = "auto"; });
+    const bancoAviso = document.getElementById("banco-aviso");
+    if (bancoAviso) bancoAviso.style.display = "none";
+    const limpiarBtn = document.getElementById("btn-limpiar-seleccion");
+    if (limpiarBtn) limpiarBtn.style.display = "none";
+  },
+
   async buscarImagenes() {
     const q = document.getElementById("busqueda-imagenes").value.trim();
     if (!q) return mostrarMensaje("Escribe qué quieres buscar.", "err");
@@ -260,6 +281,20 @@ const W = {
           }
           const total = grid.querySelectorAll(".seleccionada-img").length;
           document.getElementById("imagenes-seleccionadas-count").textContent = `${total} imagen${total !== 1 ? "es" : ""} seleccionada${total !== 1 ? "s" : ""}`;
+          // Controlar banco según selección
+          const bancoBtns = document.querySelectorAll("[data-banco]");
+          const bancoAviso = document.getElementById("banco-aviso");
+          const limpiarBtn = document.getElementById("btn-limpiar-seleccion");
+          if (total > 0) {
+            bancoBtns.forEach(b => { b.style.opacity = "0.4"; b.style.pointerEvents = "none"; });
+            if (bancoAviso) bancoAviso.style.display = "block";
+            if (limpiarBtn) limpiarBtn.style.display = "inline-block";
+          } else {
+            bancoBtns.forEach(b => { b.style.opacity = "1"; b.style.pointerEvents = "auto"; });
+            if (bancoAviso) bancoAviso.style.display = "none";
+            if (limpiarBtn) limpiarBtn.style.display = "none";
+            this.estado.imagenesSeleccionadas = [];
+          }
           // Actualizar materiales del estado
           this.estado.imagenesSeleccionadas = Array.from(grid.querySelectorAll(".seleccionada-img")).map(el => ({
             url: el.dataset.url, ancho: parseInt(el.dataset.ancho), alto: parseInt(el.dataset.alto)
@@ -340,7 +375,7 @@ const W = {
   elegirFuente(btn) {
     document.querySelectorAll("[data-fuente]:not([data-fuente='clasica']):not([data-fuente='ligera']):not([data-fuente='elegante']):not([data-fuente='moderna'])").forEach((b) => b.classList.remove("elegida"));
     btn.classList.add("elegida");
-    this.estado.fuente = btn.dataset.fuente;
+    this.estado.fuente = btn.dataset.banco;
   },
 
   // ---- Paso 3 ----
@@ -497,7 +532,7 @@ const W = {
   },
 
   elegirFuenteSub(btn) {
-    document.querySelectorAll("[data-fuente]")
+    document.querySelectorAll("[data-banco]")
       .forEach(b=>b.classList.remove("elegida"));
     btn.classList.add("elegida");
     this.estado.subtitulosFuente = btn.dataset.fuente;
@@ -727,6 +762,21 @@ const Panel = {
     this.cargar();
   },
 
+  _actualizarEstadoBancos(hayMateriales) {
+    const bancoBtns = document.querySelectorAll("[data-banco]");
+    const bancoAviso = document.getElementById("banco-aviso");
+    const limpiarBtn = document.getElementById("btn-limpiar-seleccion");
+    if (hayMateriales) {
+      bancoBtns.forEach(b => { b.style.opacity = "0.4"; b.style.pointerEvents = "none"; });
+      if (bancoAviso) { bancoAviso.style.display = "flex"; bancoAviso.querySelector("span").textContent = "✓ Usarás tus archivos propios — el banco automático no aplica"; }
+      if (limpiarBtn) limpiarBtn.style.display = "inline-block";
+    } else {
+      bancoBtns.forEach(b => { b.style.opacity = "1"; b.style.pointerEvents = "auto"; });
+      if (bancoAviso) bancoAviso.style.display = "none";
+      if (limpiarBtn) limpiarBtn.style.display = "none";
+    }
+  },
+
   async subirMaterialesWizard(archivos) {
     if (!archivos.length) return;
     const cont = document.getElementById("lista-materiales-wizard");
@@ -761,7 +811,9 @@ const Panel = {
           try {
             await API.pedir(`/api/materiales/${encodeURIComponent(j.archivo)}`, { method: "DELETE" });
             fila.remove();
-            if (!cont.querySelectorAll(".opcion-musica").length) cont.style.display = "none";
+            const quedan = cont.querySelectorAll(".opcion-musica").length;
+            if (!quedan) cont.style.display = "none";
+            W._actualizarEstadoBancos(quedan > 0);
           } catch(err) { mostrarMensaje(err.message, "err"); }
         };
         cont.appendChild(fila);
@@ -769,6 +821,7 @@ const Panel = {
         mostrarMensaje(e.message, "err");
       }
     }
+    this._actualizarEstadoBancos(cont.querySelectorAll(".opcion-musica").length > 0);
     if (aSubir.length < archivos.length) {
       mostrarMensaje(`Solo se subieron ${aSubir.length} de ${archivos.length} archivos (límite: 8).`, "err");
     }
@@ -777,6 +830,10 @@ const Panel = {
   cambiarPestana(nombre) {
     document.querySelectorAll(".tab-btn").forEach((b) => b.classList.toggle("activo", b.dataset.tab === nombre));
     document.querySelectorAll(".tab-panel").forEach((p) => p.classList.toggle("activo", p.dataset.panel === nombre));
+    if (nombre === "videos") {
+      clearTimeout(this.temporizador);
+      this.refrescarVideos();
+    }
   },
 
   async cargar() {
