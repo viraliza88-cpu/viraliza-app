@@ -25,9 +25,11 @@ input,textarea,select,button{font-family:inherit}
 .top .wrap{display:flex;justify-content:space-between;align-items:center;max-width:100%;padding:0 28px;width:100%}
 .logo{font-family:"Playfair Display",serif;font-size:20px;color:var(--ink);text-decoration:none}
 .logo span{color:var(--gold)}
-.sesion{display:flex;align-items:center;gap:20px}
+.sesion{display:flex;align-items:center;gap:16px}
 .sesion span{font-size:13px;color:var(--muted)}
 .sesion b{color:var(--ink);font-weight:500}
+.salir{background:none;border:1px solid rgba(255,255,255,.1);color:var(--muted);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:7px 14px;cursor:pointer;font-family:inherit;transition:all .2s}
+.salir:hover{border-color:rgba(214,178,94,.3);color:var(--gold)}
 .salir{background:none;border:1px solid var(--line);color:var(--muted);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:7px 16px;cursor:pointer;transition:all .2s}
 .salir:hover{border-color:var(--line2);color:var(--gold)}
 .admin-link{color:var(--gold);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none}
@@ -319,14 +321,47 @@ input[type=file]{display:none}
 @keyframes slideLeftTrans{from{transform:translateX(30px);opacity:0}to{transform:translateX(0);opacity:1}}
 @keyframes zoomInTrans{from{transform:scale(1.3);opacity:0}to{transform:scale(1);opacity:1}}
 @keyframes circleOpenTrans{from{clip-path:circle(0% at 50% 50%)}to{clip-path:circle(100% at 50% 50%)}}
-@media(max-width:768px){
+@media(max-width:900px){
   .sidebar{display:none}
-  .tabs-bar{padding-left:0}
+  .sesion span{display:none}
+  .logo{font-size:18px}
+  .tabs-bar{padding-left:0;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+  .tabs-bar::-webkit-scrollbar{display:none}
   .studio-main{margin-left:0}
-  .s-header,.s-body,.s-footer,.cuenta-wrap{padding-left:20px;padding-right:20px}
+  .tabs-bar-right{display:none}
+  .tab-btn{padding:0 14px;font-size:10px;flex-shrink:0}
+}
+@media(max-width:768px){
+  .s-header,.s-body,.s-footer,.cuenta-wrap{padding-left:16px;padding-right:16px}
   .resumen-grid{grid-template-columns:1fr}
-  .dur-row,.formato-row{flex-direction:column}
+  .dur-row{display:grid !important;grid-template-columns:repeat(3,1fr);gap:8px}
+  .formato-row{flex-direction:column}
+  .dur-card{padding:14px 8px !important}
+  .dur-num{font-size:22px !important}
+  .dur-name{font-size:9px !important;letter-spacing:1px}
+  .dur-desc{font-size:10px !important}
+  .animos-grid{grid-template-columns:repeat(3,1fr)}
+  .s-header{padding-top:24px}
+  .s-body{padding-top:20px}
+  .cuota{margin:16px}
+  .img-grid{grid-template-columns:repeat(2,1fr) !important}
+  .plan-row{flex-direction:column !important}
+  .plan-in{flex-direction:column !important;gap:16px !important;padding:20px !important}
+  .plan-feats{grid-template-columns:1fr !important}
+  .plan-cta-w{width:100%}
+  .plan-cta{width:100%;text-align:center;display:block}
+  .plan-meta{min-width:unset !important}
+  .videos-grid{padding:16px !important;grid-template-columns:repeat(2,1fr) !important}
+  .wizard-progreso{gap:6px}
+  .wizard-paso-label{display:none}
+}
+@media(max-width:480px){
+  .top .wrap{padding:0 14px}
   .animos-grid{grid-template-columns:repeat(2,1fr)}
+  .videos-grid{grid-template-columns:1fr !important}
+  .colores-subtitulo{gap:8px}
+  .fuente-cards{grid-template-columns:1fr 1fr !important}
+  .tab-btn{font-size:9px;padding:0 10px;letter-spacing:1px}
 }
 </style>
 </head>
@@ -428,19 +463,19 @@ input[type=file]{display:none}
           <div class="s-field">
             <span class="s-label">Duración del video</span>
             <div class="dur-row">
-              <div class="dur-card elegida" data-duracion="corto" onclick="W.elegirDuracion(this)">
-                <div class="dur-num">30"</div>
-                <div class="dur-name">Corto</div>
+              <div class="dur-card elegida" data-duracion="corto" onclick="W.elegirDuracion(this)" style="text-align:center">
+                <div class="dur-num">30</div>
+                <div class="dur-name">segundos</div>
                 <div class="dur-desc">TikTok · Reels</div>
               </div>
-              <div class="dur-card" data-duracion="medio" onclick="W.elegirDuracion(this)">
-                <div class="dur-num">60"</div>
-                <div class="dur-name">Medio</div>
+              <div class="dur-card" data-duracion="medio" onclick="W.elegirDuracion(this)" style="text-align:center">
+                <div class="dur-num">60</div>
+                <div class="dur-name">segundos</div>
                 <div class="dur-desc">Más contexto</div>
               </div>
-              <div class="dur-card" data-duracion="largo" onclick="W.elegirDuracion(this)">
-                <div class="dur-num">90"</div>
-                <div class="dur-name">Largo</div>
+              <div class="dur-card" data-duracion="largo" onclick="W.elegirDuracion(this)" style="text-align:center">
+                <div class="dur-num">90</div>
+                <div class="dur-name">segundos</div>
                 <div class="dur-desc">Mini historia</div>
               </div>
             </div>
