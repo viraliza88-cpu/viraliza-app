@@ -797,24 +797,33 @@ input[type=file]{display:none}
 
     <!-- TAB: MI CUENTA -->
     <section class="tab-panel" data-panel="cuenta">
-      <div class="cuenta-wrap">
-        <div class="cuenta-card">
-          <span class="cuenta-label">Plan actual</span>
-          <div class="cuenta-val" id="cuenta-plan-nombre">—</div>
-          <div class="cuenta-grid">
-            <div class="cuenta-item">
-              <span class="cuenta-item-label">Videos este mes</span>
-              <div class="cuenta-item-val"><span id="cuenta-usados">0</span> <span style="color:var(--muted);font-size:14px">/ <span id="cuenta-limite">0</span></span></div>
+      <div style="padding:44px;max-width:580px">
+        <span style="font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(214,178,94,.5);display:block;margin-bottom:12px">Tu cuenta</span>
+        <div style="font-family:'Playfair Display',serif;font-size:32px;color:var(--ink);margin-bottom:36px;line-height:1.2">Mi <em style="color:var(--gold)">membresía</em></div>
+
+        <!-- Plan actual -->
+        <div style="border:1px solid rgba(214,178,94,.3);padding:28px;margin-bottom:16px;background:rgba(214,178,94,.03);position:relative;overflow:hidden">
+          <div style="position:absolute;top:0;right:0;background:rgba(214,178,94,.1);padding:6px 16px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold)">Activo</div>
+          <span style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.3);display:block;margin-bottom:8px">Plan actual</span>
+          <div style="font-family:'Playfair Display',serif;font-size:36px;color:var(--ink);margin-bottom:20px" id="cuenta-plan-nombre">—</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div style="border:1px solid rgba(255,255,255,.08);padding:16px">
+              <span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);display:block;margin-bottom:8px">Videos este mes</span>
+              <div style="font-family:'Playfair Display',serif;font-size:28px;color:var(--ink)">
+                <span id="cuenta-usados">0</span><span style="font-size:16px;color:rgba(255,255,255,.25);font-family:Jost,sans-serif"> / <span id="cuenta-limite">0</span></span>
+              </div>
             </div>
-            <div class="cuenta-item">
-              <span class="cuenta-item-label">Renueva el</span>
-              <div class="cuenta-item-val" id="cuenta-renovacion" style="font-size:15px">—</div>
+            <div style="border:1px solid rgba(255,255,255,.08);padding:16px">
+              <span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);display:block;margin-bottom:8px">Renueva el</span>
+              <div style="font-size:16px;color:var(--ink);margin-top:4px" id="cuenta-renovacion">—</div>
             </div>
           </div>
         </div>
-        <button class="btn-full" onclick="Panel.cambiarPestana('membresia')">Cambiar de plan</button>
-        <button class="btn-full btn-danger" id="btn-cancelar-plan" onclick="Panel.cancelarPlan()">Cancelar membresía</button>
-        <p class="ayuda" style="text-align:center;margin-top:10px">Al cancelar, conservas el acceso hasta que venza el período actual.</p>
+
+        <!-- Acciones -->
+        <button onclick="Panel.cambiarPestana('membresia')" style="width:100%;background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);padding:14px;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;margin-bottom:10px;transition:all .2s;font-family:inherit" onmouseover="this.style.borderColor='rgba(214,178,94,.4)';this.style.color='#D6B25E'" onmouseout="this.style.borderColor='rgba(255,255,255,.15)';this.style.color='rgba(255,255,255,.5)'">Cambiar de plan</button>
+        <button id="btn-cancelar-plan" onclick="Panel.cancelarPlan()" style="width:100%;background:none;border:1px solid rgba(232,72,85,.25);color:rgba(232,72,85,.6);padding:14px;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:inherit" onmouseover="this.style.borderColor='#E84855';this.style.color='#E84855'" onmouseout="this.style.borderColor='rgba(232,72,85,.25)';this.style.color='rgba(232,72,85,.6)'">Cancelar membresía</button>
+        <p style="font-size:11px;color:rgba(255,255,255,.2);text-align:center;margin-top:12px;line-height:1.6">Al cancelar conservas el acceso hasta que venza el período actual. Los videos producidos son tuyos para siempre.</p>
       </div>
     </section>
 

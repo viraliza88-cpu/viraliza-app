@@ -713,7 +713,8 @@ const Panel = {
     if (!API.token()) { location.href = "login.html"; return; }
     document.getElementById("nombre-usuario").textContent = localStorage.getItem("viraliza_nombre") || "";
     document.getElementById("salir").onclick = () => API.cerrarSesion();
-    document.getElementById("conectar-redes").onclick = () => this.conectarRedes();
+    const btnRedes = document.getElementById("conectar-redes");
+    if (btnRedes) btnRedes.onclick = () => this.conectarRedes();
 
     document.querySelectorAll(".tab-btn").forEach((b) => {
       b.onclick = () => this.cambiarPestana(b.dataset.tab);
@@ -946,7 +947,7 @@ const Panel = {
         const fecha = new Date(cuota.expira).toLocaleDateString("es-CO", {day:"numeric", month:"long", year:"numeric"});
         elRenovacion.textContent = fecha;
       } else {
-        elRenovacion.textContent = cuota.plan === "Inicial" ? "Plan gratuito" : "—";
+        elRenovacion.textContent = cuota.plan === "Inicial" ? "Plan gratuito" : "Sin fecha · Plan manual";
       }
     }
   },
