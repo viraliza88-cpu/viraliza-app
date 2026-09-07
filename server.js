@@ -1137,9 +1137,9 @@ app.post("/api/videos", autenticar, async (req, res) => {
   const FUENTES_VALIDAS_SUBTITULO = {
     clasica: "BeVietnamPro-Bold.ttf",
     ligera: "BeVietnamPro-Medium.ttf",
-    elegante: "Charm-Bold.ttf",
+    elegante: "Charm-Regular.ttf",
     moderna: "UTM Kabel KT.ttf",
-    redondeada: "BeVietnamPro-Medium.ttf",
+    redondeada: "Charm-Bold.ttf",
     viral: "BeVietnamPro-Bold.ttf",
   };
 

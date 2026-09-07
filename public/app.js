@@ -584,14 +584,21 @@ const W = {
     this.estado.subtitulosFuente = btn.dataset.fuente;
     document.getElementById("subtitulos-fuente").value = btn.dataset.fuente;
     const mapaFuentes = {
-      clasica: "inherit",
-      ligera: "inherit",
-      elegante: "Georgia, serif",
-      moderna: "Impact, sans-serif",
-      redondeada: "Trebuchet MS, sans-serif",
-      viral: "Arial Black, sans-serif",
+      clasica:    { family: "Jost, sans-serif",       weight: "700", size: "20px", letterSpacing: "0px",   transform: "none" },
+      ligera:     { family: "Jost, sans-serif",       weight: "300", size: "18px", letterSpacing: "1px",   transform: "none" },
+      elegante:   { family: "Georgia, serif",         weight: "400", size: "19px", letterSpacing: "0.5px", transform: "none", style: "italic" },
+      moderna:    { family: "Impact, sans-serif",     weight: "900", size: "22px", letterSpacing: "3px",   transform: "uppercase" },
+      redondeada: { family: "Trebuchet MS, sans-serif", weight: "600", size: "18px", letterSpacing: "0px", transform: "none" },
+      viral:      { family: "Arial Black, sans-serif", weight: "900", size: "21px", letterSpacing: "-0.5px", transform: "uppercase" },
     };
-    document.getElementById("preview-subtitulo").style.fontFamily = mapaFuentes[btn.dataset.fuente] || "inherit";
+    const cfg = mapaFuentes[btn.dataset.fuente] || mapaFuentes.clasica;
+    const el = document.getElementById("preview-subtitulo");
+    el.style.fontFamily = cfg.family;
+    el.style.fontWeight = cfg.weight;
+    el.style.fontSize = cfg.size;
+    el.style.letterSpacing = cfg.letterSpacing;
+    el.style.textTransform = cfg.transform;
+    el.style.fontStyle = cfg.style || "normal";
   },
 
   // ---- Paso 5: resumen ----
@@ -1348,58 +1355,95 @@ const Panel = {
   pintarVideos(videos) {
     const cont = document.getElementById("lista-videos");
     if (!videos.length) {
-      cont.innerHTML = '<div class="vacio">Aquí aparecerán tus producciones.<br>Crea tu primer video para estrenar el estudio.</div>';
+      cont.innerHTML = `
+        <div style="grid-column:1/-1;text-align:center;padding:80px 20px">
+          <div style="font-size:48px;margin-bottom:20px;opacity:.3">🎬</div>
+          <div style="font-family:'Playfair Display',serif;font-size:22px;color:rgba(255,255,255,.4);margin-bottom:10px">Aún no tienes videos</div>
+          <p style="font-size:14px;color:rgba(255,255,255,.2);margin-bottom:28px">Crea tu primer video en el paso 1 — tarda menos de 2 minutos.</p>
+          <button onclick="Panel.cambiarPestana('producir')" style="background:#D6B25E;color:#09090B;border:none;padding:13px 32px;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;font-family:inherit">Crear mi primer video →</button>
+        </div>`;
       return;
     }
+    const mensajesProduccion = [
+      "Escribiendo el guion...", "Sintetizando la voz...",
+      "Buscando las imágenes perfectas...", "Componiendo la música...",
+      "Añadiendo subtítulos...", "Renderizando el video...",
+      "Últimos toques...", "¡Casi listo!",
+    ];
     cont.innerHTML = videos.map(v => {
-      const fecha = new Date(v.creado_en||v.creado).toLocaleDateString("es-CO",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+      const fecha = new Date(v.creado_en||v.creado).toLocaleDateString("es-CO",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});
       const urlVideo = v.urls && v.urls[0] ? v.urls[0] : null;
-      const estado = v.estado==="listo"
-        ? '<span class="estado listo">✓ Listo</span>'
-        : v.estado==="fallido"
-          ? '<span class="estado fallido">✗ Falló</span>'
-          : `<span class="estado produciendo">⏳ Produciendo · ${v.progreso}%</span>`;
-      const barra = v.estado==="produciendo"
-        ? `<div class="progreso"><i style="width:${v.progreso}%"></i></div>` : "";
-      const preview = urlVideo
-        ? `<div class="video-preview-wrap" style="position:relative;width:100%;background:#000;display:flex;justify-content:center">
-            <video src="${urlVideo}" preload="metadata" controls playsinline style="max-width:100%;max-height:500px;width:auto;height:auto;display:block"></video>
-           </div>`
-        : `<div class="video-sin-preview"><span>🎬</span></div>`;
-      const mensajesProduccion = [
-        "Escribiendo el guion...",
-        "Sintetizando la voz...",
-        "Buscando las imágenes perfectas...",
-        "Componiendo la música...",
-        "Añadiendo subtítulos...",
-        "Renderizando el video...",
-        "Últimos toques...",
-        "¡Casi listo!",
-      ];
       const idxMensaje = Math.min(Math.floor((v.progreso || 0) / 13), mensajesProduccion.length - 1);
-      const badge = v.estado==="listo"
-        ? `<span class="video-estado-badge listo">✓ Listo</span>`
-        : v.estado==="fallido"
-          ? `<span class="video-estado-badge fallido">✗ Falló</span>`
-          : `<span class="video-estado-badge produciendo">⏳ ${v.progreso}% · ${mensajesProduccion[idxMensaje]}</span>`;
-      const acciones = v.estado==="listo" ? `
-        <div class="video-acciones">
-          <a class="btn" href="/api/videos/${v.id}/descargar?t=${API.token()}">⬇ Descargar</a>
-          <button class="btn line" data-publicar="${v.id}" type="button">📤 Publicar</button>
-          <button class="btn line btn-eliminar-video" data-eliminar="${v.id}" type="button">✕</button>
-        </div>` : v.estado==="fallido" ? `
-        <div class="video-acciones">
-          <button class="btn line btn-eliminar-video" data-eliminar="${v.id}" type="button">✕ Eliminar</button>
-        </div>` : `<div class="video-acciones">${barra}</div>`;
-      return `<article class="video">
-        ${preview}
-        <div class="video-info">
-          <p class="tema">${v.tema.replace(/</g,"&lt;")}</p>
-          <p class="meta">${v.duracion} · ${fecha}</p>
-          ${badge}
+
+      const DURACION_LABEL = { corto: "30 seg", medio: "60 seg", largo: "90 seg" };
+      const durLabel = DURACION_LABEL[v.duracion] || v.duracion || "";
+
+      if (v.estado === "produciendo") {
+        return `
+        <div style="background:#0A0A0D;border:1px solid rgba(214,178,94,.2);overflow:hidden;display:flex;flex-direction:column">
+          <div style="background:rgba(214,178,94,.04);padding:24px;display:flex;align-items:center;gap:16px;flex:1">
+            <div style="width:48px;height:48px;border:1px solid rgba(214,178,94,.3);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;animation:spin 3s linear infinite">⚙️</div>
+            <div style="flex:1">
+              <p style="font-size:14px;color:#F0EDE5;margin-bottom:4px;font-weight:500">${v.tema.replace(/</g,"&lt;")}</p>
+              <p style="font-size:11px;color:rgba(214,178,94,.6);letter-spacing:1px">${mensajesProduccion[idxMensaje]}</p>
+            </div>
+            <span style="font-size:13px;color:#D6B25E;font-family:'Playfair Display',serif">${v.progreso}%</span>
+          </div>
+          <div style="padding:0 24px 16px">
+            <div style="background:rgba(255,255,255,.05);height:2px;border-radius:1px;overflow:hidden">
+              <div style="height:100%;background:linear-gradient(90deg,rgba(214,178,94,.5),#D6B25E);width:${v.progreso}%;transition:width .5s;border-radius:1px"></div>
+            </div>
+            <p style="font-size:11px;color:rgba(255,255,255,.2);margin-top:8px;text-align:center">Tu video está siendo producido — puedes cerrar esta ventana y volver cuando quieras</p>
+          </div>
+        </div>`;
+      }
+
+      if (v.estado === "fallido") {
+        return `
+        <div style="background:#0A0A0D;border:1px solid rgba(232,72,85,.2);overflow:hidden">
+          <div style="padding:24px;display:flex;align-items:center;gap:16px">
+            <div style="width:48px;height:48px;border:1px solid rgba(232,72,85,.3);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;color:#E84855">✗</div>
+            <div style="flex:1">
+              <p style="font-size:14px;color:#F0EDE5;margin-bottom:4px">${v.tema.replace(/</g,"&lt;")}</p>
+              <p style="font-size:11px;color:rgba(232,72,85,.6)">La producción falló · ${fecha}</p>
+            </div>
+            <button data-eliminar="${v.id}" type="button" style="background:none;border:1px solid rgba(232,72,85,.3);color:#E84855;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:8px 16px;cursor:pointer;font-family:inherit;transition:all .2s">Eliminar</button>
+          </div>
+        </div>`;
+      }
+
+      // LISTO — tarjeta vertical estilo TikTok
+      return `
+      <div style="position:relative;border-radius:4px;overflow:hidden;background:#0A0A0D;border:1px solid rgba(255,255,255,.06);cursor:pointer;transition:all .3s;display:flex;flex-direction:column"
+        onmouseover="this.querySelector('.vid-overlay').style.opacity='1';this.style.borderColor='rgba(214,178,94,.3)';this.style.transform='translateY(-3px)'"
+        onmouseout="this.querySelector('.vid-overlay').style.opacity='0';this.style.borderColor='rgba(255,255,255,.06)';this.style.transform='translateY(0)'">
+        <!-- Miniatura vertical -->
+        <div style="position:relative;aspect-ratio:9/16;background:#000;overflow:hidden" ${urlVideo ? `onclick="abrirModalVideo('${urlVideo}','${v.tema.replace(/'/g,"\'").replace(/</g,"&lt;")}')"` : ""}>
+          ${urlVideo
+            ? `<video src="${urlVideo}#t=0.5" preload="metadata" muted playsinline
+                style="width:100%;height:100%;object-fit:cover;display:block"
+                onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0"></video>`
+            : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:32px;color:rgba(255,255,255,.1)">🎬</div>`
+          }
+          <!-- Badge duración -->
+          <span style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,.7);color:#D6B25E;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 8px;backdrop-filter:blur(4px)">${durLabel}</span>
+          <!-- Badge listo -->
+          <span style="position:absolute;top:10px;right:10px;background:rgba(105,240,174,.15);color:#69F0AE;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:4px 8px;backdrop-filter:blur(4px)">✓</span>
+          <!-- Overlay de acciones -->
+          <div class="vid-overlay" style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.9) 0%,rgba(0,0,0,.2) 50%,transparent 100%);opacity:0;transition:opacity .3s;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;gap:8px">
+            <a href="/api/videos/${v.id}/descargar?t=${API.token()}" style="display:block;background:#D6B25E;color:#09090B;text-align:center;padding:10px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;border-radius:2px">⬇ Descargar</a>
+            <div style="display:flex;gap:6px">
+              <button data-publicar="${v.id}" type="button" style="flex:1;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:8px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:inherit;backdrop-filter:blur(4px)">📤 Publicar</button>
+              <button data-eliminar="${v.id}" type="button" style="background:rgba(232,72,85,.15);border:1px solid rgba(232,72,85,.3);color:#E84855;padding:8px 12px;font-size:11px;cursor:pointer;font-family:inherit;backdrop-filter:blur(4px)">✕</button>
+            </div>
+          </div>
         </div>
-        ${acciones}
-      </article>`;
+        <!-- Info -->
+        <div style="padding:14px 16px">
+          <p style="font-size:12px;color:rgba(255,255,255,.75);line-height:1.4;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${v.tema.replace(/</g,"&lt;")}</p>
+          <p style="font-size:10px;color:rgba(255,255,255,.2);letter-spacing:.5px">${fecha}</p>
+        </div>
+      </div>`;
     }).join("");
     cont.querySelectorAll("button[data-publicar]").forEach(b => {
       b.onclick = () => this.publicarVideo(b.dataset.publicar, b);

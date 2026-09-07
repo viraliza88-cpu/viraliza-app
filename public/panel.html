@@ -249,7 +249,7 @@ input[type=range]{flex:1;accent-color:var(--gold)}
 .btn-producir:disabled{opacity:.5;cursor:not-allowed}
 
 /* VIDEOS */
-.videos-grid{padding:28px 32px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.videos-grid{padding:36px 44px;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;align-items:start}
 .video-card{background:var(--bg3);border:1px solid var(--line);overflow:hidden}
 .video-thumb{aspect-ratio:9/16;background:#000;display:flex;align-items:center;justify-content:center;max-height:200px;overflow:hidden}
 .video-thumb video{width:100%;height:100%;object-fit:contain}
@@ -873,6 +873,27 @@ document.querySelectorAll('.wizard-pantalla').forEach(el => {
 
 Panel.iniciar();
 
+// Modal preview video
+function abrirModalVideo(url, tema) {
+  const modal = document.getElementById("modal-video-preview");
+  const player = document.getElementById("modal-video-player");
+  const temaEl = document.getElementById("modal-video-tema");
+  if (!modal || !player) return;
+  player.src = url;
+  player.play();
+  if (temaEl) temaEl.textContent = tema;
+  modal.style.display = "flex";
+  document.body.style.overflow = "hidden";
+}
+function cerrarModalVideo() {
+  const modal = document.getElementById("modal-video-preview");
+  const player = document.getElementById("modal-video-player");
+  if (player) { player.pause(); player.src = ""; }
+  if (modal) modal.style.display = "none";
+  document.body.style.overflow = "";
+}
+document.addEventListener("keydown", e => { if (e.key === "Escape") cerrarModalVideo(); });
+
 // Sidebar pasos clickeables
 setTimeout(() => {
   document.querySelectorAll('.sidebar-step').forEach(el => {
@@ -884,6 +905,15 @@ setTimeout(() => {
   });
 }, 500);
 </script>
+
+<!-- MODAL VIDEO PREVIEW -->
+<div id="modal-video-preview" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.92);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:20px" onclick="cerrarModalVideo()">
+  <div style="position:relative;max-width:400px;width:100%;max-height:90vh" onclick="event.stopPropagation()">
+    <button onclick="cerrarModalVideo()" style="position:absolute;top:-44px;right:0;background:none;border:none;color:rgba(255,255,255,.5);font-size:13px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit">✕ Cerrar</button>
+    <video id="modal-video-player" controls playsinline style="width:100%;max-height:80vh;display:block;background:#000"></video>
+    <p id="modal-video-tema" style="font-size:13px;color:rgba(255,255,255,.5);margin-top:12px;text-align:center;line-height:1.5"></p>
+  </div>
+</div>
 
 <!-- MODAL ONBOARDING -->
 <div id="modal-onboarding" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);align-items:center;justify-content:center">
