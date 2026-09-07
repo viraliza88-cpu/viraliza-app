@@ -30,11 +30,11 @@ nav.scrolled{background:rgba(9,9,11,.96);backdrop-filter:blur(20px);padding:14px
 .nav-act{display:flex;gap:14px;align-items:center}
 .nav-login{color:var(--muted);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;transition:color .2s}
 .nav-login:hover{color:var(--gold)}
-.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:140px 0 100px}
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:120px 0 80px}
 .hero-g1{position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(214,178,94,.06) 0%,transparent 70%);top:-200px;left:-200px;pointer-events:none}
 .hero-g2{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(214,178,94,.04) 0%,transparent 70%);bottom:-100px;right:-100px;pointer-events:none}
 .hero-line{position:absolute;top:0;left:50%;width:1px;height:100%;background:linear-gradient(to bottom,transparent,var(--line2),transparent)}
-.hero-in{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;position:relative;z-index:1}
+.hero-in{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;position:relative;z-index:1}
 .hero-badge{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line2);padding:9px 18px;margin-bottom:32px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
 .hero-badge::before{content:"";width:5px;height:5px;background:var(--gold);border-radius:50%;animation:blink 2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
@@ -240,8 +240,8 @@ footer{padding:52px 0;border-top:1px solid var(--line)}
           <div><div class="stat-num serif">3</div><div class="stat-label">Formatos HD</div></div>
         </div>
       </div>
-      <div style="position:relative;min-height:440px;display:flex;align-items:center;justify-content:center;padding:20px">
-        <div id="hero-studio" style="width:100%;max-width:400px;background:#0A0A0D;border:1px solid rgba(214,178,94,.2);overflow:hidden">
+      <div style="position:relative;min-height:500px;display:flex;align-items:center;justify-content:center;padding:10px 0">
+        <div id="hero-studio" style="width:100%;max-width:460px;background:#0A0A0D;border:1px solid rgba(214,178,94,.25);overflow:hidden;box-shadow:0 0 80px rgba(214,178,94,.06)">
           <!-- Header -->
           <div style="padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;justify-content:space-between">
             <div style="display:flex;align-items:center;gap:8px">
@@ -253,35 +253,35 @@ footer{padding:52px 0;border-top:1px solid var(--line)}
           <!-- Tema -->
           <div style="padding:18px;border-bottom:1px solid rgba(255,255,255,.04)">
             <span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.25);display:block;margin-bottom:8px">Tema del video</span>
-            <div style="font-family:'Playfair Display',serif;font-size:15px;color:#F0EDE5;line-height:1.4" id="hs-tema">Restaurante de cocina antioqueña en Medellín</div>
+            <div style="font-family:'Playfair Display',serif;font-size:17px;color:#F0EDE5;line-height:1.4" id="hs-tema">Restaurante de cocina antioqueña en Medellín</div>
           </div>
           <!-- Pasos -->
           <div style="padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.04)">
-            <div style="display:flex;flex-direction:column;gap:10px" id="hs-pasos">
-              <div class="hs-paso" data-i="0" style="display:flex;align-items:center;gap:10px">
-                <div class="hs-ico" style="width:20px;height:20px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(255,255,255,.2);flex-shrink:0">1</div>
-                <span style="font-size:12px;color:rgba(255,255,255,.25)">Generando guion de ventas</span>
-                <div class="hs-check" style="margin-left:auto;display:none;color:#D6B25E;font-size:11px">✓</div>
+            <div style="display:flex;flex-direction:column;gap:0" id="hs-pasos">
+              <div class="hs-paso" data-i="0" style="display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.04)">
+                <div class="hs-ico" style="width:26px;height:26px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,.2);flex-shrink:0;font-family:'Playfair Display',serif;font-style:italic">1</div>
+                <div style="flex:1"><span style="font-size:13px;color:rgba(255,255,255,.25);display:block">Redactando guion de ventas</span><span style="font-size:10px;color:rgba(255,255,255,.15)">Gancho · Desarrollo · CTA</span></div>
+                <div class="hs-check" style="display:none;color:#D6B25E;font-size:12px;font-weight:700">✓</div>
               </div>
-              <div class="hs-paso" data-i="1" style="display:flex;align-items:center;gap:10px">
-                <div class="hs-ico" style="width:20px;height:20px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(255,255,255,.2);flex-shrink:0">2</div>
-                <span style="font-size:12px;color:rgba(255,255,255,.25)">Sintetizando narración</span>
-                <div class="hs-check" style="margin-left:auto;display:none;color:#D6B25E;font-size:11px">✓</div>
+              <div class="hs-paso" data-i="1" style="display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.04)">
+                <div class="hs-ico" style="width:26px;height:26px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,.2);flex-shrink:0;font-family:'Playfair Display',serif;font-style:italic">2</div>
+                <div style="flex:1"><span style="font-size:13px;color:rgba(255,255,255,.25);display:block">Sintetizando voz profesional</span><span style="font-size:10px;color:rgba(255,255,255,.15)">Edge TTS · es-CO-SalomeNeural</span></div>
+                <div class="hs-check" style="display:none;color:#D6B25E;font-size:12px;font-weight:700">✓</div>
               </div>
-              <div class="hs-paso" data-i="2" style="display:flex;align-items:center;gap:10px">
-                <div class="hs-ico" style="width:20px;height:20px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(255,255,255,.2);flex-shrink:0">3</div>
-                <span style="font-size:12px;color:rgba(255,255,255,.25)">Buscando imágenes</span>
-                <div class="hs-check" style="margin-left:auto;display:none;color:#D6B25E;font-size:11px">✓</div>
+              <div class="hs-paso" data-i="2" style="display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.04)">
+                <div class="hs-ico" style="width:26px;height:26px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,.2);flex-shrink:0;font-family:'Playfair Display',serif;font-style:italic">3</div>
+                <div style="flex:1"><span style="font-size:13px;color:rgba(255,255,255,.25);display:block">Descargando imágenes seleccionadas</span><span style="font-size:10px;color:rgba(255,255,255,.15)">Pexels · Alta resolución</span></div>
+                <div class="hs-check" style="display:none;color:#D6B25E;font-size:12px;font-weight:700">✓</div>
               </div>
-              <div class="hs-paso" data-i="3" style="display:flex;align-items:center;gap:10px">
-                <div class="hs-ico" style="width:20px;height:20px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(255,255,255,.2);flex-shrink:0">4</div>
-                <span style="font-size:12px;color:rgba(255,255,255,.25)">Componiendo música</span>
-                <div class="hs-check" style="margin-left:auto;display:none;color:#D6B25E;font-size:11px">✓</div>
+              <div class="hs-paso" data-i="3" style="display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.04)">
+                <div class="hs-ico" style="width:26px;height:26px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,.2);flex-shrink:0;font-family:'Playfair Display',serif;font-style:italic">4</div>
+                <div style="flex:1"><span style="font-size:13px;color:rgba(255,255,255,.25);display:block">Mezclando música y subtítulos</span><span style="font-size:10px;color:rgba(255,255,255,.15)">Jamendo Premium · Fundido suave</span></div>
+                <div class="hs-check" style="display:none;color:#D6B25E;font-size:12px;font-weight:700">✓</div>
               </div>
-              <div class="hs-paso" data-i="4" style="display:flex;align-items:center;gap:10px">
-                <div class="hs-ico" style="width:20px;height:20px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(255,255,255,.2);flex-shrink:0">5</div>
-                <span style="font-size:12px;color:rgba(255,255,255,.25)">Renderizando video HD</span>
-                <div class="hs-check" style="margin-left:auto;display:none;color:#D6B25E;font-size:11px">✓</div>
+              <div class="hs-paso" data-i="4" style="display:flex;align-items:center;gap:14px;padding:11px 0">
+                <div class="hs-ico" style="width:26px;height:26px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,.2);flex-shrink:0;font-family:'Playfair Display',serif;font-style:italic">5</div>
+                <div style="flex:1"><span style="font-size:13px;color:rgba(255,255,255,.25);display:block">Renderizando video final en HD</span><span style="font-size:10px;color:rgba(255,255,255,.15)">MoviePy · 9:16 · Sin marca de agua</span></div>
+                <div class="hs-check" style="display:none;color:#D6B25E;font-size:12px;font-weight:700">✓</div>
               </div>
             </div>
           </div>
