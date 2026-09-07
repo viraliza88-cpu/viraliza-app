@@ -44,24 +44,28 @@ h1{font-size:clamp(42px,5vw,68px);line-height:1.1;letter-spacing:-1.5px;margin-b
 .hero-stats{display:flex;gap:28px;padding-top:28px;border-top:1px solid var(--line)}
 .stat-num{font-family:"Playfair Display",serif;font-size:24px;color:var(--gold)}
 .stat-label{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
-.phones{display:flex;justify-content:center;align-items:flex-start;gap:18px;padding-top:20px;position:relative}
-.phone{background:var(--bg3);border:1px solid var(--line);border-radius:34px;overflow:hidden;padding:9px;box-shadow:0 50px 100px rgba(0,0,0,.6)}
-.phone-main{width:210px}
-.phone-sm{width:155px;margin-top:55px;opacity:.65}
-.phone-screen{background:#000;border-radius:26px;aspect-ratio:9/16;position:relative;overflow:hidden;display:flex;align-items:flex-end}
-.phone-bg{position:absolute;inset:0;background:linear-gradient(135deg,#1a1a2e,#0d1117,#1a0a00);display:flex;align-items:center;justify-content:center;font-size:48px;opacity:.3}
+.phones{display:flex;justify-content:center;align-items:flex-start;gap:18px;padding-top:20px;position:relative;width:100%;min-height:350px}
+.phone{background:#1c1c22;border:1px solid rgba(214,178,94,.15);border-radius:34px;overflow:hidden;padding:9px;box-shadow:0 40px 80px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.05)}
+.phone-main{width:210px;flex-shrink:0}
+.phone-sm{width:155px;margin-top:55px;opacity:.65;flex-shrink:0}
+.phone-screen{background:#1a0f00;border-radius:26px;aspect-ratio:9/16;position:relative;overflow:hidden;display:flex;align-items:flex-end}
+.phone-main .phone-screen{background:linear-gradient(160deg,#1a0800 0%,#2d1200 50%,#1a0500 100%)}
+.phone-sm .phone-screen{background:linear-gradient(160deg,#051a08 0%,#0a2d10 50%,#051a08 100%)}
+.phone-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:64px;opacity:.25}
 .phone-grad{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 30%,rgba(0,0,0,.85) 100%)}
 .phone-c{position:relative;z-index:1;padding:18px;width:100%}
 .phone-h{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:1px;margin-bottom:7px;display:block}
 .phone-t{font-family:"Playfair Display",serif;font-size:12px;color:#fff;line-height:1.4;margin-bottom:10px}
-.phone-b{background:var(--gold);color:#09090B;font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:6px 11px;display:inline-block}
-.fc{position:absolute;background:var(--bg3);border:1px solid var(--line);padding:12px 16px;border-radius:3px;white-space:nowrap}
+.phone-b{background:#D6B25E;color:#09090B;font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:6px 11px;display:inline-block}
+.phone-t{font-family:"Playfair Display",serif;font-size:12px;color:#fff;line-height:1.4;margin-bottom:10px}
+.phone-h{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:1px;display:block;margin-bottom:6px}
+.fc{position:absolute;background:rgba(14,14,18,.95);border:1px solid rgba(255,255,255,.1);padding:12px 16px;border-radius:3px;white-space:nowrap;backdrop-filter:blur(10px)}
 .fc1{top:8%;right:-15px;animation:fl1 6s ease-in-out infinite}
 .fc2{bottom:18%;left:-25px;animation:fl2 8s ease-in-out infinite}
 @keyframes fl1{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 @keyframes fl2{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
 .fc-l{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:3px;display:block}
-.fc-v{font-size:14px;color:var(--ink);font-family:"Playfair Display",serif}
+.fc-v{font-size:14px;color:#F0EDE5;font-family:"Playfair Display",serif}
 .fc-s{font-size:10px;color:var(--gold);margin-top:2px;display:block}
 .ticker{padding:16px 0;background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden}
 .ticker-t{display:flex;white-space:nowrap;animation:tk 40s linear infinite}
@@ -179,17 +183,19 @@ footer{padding:52px 0;border-top:1px solid var(--line)}
 .rd1{transition-delay:.1s}.rd2{transition-delay:.2s}.rd3{transition-delay:.3s}
 @media(max-width:900px){
   .nav-links{display:none}
+  .como-in{grid-template-columns:1fr}
+  .mockup{display:none}
+  .faq-in{grid-template-columns:1fr}
+  .ft{grid-template-columns:1fr}
+  .ft-bot{flex-direction:column;text-align:center}
+}
+@media(max-width:768px){
   .hero-in{grid-template-columns:1fr;text-align:center}
   .hero-desc{max-width:100%}
   .hero-ctas{justify-content:center}
   .hero-stats{justify-content:center}
   .phones{display:none}
-  .como-in{grid-template-columns:1fr}
-  .mockup{display:none}
   .grid-6{grid-template-columns:1fr}
-  .faq-in{grid-template-columns:1fr}
-  .ft{grid-template-columns:1fr}
-  .ft-bot{flex-direction:column;text-align:center}
   .plan-in{flex-direction:column;gap:20px}
   .plan-feats{grid-template-columns:1fr}
 }
@@ -217,9 +223,12 @@ footer{padding:52px 0;border-top:1px solid var(--line)}
   <div class="wrap">
     <div class="hero-in">
       <div>
-        <div class="hero-badge">Medellín, Colombia · Para negocios reales</div>
-        <h1 class="serif">Tu negocio<br>merece estar<br>en el <em>feed.</em></h1>
-        <p class="hero-desc">Escribe qué quieres mostrar. En minutos tienes un video con guion, voz, imágenes y música — listo para publicar en TikTok, Reels o Instagram. Sin cámaras. Sin editores. Sin vueltas.</p>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:32px">
+          <div style="width:28px;height:1px;background:#D6B25E"></div>
+          <span style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#D6B25E">Medellín, Colombia · Para negocios reales</span>
+        </div>
+        <h1 class="serif" style="font-size:clamp(44px,5.5vw,72px);line-height:1.0;letter-spacing:-2px;margin-bottom:28px">Mientras<br>la competencia<br>graba, tú<br><em>ya publicaste.</em></h1>
+        <p class="hero-desc" style="font-size:15px;line-height:1.85;color:rgba(255,255,255,.4)">Escribe qué quieres mostrar. En dos minutos tienes un video con guion, voz, imágenes y música — listo para TikTok, Reels o Instagram. Sin cámara. Sin editor. Sin excusas.</p>
         <div class="hero-ctas">
           <a href="login.html?modo=registro" class="btn-p">Producir mi primer video gratis</a>
           <a href="#planes" class="btn-s">Ver precios →</a>
@@ -231,23 +240,68 @@ footer{padding:52px 0;border-top:1px solid var(--line)}
           <div><div class="stat-num serif">3</div><div class="stat-label">Formatos HD</div></div>
         </div>
       </div>
-      <div style="position:relative">
-        <div class="phones">
-          <div class="phone phone-main">
-            <div class="phone-screen">
-              <div class="phone-bg">🎬</div><div class="phone-grad"></div>
-              <div class="phone-c"><span class="phone-h">@mirestaurante</span><p class="phone-t">El plato que nadie pide pero todos deberían probar</p><span class="phone-b">Viraliza Studio</span></div>
+      <div style="position:relative;min-height:440px;display:flex;align-items:center;justify-content:center;padding:20px">
+        <div id="hero-studio" style="width:100%;max-width:400px;background:#0A0A0D;border:1px solid rgba(214,178,94,.2);overflow:hidden">
+          <!-- Header -->
+          <div style="padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:8px;height:8px;background:#D6B25E;border-radius:50%;animation:blink 2s infinite"></div>
+              <span style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4)">Viraliza Studio</span>
+            </div>
+            <span style="font-size:10px;color:rgba(214,178,94,.5)" id="hs-timer">00:00</span>
+          </div>
+          <!-- Tema -->
+          <div style="padding:18px;border-bottom:1px solid rgba(255,255,255,.04)">
+            <span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.25);display:block;margin-bottom:8px">Tema del video</span>
+            <div style="font-family:'Playfair Display',serif;font-size:15px;color:#F0EDE5;line-height:1.4" id="hs-tema">Restaurante de cocina antioqueña en Medellín</div>
+          </div>
+          <!-- Pasos -->
+          <div style="padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.04)">
+            <div style="display:flex;flex-direction:column;gap:10px" id="hs-pasos">
+              <div class="hs-paso" data-i="0" style="display:flex;align-items:center;gap:10px">
+                <div class="hs-ico" style="width:20px;height:20px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(255,255,255,.2);flex-shrink:0">1</div>
+                <span style="font-size:12px;color:rgba(255,255,255,.25)">Generando guion de ventas</span>
+                <div class="hs-check" style="margin-left:auto;display:none;color:#D6B25E;font-size:11px">✓</div>
+              </div>
+              <div class="hs-paso" data-i="1" style="display:flex;align-items:center;gap:10px">
+                <div class="hs-ico" style="width:20px;height:20px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(255,255,255,.2);flex-shrink:0">2</div>
+                <span style="font-size:12px;color:rgba(255,255,255,.25)">Sintetizando narración</span>
+                <div class="hs-check" style="margin-left:auto;display:none;color:#D6B25E;font-size:11px">✓</div>
+              </div>
+              <div class="hs-paso" data-i="2" style="display:flex;align-items:center;gap:10px">
+                <div class="hs-ico" style="width:20px;height:20px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(255,255,255,.2);flex-shrink:0">3</div>
+                <span style="font-size:12px;color:rgba(255,255,255,.25)">Buscando imágenes</span>
+                <div class="hs-check" style="margin-left:auto;display:none;color:#D6B25E;font-size:11px">✓</div>
+              </div>
+              <div class="hs-paso" data-i="3" style="display:flex;align-items:center;gap:10px">
+                <div class="hs-ico" style="width:20px;height:20px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(255,255,255,.2);flex-shrink:0">4</div>
+                <span style="font-size:12px;color:rgba(255,255,255,.25)">Componiendo música</span>
+                <div class="hs-check" style="margin-left:auto;display:none;color:#D6B25E;font-size:11px">✓</div>
+              </div>
+              <div class="hs-paso" data-i="4" style="display:flex;align-items:center;gap:10px">
+                <div class="hs-ico" style="width:20px;height:20px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(255,255,255,.2);flex-shrink:0">5</div>
+                <span style="font-size:12px;color:rgba(255,255,255,.25)">Renderizando video HD</span>
+                <div class="hs-check" style="margin-left:auto;display:none;color:#D6B25E;font-size:11px">✓</div>
+              </div>
             </div>
           </div>
-          <div class="phone phone-sm">
-            <div class="phone-screen">
-              <div class="phone-bg">🏠</div><div class="phone-grad"></div>
-              <div class="phone-c"><span class="phone-h">@inmobiliaria</span><p class="phone-t" style="font-size:10px">3 errores al comprar en Medellín</p><span class="phone-b" style="font-size:7px">Viraliza</span></div>
+          <!-- Barra de progreso -->
+          <div style="padding:16px 18px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <span style="font-size:10px;color:rgba(255,255,255,.3)" id="hs-status">Iniciando producción...</span>
+              <span style="font-size:11px;color:#D6B25E;font-family:'Playfair Display',serif" id="hs-pct">0%</span>
             </div>
+            <div style="background:rgba(255,255,255,.05);height:2px;overflow:hidden">
+              <div id="hs-bar" style="height:100%;background:linear-gradient(90deg,rgba(214,178,94,.5),#D6B25E);width:0%;transition:width .3s"></div>
+            </div>
+          </div>
+          <!-- Video listo -->
+          <div id="hs-listo" style="display:none;padding:18px;border-top:1px solid rgba(214,178,94,.15);background:rgba(214,178,94,.04);text-align:center">
+            <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#D6B25E;margin-bottom:6px">✓ Video listo</div>
+            <div style="font-family:'Playfair Display',serif;font-size:14px;color:#F0EDE5;margin-bottom:12px">Restaurante antioqueño · 30 seg · HD</div>
+            <button style="background:#D6B25E;color:#09090B;border:none;padding:10px 24px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Jost',sans-serif;width:100%" onclick="reiniciarDemo()">⬇ Descargar video</button>
           </div>
         </div>
-        <div class="fc fc1"><span class="fc-l">Video listo en</span><div class="fc-v">2 min 14 seg</div><span class="fc-s">✓ Listo para publicar</span></div>
-        <div class="fc fc2"><span class="fc-l">Transición elegida</span><div class="fc-v">Fundido suave</div><span class="fc-s">6 estilos disponibles</span></div>
       </div>
     </div>
   </div>
@@ -372,6 +426,81 @@ footer{padding:52px 0;border-top:1px solid var(--line)}
 
 <script>
 window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',scrollY>60));
+
+// Hero Studio Animation
+let hsTimer = 0, hsPct = 0, hsPaso = 0, hsInterval;
+const hsStatuses = ['Generando guion de ventas...','Sintetizando narración de voz...','Buscando imágenes perfectas...','Componiendo música de fondo...','Renderizando video en HD...','¡Video listo para publicar!'];
+const hsTemas = ['Restaurante de cocina antioqueña en Medellín','Gimnasio boutique en El Poblado','Clínica dental en Laureles','Agencia de marketing digital','Tienda de ropa deportiva para mujer'];
+let hsTemIdx = 0;
+
+function hsAnim() {
+  hsPct += 0.8;
+  if (hsPct > 100) hsPct = 100;
+  const bar = document.getElementById('hs-bar');
+  const pct = document.getElementById('hs-pct');
+  const status = document.getElementById('hs-status');
+  const timer = document.getElementById('hs-timer');
+  if (!bar) return;
+  bar.style.width = hsPct + '%';
+  if (pct) pct.textContent = Math.floor(hsPct) + '%';
+  const si = Math.min(Math.floor(hsPct / 20), 5);
+  if (status) status.textContent = hsStatuses[si];
+  hsTimer++;
+  const m = Math.floor(hsTimer / 60).toString().padStart(2,'0');
+  const s = (hsTimer % 60).toString().padStart(2,'0');
+  if (timer) timer.textContent = m + ':' + s;
+  // Marcar pasos completados
+  const pasoIdx = Math.floor(hsPct / 20);
+  document.querySelectorAll('.hs-paso').forEach((p, i) => {
+    const ico = p.querySelector('.hs-ico');
+    const check = p.querySelector('.hs-check');
+    if (i < pasoIdx) {
+      ico.style.background = 'rgba(214,178,94,.15)';
+      ico.style.borderColor = 'rgba(214,178,94,.4)';
+      ico.style.color = '#D6B25E';
+      check.style.display = 'block';
+      p.querySelector('span').style.color = 'rgba(255,255,255,.6)';
+    } else if (i === pasoIdx) {
+      ico.style.background = 'rgba(214,178,94,.08)';
+      ico.style.borderColor = 'rgba(214,178,94,.3)';
+      ico.style.color = '#D6B25E';
+      p.querySelector('span').style.color = '#F0EDE5';
+    }
+  });
+  if (hsPct >= 100) {
+    clearInterval(hsInterval);
+    const listo = document.getElementById('hs-listo');
+    if (listo) listo.style.display = 'block';
+    setTimeout(reiniciarDemo, 4000);
+    return;
+  }
+}
+
+function reiniciarDemo() {
+  hsPct = 0; hsTimer = 0;
+  const bar = document.getElementById('hs-bar');
+  const pct = document.getElementById('hs-pct');
+  const listo = document.getElementById('hs-listo');
+  if (bar) bar.style.width = '0%';
+  if (pct) pct.textContent = '0%';
+  if (listo) listo.style.display = 'none';
+  hsTemIdx = (hsTemIdx + 1) % hsTemas.length;
+  const tema = document.getElementById('hs-tema');
+  if (tema) tema.textContent = hsTemas[hsTemIdx];
+  document.querySelectorAll('.hs-paso').forEach(p => {
+    const ico = p.querySelector('.hs-ico');
+    const check = p.querySelector('.hs-check');
+    ico.style.background = '';
+    ico.style.borderColor = 'rgba(255,255,255,.1)';
+    ico.style.color = 'rgba(255,255,255,.2)';
+    check.style.display = 'none';
+    p.querySelector('span').style.color = 'rgba(255,255,255,.25)';
+  });
+  clearInterval(hsInterval);
+  hsInterval = setInterval(hsAnim, 50);
+}
+
+setTimeout(() => { hsInterval = setInterval(hsAnim, 50); }, 800);
 function tFaq(item){const o=item.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!o)item.classList.add('open');}
 const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible')})},{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
