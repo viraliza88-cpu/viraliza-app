@@ -200,14 +200,16 @@ const app = express();
 // 1. Bloqueo de IPs maliciosas conocidas y bots
 const IP_BLOQUEADAS = new Set();
 const USER_AGENTS_BLOQUEADOS = [
-  'sqlmap', 'nikto', 'nmap', 'masscan', 'zgrab', 'python-requests/2',
-  'curl/', 'wget/', 'scrapy', 'ahrefsbot', 'semrushbot', 'dotbot'
+  'sqlmap', 'nikto', 'nmap', 'masscan', 'zgrab',
+  'scrapy', 'ahrefsbot', 'semrushbot', 'dotbot'
 ];
 app.use((req, res, next) => {
   const ip = req.ip || req.connection.remoteAddress;
   const ua = (req.headers['user-agent'] || '').toLowerCase();
-  if (IP_BLOQUEADAS.has(ip)) return res.status(403).json({ error: "Acceso denegado." });
-  if (USER_AGENTS_BLOQUEADOS.some(bot => ua.includes(bot))) {
+  // No bloquear peticiones locales del propio servidor
+  const esLocal = ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1';
+  if (!esLocal && IP_BLOQUEADAS.has(ip)) return res.status(403).json({ error: "Acceso denegado." });
+  if (!esLocal && USER_AGENTS_BLOQUEADOS.some(bot => ua.includes(bot))) {
     console.warn(`[SEGURIDAD] Bot bloqueado: ${ua} desde ${ip}`);
     return res.status(403).send("Forbidden");
   }
@@ -447,12 +449,12 @@ app.get("/api/imagenes/buscar", autenticar, async (req, res) => {
       const PIXABAY_KEY = "56825063-f25e3add3c74283312d66b099";
       const r = await fetch(`https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(q)}&image_type=photo&per_page=18&safesearch=true&lang=es`, { signal: AbortSignal.timeout(8000) });
       const j = await r.json();
-      resultados = (j.hits || []).map(h => ({ url: h.webformatURL, thumb: h.previewURL, ancho: h.imageWidth, alto: h.imageHeight }));
+      resultados = (j.hits || []).map(h => ({ url: h.largeImageURL || h.webformatURL, thumb: h.webformatURL, ancho: h.imageWidth, alto: h.imageHeight }));
     } else {
       const PEXELS_KEY = process.env.PEXELS_API_KEY;
       const r = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(q)}&per_page=18&locale=es-ES`, { headers: { Authorization: PEXELS_KEY }, signal: AbortSignal.timeout(8000) });
       const j = await r.json();
-      resultados = (j.photos || []).map(p => ({ url: p.src.large, thumb: p.src.medium, ancho: p.width, alto: p.height }));
+      resultados = (j.photos || []).map(p => ({ url: p.src.large2x || p.src.large, thumb: p.src.large, ancho: p.width, alto: p.height }));
     }
     res.json({ resultados });
   } catch(e) {
@@ -1079,7 +1081,7 @@ app.post("/api/guion", rateLimiter(20), autenticar, async (req, res) => {
 });
 
 app.post("/api/videos", autenticar, async (req, res) => {
-  let { tema, guion, terminos, voz, duracion, bgmArchivo, bgmVolumen, materiales, audioPersonalizado, vozPremium, formato, sinNarracion, fuente, bgmPremiumUrl, subtitulosActivos, subtitulosColor, subtitulosFuente, imagenesSeleccionadas } = req.body || {};
+  let { tema, guion, terminos, voz, duracion, bgmArchivo, bgmVolumen, materiales, audioPersonalizado, vozPremium, formato, sinNarracion, fuente, bgmPremiumUrl, subtitulosActivos, subtitulosColor, subtitulosFuente, imagenesSeleccionadas, transicion } = req.body || {};
   // Si hay imágenes seleccionadas del buscador visual, usarlas como materiales
   if (imagenesSeleccionadas && imagenesSeleccionadas.length > 0 && (!materiales || !materiales.length)) {
     try {
@@ -1177,19 +1179,21 @@ app.post("/api/videos", autenticar, async (req, res) => {
     }
   }
 
+  console.log("[PRODUCIR] usaPropios:", usaPropios, "materiales:", materiales?.length, "transicion:", transicion);
   const carga = {
     video_subject: String(tema).trim(),
     video_script: guionFinal,
     video_terms: terminosFinales,
     video_aspect: aspecto,
     video_concat_mode: "random",
-    video_transition_mode: "Shuffle",
+    video_transition_mode: transicion || "None",
     match_materials_to_script: !usaPropios,
     n_threads: 4,
     video_clip_duration: 3,
     video_count: 1,
     video_source: usaPropios ? "local" : fuenteVideo,
     video_materials: usaPropios ? materiales.map((m) => ({ provider: "local", url: m })) : undefined,
+    video_material_count: usaPropios ? materiales.length : undefined,
     video_language: "es",
     voice_name: vozPremium ? `elevenlabs:${vozPremium}:premium` : (voz || "es-CO-SalomeNeural-Female"),
     voice_rate: 0.98,

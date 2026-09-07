@@ -189,6 +189,7 @@ const W = {
     subtitulosActivos: true,
     subtitulosColor: "#FFFFFF",
     subtitulosFuente: "clasica",
+    transicion: "None",
   },
 
   irA(paso) {
@@ -259,7 +260,8 @@ const W = {
         div.dataset.alto = img.alto;
         const imgEl = document.createElement("img");
         imgEl.src = img.thumb;
-        imgEl.style.cssText = "width:100%;height:130px;object-fit:cover;display:block;transition:transform .2s";
+        imgEl.style.cssText = "width:100%;height:150px;object-fit:cover;display:block;transition:transform .2s;image-rendering:high-quality";
+        imgEl.loading = "lazy";
         imgEl.onmouseover = () => imgEl.style.transform = "scale(1.05)";
         imgEl.onmouseout = () => imgEl.style.transform = "scale(1)";
         const check = document.createElement("div");
@@ -510,7 +512,50 @@ const W = {
   },
 
   // ---- Paso 4: subtítulos ----
-    toggleSubtitulos() {
+    elegirTransicion(btn) {
+    document.querySelectorAll(".trans-card").forEach(b => {
+      b.classList.remove("elegida");
+      b.style.borderColor = "rgba(255,255,255,.15)";
+      b.style.background = "";
+    });
+    btn.classList.add("elegida");
+    btn.style.borderColor = "#D6B25E";
+    btn.style.background = "rgba(214,178,94,.08)";
+    this.estado.transicion = btn.dataset.trans;
+    // Actualizar preview
+    const boxB = document.getElementById("trans-box-b");
+    const desc = document.getElementById("trans-desc");
+    const arrow = document.getElementById("trans-arrow");
+    if (!boxB) return;
+    const configs = {
+      "None": { anim: "none", desc: "Corte directo entre imágenes", arrow: "→" },
+      "FadeIn": { anim: "fadeInTrans .6s ease", desc: "Fundido suave — elegante y profesional", arrow: "✦" },
+      "SlideLeft": { anim: "slideLeftTrans .5s ease", desc: "Deslizamiento lateral — dinámico y moderno", arrow: "⟶" },
+      "ZoomIn": { anim: "zoomInTrans .5s ease", desc: "Zoom de entrada — impactante y visual", arrow: "⊕" },
+      "CircleOpen": { anim: "circleOpenTrans .6s ease", desc: "Apertura circular — creativo y llamativo", arrow: "◎" },
+      "Shuffle": { anim: "fadeInTrans .4s ease", desc: "Transición aleatoria en cada imagen", arrow: "🎲" },
+    };
+    const cfg = configs[btn.dataset.trans] || configs["None"];
+    if (desc) desc.textContent = cfg.desc;
+    if (arrow) arrow.textContent = cfg.arrow;
+    // Animar preview
+    boxB.style.animation = "none";
+    boxB.offsetHeight; // reflow
+    boxB.style.animation = cfg.anim;
+    // Repetir animación
+    clearInterval(this._transInterval);
+    if (cfg.anim !== "none") {
+      this._transInterval = setInterval(() => {
+        boxB.style.animation = "none";
+        boxB.offsetHeight;
+        boxB.style.animation = cfg.anim;
+      }, 2000);
+    } else {
+      clearInterval(this._transInterval);
+    }
+  },
+
+  toggleSubtitulos() {
     const toggle = document.getElementById("toggle-subtitulos");
     const activo = toggle.classList.toggle("activo");
     document.getElementById("subtitulos-activos").value = activo ? "1" : "0";
@@ -611,6 +656,8 @@ const W = {
           audioPersonalizado: document.getElementById("audio-personalizado").value,
           vozPremium: document.getElementById("voz-premium-elegida").value,
           sinNarracion: document.getElementById("sin-narracion").value === "1",
+          imagenesSeleccionadas: this.estado.imagenesSeleccionadas || [],
+          transicion: this.estado.transicion || "None",
         }),
       });
       // Resetear el wizard
@@ -869,6 +916,19 @@ const Panel = {
     if (elPlan) elPlan.textContent = cuota.plan;
     if (elUsados) elUsados.textContent = cuota.usados;
     if (elLimite) elLimite.textContent = cuota.limite;
+    const campoTrans = document.getElementById("campo-transiciones");
+    if (campoTrans) {
+      const planesConTrans = ["Signature","Élite","Elite"];
+      campoTrans.style.display = planesConTrans.includes(cuota.plan) ? "block" : "none";
+    }
+    const cuentaRenovacion = document.getElementById("cuenta-renovacion");
+    if (cuentaRenovacion) cuentaRenovacion.textContent = cuota.expira ? new Date(cuota.expira).toLocaleDateString("es-CO",{day:"numeric",month:"long",year:"numeric"}) : "Sin expiración";
+    const cuentaPlanNombre = document.getElementById("cuenta-plan-nombre");
+    if (cuentaPlanNombre) cuentaPlanNombre.textContent = cuota.plan || "—";
+    const cuentaUsados = document.getElementById("cuenta-usados");
+    const cuentaLimite = document.getElementById("cuenta-limite");
+    if (cuentaUsados) cuentaUsados.textContent = cuota.usados || 0;
+    if (cuentaLimite) cuentaLimite.textContent = cuota.limite || 0;
     // Actualizar contador en navbar
     const navUsados = document.getElementById("nav-usados");
     const navLimite = document.getElementById("nav-limite");
@@ -913,16 +973,118 @@ const Panel = {
       this._planes = planes;
       this._planesCargados = true;
     } catch { return; }
+    const FEATURES = {
+      esencial: [
+        "15 videos al mes",
+        "Sin marca de agua — 100% tu marca",
+        "Voces profesionales en español",
+        "Sube tu propia narración de voz",
+        "Buscador visual de imágenes",
+        "Sube tus propias imágenes y videos",
+      ],
+      signature: [
+        "50 videos al mes",
+        "Sin marca de agua — 100% tu marca",
+        "Voces profesionales en español",
+        "Sube tu propia narración de voz",
+        "Buscador visual de imágenes",
+        "✨ Transiciones cinematográficas",
+      ],
+      elite: [
+        "150 videos al mes — producción máxima",
+        "Sin marca de agua — 100% tu marca",
+        "Voces profesionales en español",
+        "Sube tu propia narración de voz",
+        "Buscador visual de imágenes",
+        "✨ Transiciones cinematográficas",
+      ],
+    };
     const cont = document.getElementById("lista-planes");
-    cont.innerHTML = this._planes.map(p => `
-      <article class="video">
-        <div>
-          <p class="tema">${p.nombre}</p>
-          <p class="meta">${p.limite} videos al mes · $${p.precioCOP.toLocaleString("es-CO")} COP/mes</p>
+    cont.style.cssText = "padding:0;display:block";
+    cont.innerHTML = `
+    <div style="padding:44px;max-width:900px">
+      <span style="font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(214,178,94,.5);display:block;margin-bottom:12px">Membresías</span>
+      <div style="font-family:'Playfair Display',serif;font-size:36px;color:#F0EDE5;margin-bottom:6px;line-height:1.1">Elige tu nivel<br>de <em style="color:#D6B25E">producción</em></div>
+      <p style="font-size:14px;color:rgba(255,255,255,.3);margin-bottom:48px;font-weight:300">Sin contratos. Sin permanencias. Cancela cuando quieras desde tu panel.</p>
+
+      <!-- PLAN ESENCIAL -->
+      <div style="border:1px solid rgba(255,255,255,.08);margin-bottom:12px;display:flex;align-items:stretch;overflow:hidden;transition:border-color .3s" onmouseover="this.style.borderColor='rgba(214,178,94,.2)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
+        <div style="width:6px;background:rgba(255,255,255,.1);flex-shrink:0"></div>
+        <div style="flex:1;padding:28px 32px;display:flex;align-items:center;gap:40px">
+          <div style="min-width:160px">
+            <span style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.3);display:block;margin-bottom:10px">Esencial</span>
+            <div style="font-family:'Playfair Display',serif;font-size:32px;color:#F0EDE5">$39.900</div>
+            <span style="font-size:11px;color:rgba(255,255,255,.2)">COP / mes</span>
+          </div>
+          <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:6px 24px">
+            <span style="font-size:12px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:8px"><span style="color:#D6B25E;font-size:10px">✓</span> 15 videos al mes</span>
+            <span style="font-size:12px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:8px"><span style="color:#D6B25E;font-size:10px">✓</span> Sin marca de agua</span>
+            <span style="font-size:12px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:8px"><span style="color:#D6B25E;font-size:10px">✓</span> Voces profesionales</span>
+            <span style="font-size:12px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:8px"><span style="color:#D6B25E;font-size:10px">✓</span> Tu propia narración</span>
+            <span style="font-size:12px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:8px"><span style="color:#D6B25E;font-size:10px">✓</span> Buscador de imágenes</span>
+            <span style="font-size:12px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:8px"><span style="color:#D6B25E;font-size:10px">✓</span> Tus propias imágenes</span>
+          </div>
+          <div style="flex-shrink:0">
+            <button data-plan="esencial" type="button" style="background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.4);padding:13px 28px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;white-space:nowrap;font-family:inherit;transition:all .2s" onmouseover="if(!this.disabled){this.style.borderColor='#D6B25E';this.style.color='#D6B25E'}" onmouseout="if(!this.disabled&&!this.dataset.actual){this.style.borderColor='rgba(255,255,255,.15)';this.style.color='rgba(255,255,255,.4)'}">Elegir Esencial</button>
+          </div>
         </div>
-        <button class="btn" data-plan="${p.clave}" type="button">Actualizar</button>
-      </article>
-    `).join("");
+      </div>
+
+      <!-- PLAN SIGNATURE -->
+      <div style="border:1px solid rgba(214,178,94,.25);margin-bottom:12px;display:flex;align-items:stretch;overflow:hidden;transition:border-color .3s" onmouseover="this.style.borderColor='rgba(214,178,94,.5)'" onmouseout="this.style.borderColor='rgba(214,178,94,.25)'">
+        <div style="width:6px;background:rgba(214,178,94,.4);flex-shrink:0"></div>
+        <div style="flex:1;padding:28px 32px;display:flex;align-items:center;gap:40px">
+          <div style="min-width:160px">
+            <span style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(214,178,94,.6);display:block;margin-bottom:10px">Signature</span>
+            <div style="font-family:'Playfair Display',serif;font-size:32px;color:#F0EDE5">$89.900</div>
+            <span style="font-size:11px;color:rgba(255,255,255,.2)">COP / mes</span>
+          </div>
+          <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:6px 24px">
+            <span style="font-size:12px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:8px"><span style="color:#D6B25E;font-size:10px">✓</span> 50 videos al mes</span>
+            <span style="font-size:12px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:8px"><span style="color:#D6B25E;font-size:10px">✓</span> Sin marca de agua</span>
+            <span style="font-size:12px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:8px"><span style="color:#D6B25E;font-size:10px">✓</span> Voces profesionales</span>
+            <span style="font-size:12px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:8px"><span style="color:#D6B25E;font-size:10px">✓</span> Tu propia narración</span>
+            <span style="font-size:12px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:8px"><span style="color:#D6B25E;font-size:10px">✓</span> Buscador de imágenes</span>
+            <span style="font-size:12px;color:#D6B25E;display:flex;align-items:center;gap:8px"><span style="font-size:10px">✨</span> Transiciones cinematográficas</span>
+          </div>
+          <div style="flex-shrink:0">
+            <button data-plan="signature" type="button" style="background:none;border:1px solid rgba(214,178,94,.3);color:#D6B25E;padding:13px 28px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;white-space:nowrap;font-family:inherit;transition:all .2s" onmouseover="if(!this.disabled){this.style.background='rgba(214,178,94,.08)';this.style.borderColor='#D6B25E'}" onmouseout="if(!this.disabled&&!this.dataset.actual){this.style.background='none';this.style.borderColor='rgba(214,178,94,.3)'}">Elegir Signature</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLAN ÉLITE -->
+      <div style="border:1px solid rgba(214,178,94,.5);background:linear-gradient(135deg,rgba(214,178,94,.06) 0%,transparent 60%);display:flex;align-items:stretch;overflow:hidden;position:relative" onmouseover="this.style.borderColor='#D6B25E'" onmouseout="this.style.borderColor='rgba(214,178,94,.5)'">
+        <div style="position:absolute;top:0;right:0;background:#D6B25E;color:#09090B;font-size:8px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:5px 20px;z-index:1">RECOMENDADO</div>
+        <div style="width:6px;background:#D6B25E;flex-shrink:0"></div>
+        <div style="flex:1;padding:36px 32px;display:flex;align-items:center;gap:40px">
+          <div style="min-width:160px">
+            <span style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#D6B25E;display:block;margin-bottom:10px">Élite</span>
+            <div style="font-family:'Playfair Display',serif;font-size:44px;color:#D6B25E;line-height:1">$199.900</div>
+            <span style="font-size:11px;color:rgba(255,255,255,.2)">COP / mes</span>
+          </div>
+          <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:8px 24px">
+            <span style="font-size:13px;color:#F0EDE5;font-weight:500;display:flex;align-items:center;gap:8px"><span style="color:#D6B25E">✓</span> 150 videos al mes</span>
+            <span style="font-size:13px;color:#F0EDE5;font-weight:500;display:flex;align-items:center;gap:8px"><span style="color:#D6B25E">✓</span> Sin marca de agua</span>
+            <span style="font-size:12px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:8px"><span style="color:#D6B25E;font-size:10px">✓</span> Voces profesionales</span>
+            <span style="font-size:12px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:8px"><span style="color:#D6B25E;font-size:10px">✓</span> Tu propia narración</span>
+            <span style="font-size:12px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:8px"><span style="color:#D6B25E;font-size:10px">✓</span> Buscador de imágenes</span>
+            <span style="font-size:13px;color:#D6B25E;font-weight:500;display:flex;align-items:center;gap:8px"><span>✨</span> Transiciones cinematográficas</span>
+          </div>
+          <div style="flex-shrink:0">
+            <button data-plan="elite" type="button" style="background:#D6B25E;border:1px solid #D6B25E;color:#09090B;padding:15px 32px;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;white-space:nowrap;font-family:inherit;transition:all .2s" onmouseover="if(!this.disabled){this.style.background='#E8C96A';this.style.borderColor='#E8C96A'}" onmouseout="if(!this.disabled&&!this.dataset.actual){this.style.background='#D6B25E';this.style.borderColor='#D6B25E'}">Elegir Élite</button>
+          </div>
+        </div>
+      </div>
+
+      <p style="text-align:center;margin-top:20px;font-size:12px;color:rgba(255,255,255,.2);display:flex;gap:20px;justify-content:center;flex-wrap:wrap">
+        <span style="display:flex;align-items:center;gap:6px"><span style="color:#D6B25E">✓</span> Tarjeta crédito/débito</span>
+        <span style="display:flex;align-items:center;gap:6px"><span style="color:#D6B25E">✓</span> PSE</span>
+        <span style="display:flex;align-items:center;gap:6px"><span style="color:#D6B25E">✓</span> Nequi</span>
+        <span style="display:flex;align-items:center;gap:6px"><span style="color:#D6B25E">✓</span> Pesos colombianos</span>
+      </p>
+    </div>
+    `;
     cont.querySelectorAll("button[data-plan]").forEach(b => {
       b.onclick = () => this.pagarPlan(b.dataset.plan, b);
     });
@@ -931,9 +1093,38 @@ const Panel = {
 
   actualizarBotonesPlan(planActual) {
     document.querySelectorAll("#lista-planes button[data-plan]").forEach(b => {
-      const esActual = (this._planes||[]).find(p=>p.clave===b.dataset.plan)?.nombre === planActual;
-      b.textContent = esActual ? "Tu plan actual" : "Actualizar";
+      const plan = (this._planes||[]).find(p=>p.clave===b.dataset.plan);
+      const esActual = plan?.nombre === planActual;
+      b.textContent = esActual ? "✓ Plan actual" : `Elegir ${plan?.nombre||""}`;
       b.disabled = esActual;
+      if (esActual) {
+        b.style.background = "#D6B25E";
+        b.style.color = "#09090B";
+        b.style.borderColor = "#D6B25E";
+        b.style.fontWeight = "700";
+        b.style.cursor = "default";
+        b.onmouseover = null;
+        b.onmouseout = null;
+        const card = b.closest(".plan-item");
+        if (card) {
+          card.style.borderColor = "#D6B25E";
+          card.style.background = "rgba(214,178,94,.06)";
+          // Agregar badge encima
+          if (!card.querySelector(".plan-actual-badge")) {
+            const badge = document.createElement("div");
+            badge.className = "plan-actual-badge";
+            badge.textContent = "✓ Tu plan actual";
+            badge.style.cssText = "position:absolute;top:0;left:0;right:0;background:#D6B25E;color:#09090B;text-align:center;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:6px;z-index:1";
+            card.style.position = "relative";
+            card.style.paddingTop = "42px";
+            card.insertBefore(badge, card.firstChild);
+          }
+          // Ocultar el tier cuando es plan actual para no duplicar
+          const tier = card.querySelector("span[style*='letra-spacing']") || card.querySelector("span:first-of-type");
+        }
+      } else {
+        b.style.cursor = "pointer";
+      }
     });
   },
 
