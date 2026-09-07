@@ -373,7 +373,7 @@ const W = {
   },
 
   elegirFuente(btn) {
-    document.querySelectorAll("[data-fuente]:not([data-fuente='clasica']):not([data-fuente='ligera']):not([data-fuente='elegante']):not([data-fuente='moderna'])").forEach((b) => b.classList.remove("elegida"));
+    document.querySelectorAll("[data-banco]").forEach(b => b.classList.remove("elegida"));
     btn.classList.add("elegida");
     this.estado.fuente = btn.dataset.banco;
   },
@@ -461,7 +461,8 @@ const W = {
     document.querySelectorAll("[data-animo]").forEach((b) => b.classList.remove("elegida"));
     btn.classList.add("elegida");
     const cont = document.getElementById("lista-musica-premium");
-    cont.innerHTML = `<p class="ayuda" style="margin:14px;text-align:center">Buscando canciones ${btn.querySelector(".tarjeta-titulo").textContent.toLowerCase()}…</p>`;
+    const nombreAnimo = (btn.querySelector(".animo-name") || btn.querySelector(".tarjeta-titulo") || btn).textContent.toLowerCase();
+    cont.innerHTML = `<p class="ayuda" style="margin:14px;text-align:center">Buscando canciones ${nombreAnimo}…</p>`;
     try {
       const r = await API.pedir(`/api/musicas/premium?animo=${btn.dataset.animo}`);
       const pistas = r?.pistas || [];
@@ -479,7 +480,7 @@ const W = {
           <span class="nombre">${p.nombre.replace(/</g,"&lt;")}
             <span style="color:var(--muted);font-size:12px">— ${(p.artista||"").replace(/</g,"&lt;")}</span>
           </span>
-          <button class="boton-escuchar" type="button">Escuchar</button>
+          <button class="boton-escuchar" type="button" style="background:rgba(214,178,94,.08);border:1px solid rgba(214,178,94,.3);color:var(--gold);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:7px 14px;cursor:pointer;white-space:nowrap;border-radius:2px;font-family:inherit">▶ Escuchar</button>
         `;
         fila.querySelector(".nombre").onclick = fila.querySelector(".radio").onclick = () => {
           document.querySelectorAll("#lista-musica-premium .opcion-musica").forEach(f=>f.classList.remove("seleccionada"));
@@ -532,8 +533,8 @@ const W = {
   },
 
   elegirFuenteSub(btn) {
-    document.querySelectorAll("[data-banco]")
-      .forEach(b=>b.classList.remove("elegida"));
+    document.querySelectorAll("[data-fuente]")
+      .forEach(b=>{ b.classList.remove("elegida"); });
     btn.classList.add("elegida");
     this.estado.subtitulosFuente = btn.dataset.fuente;
     document.getElementById("subtitulos-fuente").value = btn.dataset.fuente;
@@ -691,7 +692,7 @@ const Panel = {
         fila.innerHTML = `
           <span class="radio"></span>
           <span class="nombre">${v.etiqueta} <span style="color:var(--muted);font-size:11px">${v.pais}</span></span>
-          <button class="boton-escuchar" type="button">Escuchar</button>
+          <button class="boton-escuchar" type="button" style="background:rgba(214,178,94,.08);border:1px solid rgba(214,178,94,.3);color:var(--gold);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:7px 14px;cursor:pointer;white-space:nowrap;border-radius:2px;font-family:inherit">▶ Escuchar</button>
         `;
         fila.querySelector(".nombre").onclick = fila.querySelector(".radio").onclick = () => {
           document.querySelectorAll("#panel-voz-lista .opcion-musica").forEach(f => f.classList.remove("seleccionada"));
@@ -1062,7 +1063,7 @@ const Panel = {
           fila.innerHTML = `
             <span class="radio"></span>
             <span class="nombre">${nombre.replace(/\.[^.]+$/,"").replace(/</g,"&lt;")}</span>
-            <button class="boton-escuchar" type="button">Escuchar</button>
+            <button class="boton-escuchar" type="button" style="background:rgba(214,178,94,.08);border:1px solid rgba(214,178,94,.3);color:var(--gold);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:7px 14px;cursor:pointer;white-space:nowrap;border-radius:2px;font-family:inherit">▶ Escuchar</button>
             <button class="boton-eliminar" type="button" title="Eliminar">✕</button>
           `;
           fila.querySelector(".nombre").onclick = fila.querySelector(".radio").onclick = () => {

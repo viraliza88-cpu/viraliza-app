@@ -1,19 +1,329 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mi panel — Viraliza</title>
+<title>Mi panel — Viraliza Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="estilos.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07070A;--bg2:#0A0A0D;--bg3:#0F0F12;--bg4:#141418;
+  --ink:#F0EDE5;--muted:#8A8480;
+  --gold:#D6B25E;--gold2:#E8C96A;
+  --line:rgba(255,255,255,.06);--line2:rgba(214,178,94,.25);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:"Jost",sans-serif;font-weight:300;font-size:15px;line-height:1.6;min-height:100vh;overflow-x:hidden}
+em{font-style:italic;color:var(--gold)}
+input,textarea,select,button{font-family:inherit}
+
+/* HEADER */
+.top{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,7,10,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);height:52px;display:flex;align-items:center}
+.top .wrap{display:flex;justify-content:space-between;align-items:center;max-width:100%;padding:0 28px;width:100%}
+.logo{font-family:"Playfair Display",serif;font-size:20px;color:var(--ink);text-decoration:none}
+.logo span{color:var(--gold)}
+.sesion{display:flex;align-items:center;gap:20px}
+.sesion span{font-size:13px;color:var(--muted)}
+.sesion b{color:var(--ink);font-weight:500}
+.salir{background:none;border:1px solid var(--line);color:var(--muted);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:7px 16px;cursor:pointer;transition:all .2s}
+.salir:hover{border-color:var(--line2);color:var(--gold)}
+.admin-link{color:var(--gold);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none}
+
+/* TABS */
+.tabs-bar{position:fixed;top:52px;left:0;right:0;z-index:99;background:var(--bg2);border-bottom:1px solid var(--line);display:flex;align-items:center;height:44px;padding-left:220px}
+.tab-btn{background:none;border:none;color:var(--muted);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:0 20px;height:100%;cursor:pointer;transition:all .2s;border-bottom:2px solid transparent;font-family:inherit}
+.tab-btn:hover{color:var(--ink)}
+.tab-btn.activo{color:var(--gold);border-bottom-color:var(--gold)}
+.tabs-bar-right{margin-left:auto;padding-right:24px;display:flex;align-items:center;gap:8px;border-left:1px solid var(--line);padding-left:20px}
+.videos-count{font-size:11px;letter-spacing:1px;color:var(--muted)}
+.videos-count span{font-family:"Playfair Display",serif;font-size:16px;color:var(--gold)}
+
+/* LAYOUT STUDIO */
+.studio-layout{display:flex;min-height:100vh;padding-top:96px}
+
+/* SIDEBAR */
+.sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--line);position:fixed;top:96px;bottom:0;left:0;display:flex;flex-direction:column;z-index:50;overflow-y:auto}
+.sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid var(--line)}
+.sidebar-logo-name{font-family:"Playfair Display",serif;font-size:18px;color:var(--ink)}
+.sidebar-logo-name span{color:var(--gold)}
+.sidebar-logo-sub{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(214,178,94,.4);margin-top:2px}
+.sidebar-steps{flex:1;padding:8px 0}
+.sidebar-step{display:flex;align-items:center;gap:12px;padding:12px 18px;position:relative;cursor:default;transition:background .2s}
+.sidebar-step.activo{background:rgba(214,178,94,.06)}
+.sidebar-step.activo::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:2px;background:var(--gold);border-radius:0 2px 2px 0}
+.sidebar-step-num{width:30px;height:30px;border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-family:"Playfair Display",serif;font-size:14px;font-style:italic;color:rgba(255,255,255,.2);flex-shrink:0;transition:all .2s}
+.sidebar-step.activo .sidebar-step-num{border-color:rgba(214,178,94,.5);color:var(--gold)}
+.sidebar-step.hecho .sidebar-step-num{background:rgba(214,178,94,.15);border-color:rgba(214,178,94,.3);color:var(--gold);font-style:normal;font-size:10px}
+.sidebar-step-label{font-size:13px;color:rgba(255,255,255,.3);transition:color .2s;font-weight:400;letter-spacing:.3px}
+.sidebar-step.activo .sidebar-step-label{color:var(--ink);font-weight:500}
+.sidebar-step.hecho .sidebar-step-label{color:rgba(214,178,94,.6)}
+.sidebar-step-time{font-size:10px;color:rgba(255,255,255,.15);margin-top:2px}
+.sidebar-step.activo .sidebar-step-time{color:rgba(214,178,94,.5)}
+.sidebar-bottom{padding:14px 18px;border-top:1px solid var(--line)}
+.sidebar-plan-name{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;justify-content:space-between}
+.sidebar-plan-num{font-family:"Playfair Display",serif;font-size:20px;color:var(--ink);font-style:italic}
+.sidebar-plan-of{font-size:11px;color:rgba(255,255,255,.2)}
+.sidebar-track{background:rgba(255,255,255,.05);height:2px;margin-top:6px;border-radius:1px}
+.sidebar-fill{height:100%;background:var(--gold);border-radius:1px;transition:width .5s}
+
+/* MAIN CONTENT */
+.studio-main{flex:1;margin-left:220px;display:flex;flex-direction:column}
+.tab-panel{display:none}
+.tab-panel.activo{display:block}
+
+/* WIZARD PANTALLAS */
+.wizard-pantalla{display:none}
+.wizard-pantalla.activa{display:flex;flex-direction:column;min-height:calc(100vh - 96px)}
+
+/* STUDIO HEADER */
+.s-header{padding:32px 44px 24px;border-bottom:1px solid var(--line)}
+.s-eyebrow{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(214,178,94,.5);margin-bottom:12px;display:block}
+.s-headline{font-family:"Playfair Display",serif;font-size:36px;color:var(--ink);line-height:1.1;letter-spacing:-.5px}
+.s-sub{font-size:13px;color:rgba(255,255,255,.3);margin-top:6px;font-weight:300;line-height:1.5}
+
+/* STUDIO BODY */
+.s-body{flex:1;padding:28px 44px;overflow-y:auto}
+
+/* STUDIO FOOTER */
+.s-footer{padding:16px 44px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.01)}
+.s-dots{display:flex;gap:5px}
+.s-dot{width:22px;height:2px;background:rgba(255,255,255,.07);border-radius:1px}
+.s-dot.activo{background:var(--gold)}
+.s-dot.hecho{background:rgba(214,178,94,.3)}
+.s-hint{font-size:11px;color:rgba(255,255,255,.12);display:flex;align-items:center;gap:12px}
+.btn-cont{background:var(--gold);color:#09090B;border:none;padding:13px 32px;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:background .2s}
+.btn-cont:hover{background:var(--gold2)}
+.btn-atras{background:none;border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.3);padding:13px 20px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.btn-atras:hover{border-color:rgba(214,178,94,.3);color:var(--gold)}
+
+/* CAMPOS STUDIO */
+.s-field{margin-bottom:26px}
+.s-label{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:10px;display:block;font-weight:500}
+.s-input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.3);padding:10px 0;font-size:16px;color:var(--ink);outline:none;font-family:inherit;transition:border-color .25s}
+.s-input:focus{border-color:rgba(214,178,94,.4)}
+.s-input::placeholder{color:rgba(255,255,255,.12);font-size:14px}
+.s-textarea{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.1);padding:10px 0;font-size:16px;color:var(--ink);outline:none;font-family:inherit;resize:none;transition:border-color .25s;line-height:1.6}
+.s-textarea:focus{border-color:rgba(214,178,94,.4)}
+.s-textarea::placeholder{color:rgba(255,255,255,.12);font-size:14px}
+
+/* NICHOS */
+.nicho-wrap{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.nicho-tag{padding:7px 14px;border:1px solid rgba(255,255,255,.2);font-size:11px;color:rgba(255,255,255,.6);cursor:pointer;border-radius:20px;transition:all .2s;background:none}
+.nicho-tag:hover{border-color:rgba(214,178,94,.3);color:rgba(214,178,94,.7)}
+.nicho-tag.elegida{border-color:rgba(214,178,94,.5);color:var(--gold);background:rgba(214,178,94,.08)}
+
+/* DURACIÓN */
+.dur-row{display:flex;gap:12px;margin-top:10px}
+.dur-card{flex:1;border:1px solid rgba(255,255,255,.15);padding:20px 16px;cursor:pointer;transition:all .2s;position:relative;text-align:left}
+.dur-card:hover{border-color:rgba(214,178,94,.5);background:rgba(214,178,94,.03)}
+.dur-card.elegida{border-color:rgba(214,178,94,.4);background:rgba(214,178,94,.04)}
+.dur-card.elegida::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.dur-num{font-family:"Playfair Display",serif;font-size:28px;color:rgba(255,255,255,.7);font-style:italic;margin-bottom:6px}
+.dur-card.elegida .dur-num{color:var(--gold)}
+.dur-name{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.dur-card.elegida .dur-name{color:rgba(214,178,94,.8)}
+.dur-desc{font-size:11px;color:rgba(255,255,255,.35);margin-top:4px}
+
+/* FORMATO */
+.formato-row{display:flex;gap:12px;margin-top:10px}
+.formato-card{flex:1;border:1px solid rgba(255,255,255,.07);padding:20px 14px;cursor:pointer;transition:all .2s;text-align:center}
+.formato-card:hover{border-color:rgba(214,178,94,.2)}
+.formato-card.elegida{border-color:rgba(214,178,94,.4);background:rgba(214,178,94,.04)}
+.formato-card.elegida .formato-icon{color:var(--gold)}
+.formato-icon{font-size:24px;display:block;margin-bottom:8px;color:rgba(255,255,255,.3);transition:color .2s}
+.formato-name{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px}
+.formato-card.elegida .formato-name{color:var(--gold)}
+.formato-desc{font-size:10px;color:rgba(255,255,255,.12)}
+
+/* BANCO */
+.banco-row{display:flex;gap:12px;margin-top:10px}
+.banco-card{flex:1;border:1px solid rgba(255,255,255,.15);padding:16px;cursor:pointer;transition:all .2s}
+.banco-card:hover{border-color:rgba(214,178,94,.4);background:rgba(214,178,94,.03)}
+.banco-card.elegida{border-color:var(--gold);background:rgba(214,178,94,.08);box-shadow:0 0 0 1px rgba(214,178,94,.2)}
+.banco-card-title{font-size:14px;color:rgba(255,255,255,.6);margin-bottom:4px;font-weight:500}
+.banco-card.elegida .banco-card-title{color:var(--gold)}
+.banco-card-desc{font-size:11px;color:rgba(255,255,255,.3)}
+.banco-aviso{display:none;background:rgba(214,178,94,.06);border:1px solid rgba(214,178,94,.2);padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--gold);justify-content:space-between;align-items:center}
+
+/* BUSCADOR */
+.buscador-wrap{border:1px solid var(--line);padding:18px;margin-top:16px}
+.buscador-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(214,178,94,.5);margin-bottom:12px;display:block}
+.buscador-row{display:flex;gap:8px;margin-bottom:12px}
+.buscador-input{flex:1;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);padding:10px 14px;font-size:14px;color:var(--ink);outline:none;font-family:inherit}
+.buscador-input:focus{border-color:rgba(214,178,94,.3)}
+.buscador-btn{background:var(--gold);color:#09090B;border:none;padding:10px 18px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.img-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-height:320px;overflow-y:auto;padding:4px}
+
+/* SUBIDA */
+.upload-zone{border:1px dashed rgba(255,255,255,.1);padding:20px;text-align:center;cursor:pointer;transition:all .2s;margin-top:12px}
+.upload-zone:hover{border-color:rgba(214,178,94,.3);background:rgba(214,178,94,.03)}
+.upload-icon{font-size:24px;display:block;margin-bottom:8px;color:rgba(255,255,255,.2)}
+.upload-text{font-size:13px;color:rgba(214,178,94,.7);margin-bottom:4px}
+.upload-desc{font-size:11px;color:rgba(255,255,255,.2)}
+
+/* GUION */
+.guion-box{width:100%;background:rgba(255,255,255,.02);border:1px solid var(--line);padding:20px;font-size:15px;color:var(--ink);line-height:1.8;resize:vertical;min-height:180px;outline:none;font-family:inherit;transition:border-color .2s}
+.guion-box:focus{border-color:rgba(214,178,94,.3)}
+.guion-loading{text-align:center;padding:48px 0}
+.guion-loading-text{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(214,178,94,.5)}
+.btn-regenerar{width:100%;background:none;border:1px solid var(--line);color:var(--muted);padding:12px;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-top:12px;font-family:inherit}
+.btn-regenerar:hover{border-color:rgba(214,178,94,.3);color:var(--gold)}
+.btn-regenerar:disabled{opacity:.4;cursor:not-allowed}
+.guion-contador{text-align:center;font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:8px}
+
+/* VOZ */
+.voz-tabs{display:flex;gap:0;border:1px solid var(--line);margin-bottom:16px}
+.voz-tab{flex:1;background:none;border:none;border-right:1px solid var(--line);color:var(--muted);font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:11px 8px;cursor:pointer;transition:all .2s;font-family:inherit}
+.voz-tab:last-child{border-right:none}
+.voz-tab:hover{color:var(--ink)}
+.voz-tab.activo{background:rgba(214,178,94,.08);color:var(--gold)}
+.s-select{width:100%;background:var(--bg3);border:1px solid var(--line);color:var(--ink);padding:12px 16px;font-size:14px;outline:none;font-family:inherit;cursor:pointer}
+.s-select:focus{border-color:rgba(214,178,94,.3)}
+.panel-voz-hidden{display:none}
+
+/* MÚSICA */
+.musica-tabs{display:flex;gap:10px;margin-bottom:16px}
+.musica-tab-btn{flex:1;background:none;border:1px solid var(--line);color:var(--muted);padding:11px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:inherit}
+.musica-tab-btn.activo{border-color:var(--gold);color:var(--gold);background:rgba(214,178,94,.06)}
+.animos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.animo-btn{border:1px solid rgba(255,255,255,.15);background:none;padding:14px 8px;cursor:pointer;transition:all .2s;text-align:center;font-family:inherit}
+.animo-btn:hover{border-color:rgba(214,178,94,.4);background:rgba(214,178,94,.04)}
+.animo-btn.elegida{border-color:var(--gold);background:rgba(214,178,94,.1);box-shadow:0 0 0 1px rgba(214,178,94,.2)}
+.animo-icon{font-size:22px;display:block;margin-bottom:6px}
+.animo-name{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.animo-btn.elegida .animo-name{color:var(--gold)}
+.canciones-lista{max-height:200px;overflow-y:auto;border:1px solid var(--line)}
+.opcion-musica{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .2s;gap:12px}
+.opcion-musica:last-child{border-bottom:none}
+.opcion-musica:hover{background:rgba(255,255,255,.03)}
+.opcion-musica.seleccionada{background:rgba(214,178,94,.06);border-left:2px solid var(--gold)}
+.nombre-cancion{font-size:13px;color:rgba(255,255,255,.7);flex:1}
+.opcion-musica.seleccionada .nombre-cancion{color:var(--gold)}
+.btn-escuchar{background:rgba(214,178,94,.08);border:1px solid rgba(214,178,94,.3);color:var(--gold);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:7px 14px;cursor:pointer;white-space:nowrap;transition:all .2s;font-family:inherit;border-radius:2px}
+.btn-escuchar:hover{background:rgba(214,178,94,.15);border-color:var(--gold)}
+.btn-escuchar:active{transform:scale(.97)}
+
+/* VOLUMEN */
+.volumen-row{display:flex;align-items:center;gap:16px;margin-top:4px}
+input[type=range]{flex:1;accent-color:var(--gold)}
+.volumen-val{font-size:13px;color:var(--gold);min-width:36px;text-align:right}
+
+/* SUBTÍTULOS */
+.toggle-grande{display:flex;align-items:center;gap:16px;border:1px solid var(--line);padding:16px;cursor:pointer;transition:all .2s;margin-bottom:16px}
+.toggle-grande.activo{border-color:rgba(214,178,94,.3);background:rgba(214,178,94,.04)}
+.toggle-switch{width:40px;height:22px;border:1px solid var(--line);border-radius:11px;position:relative;transition:all .2s;flex-shrink:0}
+.toggle-grande.activo .toggle-switch{border-color:var(--gold);background:rgba(214,178,94,.2)}
+.toggle-switch::after{content:'';position:absolute;width:16px;height:16px;background:rgba(255,255,255,.3);border-radius:50%;top:2px;left:2px;transition:all .2s}
+.toggle-grande.activo .toggle-switch::after{left:20px;background:var(--gold)}
+.toggle-grande-titulo{font-size:14px;color:rgba(255,255,255,.6)}
+.toggle-grande.activo .toggle-grande-titulo{color:var(--ink)}
+.toggle-grande-desc{font-size:11px;color:rgba(255,255,255,.2);margin-top:2px}
+.subtitulos-preview{border:1px solid var(--line);padding:28px 16px;text-align:center;margin-bottom:18px;background:rgba(0,0,0,.3)}
+.subtitulos-preview-texto{font-size:18px;color:#fff;font-weight:700;text-shadow:1px 1px 3px rgba(0,0,0,.8)}
+.colores-subtitulo{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;margin-top:8px;align-items:center}
+.color-chip{width:30px;height:30px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .2s}
+.color-chip.elegido{border-color:var(--gold);transform:scale(1.15)}
+.fuentes-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}
+.fuente-card{border:1px solid rgba(255,255,255,.15);padding:16px;cursor:pointer;transition:all .2s;text-align:center}
+.fuente-card:hover{border-color:rgba(214,178,94,.4);background:rgba(214,178,94,.03)}
+.fuente-card.elegida{border-color:var(--gold);background:rgba(214,178,94,.08);box-shadow:0 0 0 1px rgba(214,178,94,.2)}
+.fuente-card.elegida .fuente-name{color:var(--gold)}
+.fuente-name{font-size:16px;color:rgba(255,255,255,.7);margin-bottom:4px;transition:color .2s}
+.fuente-desc{font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.5px}
+
+/* RESUMEN */
+.resumen-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:28px}
+.resumen-item{border:1px solid var(--line);padding:16px}
+.resumen-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block}
+.resumen-val{font-size:14px;color:var(--ink)}
+.btn-producir{width:100%;background:var(--gold);color:#09090B;border:none;padding:20px;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.btn-producir:hover{background:var(--gold2)}
+.btn-producir:disabled{opacity:.5;cursor:not-allowed}
+
+/* VIDEOS */
+.videos-grid{padding:28px 32px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.video-card{background:var(--bg3);border:1px solid var(--line);overflow:hidden}
+.video-thumb{aspect-ratio:9/16;background:#000;display:flex;align-items:center;justify-content:center;max-height:200px;overflow:hidden}
+.video-thumb video{width:100%;height:100%;object-fit:contain}
+.video-info{padding:16px}
+.video-title{font-size:14px;color:var(--ink);margin-bottom:6px;line-height:1.4}
+.video-meta{font-size:11px;color:var(--muted);margin-bottom:12px}
+.video-estado-badge{font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;display:inline-block}
+.video-estado-badge.listo{background:rgba(105,240,174,.1);color:#69F0AE}
+.video-estado-badge.produciendo{background:rgba(214,178,94,.1);color:var(--gold)}
+.video-estado-badge.fallido{background:rgba(232,72,85,.1);color:#E84855}
+.video-acciones{display:flex;gap:8px;margin-top:10px}
+.video-acciones a,.video-acciones button{flex:1;background:none;border:1px solid var(--line);color:var(--muted);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:9px 8px;cursor:pointer;text-align:center;text-decoration:none;transition:all .2s;font-family:inherit}
+.video-acciones a:hover,.video-acciones button:hover{border-color:rgba(214,178,94,.3);color:var(--gold)}
+.progreso{background:var(--line);height:2px;margin:10px 0;overflow:hidden}
+.progreso i{display:block;height:100%;background:var(--gold);transition:width .5s}
+.vacio{grid-column:1/-1;text-align:center;padding:80px 20px;color:var(--muted);font-size:15px;line-height:1.8}
+
+/* MEMBRESÍA */
+.planes-grid{padding:28px 32px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.plan-card{background:var(--bg3);border:1px solid var(--line);padding:28px;display:flex;flex-direction:column;transition:border-color .2s}
+.plan-card:hover{border-color:rgba(214,178,94,.2)}
+.plan-card.actual{border-color:rgba(214,178,94,.4)}
+.plan-tier{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:block}
+.plan-precio{font-family:"Playfair Display",serif;font-size:32px;color:var(--ink);margin-bottom:4px}
+.plan-precio-sub{font-size:12px;color:var(--muted);margin-bottom:20px;display:block}
+.plan-features{list-style:none;flex:1;margin-bottom:20px}
+.plan-features li{font-size:13px;color:rgba(255,255,255,.4);padding:7px 0;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.plan-features li::before{content:"";width:12px;height:12px;border:1px solid rgba(214,178,94,.3);flex-shrink:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%23D6B25E' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") center/10px no-repeat}
+.plan-features li strong{color:var(--ink)}
+.plan-btn{background:none;border:1px solid var(--line);color:var(--muted);padding:12px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;width:100%;transition:all .2s;font-family:inherit}
+.plan-btn:hover{border-color:var(--gold);color:var(--gold)}
+.plan-card.actual .plan-btn{background:var(--gold);color:#09090B;border-color:var(--gold)}
+
+/* MI CUENTA */
+.cuenta-wrap{padding:28px 44px;max-width:540px}
+.cuenta-card{background:var(--bg3);border:1px solid var(--line);padding:24px;margin-bottom:14px}
+.cuenta-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block}
+.cuenta-val{font-family:"Playfair Display",serif;font-size:24px;color:var(--ink)}
+.cuenta-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.cuenta-item{border:1px solid var(--line);padding:14px}
+.cuenta-item-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block}
+.cuenta-item-val{font-size:18px;color:var(--ink)}
+.btn-full{width:100%;background:none;border:1px solid var(--line);color:var(--muted);padding:13px;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;margin-bottom:10px;transition:all .2s;font-family:inherit}
+.btn-full:hover{border-color:rgba(214,178,94,.3);color:var(--gold)}
+.btn-danger{border-color:rgba(232,72,85,.3);color:#E84855}
+.btn-danger:hover{border-color:#E84855;background:rgba(232,72,85,.05)}
+
+/* MSG */
+.msg{padding:12px 16px;margin:0;font-size:13px;display:none;border-radius:2px}
+.msg.err{background:rgba(232,72,85,.1);color:#E84855;border:1px solid rgba(232,72,85,.2);display:block}
+.msg.ok{background:rgba(105,240,174,.08);color:#69F0AE;border:1px solid rgba(105,240,174,.15);display:block}
+
+/* MISC */
+.ayuda{font-size:12px;color:var(--muted);line-height:1.6}
+.temas-sugeridos-wrap{margin-bottom:18px}
+.tema-sugerido{display:block;width:100%;background:rgba(255,255,255,.02);border:1px solid var(--line);color:rgba(255,255,255,.4);padding:10px 14px;font-size:13px;cursor:pointer;text-align:left;margin-bottom:6px;transition:all .2s;font-family:inherit}
+.tema-sugerido:hover{border-color:rgba(214,178,94,.3);color:var(--gold)}
+.lista-materiales{border:1px solid var(--line);max-height:140px;overflow-y:auto;margin-bottom:8px;display:none}
+.material-item{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13px;color:rgba(255,255,255,.5)}
+.material-item:last-child{border-bottom:none}
+.btn-eliminar{background:none;border:none;color:rgba(232,72,85,.6);cursor:pointer;font-size:14px}
+input[type=file]{display:none}
+
+@media(max-width:768px){
+  .sidebar{display:none}
+  .tabs-bar{padding-left:0}
+  .studio-main{margin-left:0}
+  .s-header,.s-body,.s-footer,.cuenta-wrap{padding-left:20px;padding-right:20px}
+  .resumen-grid{grid-template-columns:1fr}
+  .dur-row,.formato-row{flex-direction:column}
+  .animos-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
 </head>
 <body>
 
 <header class="top">
   <div class="wrap">
-    <a class="logo" href="panel.html">Viraliza<i>.</i></a>
+    <a class="logo" href="panel-studio.html">Viraliza<span>.</span></a>
     <div class="sesion">
       <span>Hola, <b id="nombre-usuario">…</b></span>
       <button class="salir" id="salir" type="button">Salir</button>
@@ -21,512 +331,514 @@
   </div>
 </header>
 
-<main class="panel">
-  <div class="wrap">
+<div class="tabs-bar">
+  <button class="tab-btn activo" type="button" data-tab="producir">Producir</button>
+  <button class="tab-btn" type="button" data-tab="videos">Mis videos</button>
+  <button class="tab-btn" type="button" data-tab="membresia">Membresía</button>
+  <button class="tab-btn" type="button" data-tab="redes">Redes sociales</button>
+  <button class="tab-btn" type="button" data-tab="cuenta">Mi cuenta</button>
+  <div class="tabs-bar-right">
+    <span class="videos-count">Videos <span id="nav-usados">0</span> / <span id="nav-limite">0</span></span>
+  </div>
+</div>
 
-    <nav class="tabs-panel" id="pestanas">
-      <button class="tab-btn activo" type="button" data-tab="producir">Producir</button>
-      <button class="tab-btn" type="button" data-tab="videos">Mis videos</button>
-      <button class="tab-btn" type="button" data-tab="membresia">Membresía</button>
-      <button class="tab-btn" type="button" data-tab="redes">Redes sociales</button>
-      <button class="tab-btn" type="button" data-tab="cuenta">Mi cuenta</button>
-      <div id="contador-videos-nav" style="margin-left:auto;display:flex;align-items:center;gap:8px;border:1px solid rgba(214,178,94,.2);padding:6px 14px;border-radius:2px">
-        <span style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)">Videos</span>
-        <span style="font-size:14px;font-family:'Playfair Display',serif;color:var(--gold)"><span id="nav-usados">0</span><span style="color:var(--muted);font-size:11px"> / <span id="nav-limite">0</span></span></span>
+<main class="studio-layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="studio-sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-name">Viraliza<span>.</span></div>
+      <div class="sidebar-logo-sub">Studio</div>
+    </div>
+    <div class="sidebar-steps" id="studio-steps-nav">
+      <div class="sidebar-step activo" data-paso="1">
+        <div class="sidebar-step-num">1</div>
+        <div><div class="sidebar-step-label">Tu idea</div><div class="sidebar-step-time">~30 seg</div></div>
       </div>
-    </nav>
+      <div class="sidebar-step" data-paso="2">
+        <div class="sidebar-step-num">2</div>
+        <div><div class="sidebar-step-label">Formato</div><div class="sidebar-step-time">~20 seg</div></div>
+      </div>
+      <div class="sidebar-step" data-paso="3">
+        <div class="sidebar-step-num">3</div>
+        <div><div class="sidebar-step-label">Guion</div><div class="sidebar-step-time">~1 min</div></div>
+      </div>
+      <div class="sidebar-step" data-paso="4">
+        <div class="sidebar-step-num">4</div>
+        <div><div class="sidebar-step-label">Voz y música</div><div class="sidebar-step-time">~1 min</div></div>
+      </div>
+      <div class="sidebar-step" data-paso="5">
+        <div class="sidebar-step-num">5</div>
+        <div><div class="sidebar-step-label">Producir</div><div class="sidebar-step-time">2-5 min</div></div>
+      </div>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="sidebar-plan-name"><span id="sidebar-plan-nombre">Plan</span><span style="font-size:8px;color:rgba(255,255,255,.15)">activo</span></div>
+      <div><span class="sidebar-plan-num" id="sidebar-nav-usados">0</span><span class="sidebar-plan-of"> / <span id="sidebar-nav-limite">0</span> videos</span></div>
+      <div class="sidebar-track"><div class="sidebar-fill" id="sidebar-fill" style="width:0%"></div></div>
+    </div>
+  </div>
 
-    <p class="msg" id="mensaje"></p>
+  <!-- MAIN -->
+  <div class="studio-main">
+    <p class="msg" id="mensaje" style="margin:0 44px"></p>
 
-    <!-- ===================== PESTAÑA: PRODUCIR ===================== -->
+    <!-- TAB: PRODUCIR -->
     <section class="tab-panel activo" data-panel="producir">
-      <div class="producir-envoltura card gold">
 
-        <!-- Barra de progreso -->
-        <div class="wizard-progreso" id="wizard-progreso">
-          <div class="wizard-paso-indicador activo" data-paso="1">
-            <div class="wizard-paso-circulo">1</div>
-            <span class="wizard-paso-label">Tu idea</span>
+      <!-- PASO 1 -->
+      <div class="wizard-pantalla activa" data-pantalla="1">
+        <div class="s-header">
+          <span class="s-eyebrow">Paso 1 de 5</span>
+          <div class="s-headline">Crea tu video<br>profesional en <em>minutos.</em></div>
+          <p class="s-sub">Escribe el tema de tu negocio y nosotros producimos el guion, la voz, la música y el video completo.</p>
+        </div>
+        <div class="s-body">
+          <div class="s-field">
+            <span class="s-label">Tema del video</span>
+            <input class="s-input" id="tema" type="text" maxlength="160" placeholder="Ej: servicios de plomería en Bogotá, ropa deportiva para mujer, clínica dental en Cali">
           </div>
-          <div class="wizard-paso-indicador" data-paso="2">
-            <div class="wizard-paso-circulo">2</div>
-            <span class="wizard-paso-label">Formato</span>
+          <div class="s-field">
+            <span class="s-label">Tipo de negocio</span>
+            <div class="nicho-wrap" id="chips-nicho">
+              <button class="nicho-tag" data-nicho="restaurante" onclick="W.elegirNicho(this)" type="button">🍽 Restaurante</button>
+              <button class="nicho-tag" data-nicho="inmobiliaria" onclick="W.elegirNicho(this)" type="button">🏠 Inmobiliaria</button>
+              <button class="nicho-tag" data-nicho="gimnasio" onclick="W.elegirNicho(this)" type="button">💪 Gimnasio</button>
+              <button class="nicho-tag" data-nicho="belleza" onclick="W.elegirNicho(this)" type="button">💅 Belleza</button>
+              <button class="nicho-tag" data-nicho="tienda" onclick="W.elegirNicho(this)" type="button">🛍 Tienda</button>
+              <button class="nicho-tag" data-nicho="agencia" onclick="W.elegirNicho(this)" type="button">📱 Agencia</button>
+              <button class="nicho-tag" data-nicho="educacion" onclick="W.elegirNicho(this)" type="button">📚 Educación</button>
+              <button class="nicho-tag" data-nicho="salud" onclick="W.elegirNicho(this)" type="button">🏥 Salud</button>
+            </div>
           </div>
-          <div class="wizard-paso-indicador" data-paso="3">
-            <div class="wizard-paso-circulo">3</div>
-            <span class="wizard-paso-label">Guion</span>
+          <div id="temas-sugeridos" class="temas-sugeridos-wrap" style="display:none">
+            <span class="s-label">Ideas sugeridas — toca una para usarla</span>
+            <div id="lista-temas-sugeridos"></div>
           </div>
-          <div class="wizard-paso-indicador" data-paso="4">
-            <div class="wizard-paso-circulo">4</div>
-            <span class="wizard-paso-label">Voz y música</span>
-          </div>
-          <div class="wizard-paso-indicador" data-paso="5">
-            <div class="wizard-paso-circulo">5</div>
-            <span class="wizard-paso-label">Producir</span>
+          <div class="s-field">
+            <span class="s-label">Duración del video</span>
+            <div class="dur-row">
+              <div class="dur-card elegida" data-duracion="corto" onclick="W.elegirDuracion(this)">
+                <div class="dur-num">30"</div>
+                <div class="dur-name">Corto</div>
+                <div class="dur-desc">TikTok · Reels</div>
+              </div>
+              <div class="dur-card" data-duracion="medio" onclick="W.elegirDuracion(this)">
+                <div class="dur-num">60"</div>
+                <div class="dur-name">Medio</div>
+                <div class="dur-desc">Más contexto</div>
+              </div>
+              <div class="dur-card" data-duracion="largo" onclick="W.elegirDuracion(this)">
+                <div class="dur-num">90"</div>
+                <div class="dur-name">Largo</div>
+                <div class="dur-desc">Mini historia</div>
+              </div>
+            </div>
           </div>
         </div>
-
-        <!-- ===== PASO 1: Tu idea ===== -->
-        <div class="wizard-pantalla activa" data-pantalla="1">
-          <p class="eyebrow">Paso 1 de 5</p>
-          <h2 class="serif" style="font-size:22px;margin-bottom:6px">¿Qué quieres <em>contar</em> hoy?</h2>
-          <p class="ayuda" style="margin-bottom:22px">Una frase basta — nosotros escribimos el guion completo.</p>
-
-          <p style="font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">¿Cuál es tu tipo de negocio?</p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px" id="chips-nicho">
-            <button class="chip-nicho" data-nicho="restaurante" onclick="W.elegirNicho(this)" type="button">🍽 Restaurante</button>
-            <button class="chip-nicho" data-nicho="inmobiliaria" onclick="W.elegirNicho(this)" type="button">🏠 Inmobiliaria</button>
-            <button class="chip-nicho" data-nicho="gimnasio" onclick="W.elegirNicho(this)" type="button">💪 Gimnasio</button>
-            <button class="chip-nicho" data-nicho="belleza" onclick="W.elegirNicho(this)" type="button">💅 Belleza</button>
-            <button class="chip-nicho" data-nicho="tienda" onclick="W.elegirNicho(this)" type="button">🛍 Tienda</button>
-            <button class="chip-nicho" data-nicho="agencia" onclick="W.elegirNicho(this)" type="button">📱 Agencia</button>
-            <button class="chip-nicho" data-nicho="educacion" onclick="W.elegirNicho(this)" type="button">📚 Educación</button>
-            <button class="chip-nicho" data-nicho="salud" onclick="W.elegirNicho(this)" type="button">🏥 Salud</button>
-          </div>
-
-          <div id="temas-sugeridos" style="display:none;margin-bottom:16px">
-            <p style="font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Ideas para tu video — toca una para usarla</p>
-            <div style="display:flex;flex-direction:column;gap:6px" id="lista-temas-sugeridos"></div>
-          </div>
-
-          <input id="tema" type="text" maxlength="160"
-            placeholder="Escribe el tema de tu video — ej: servicios de plomería en Bogotá, ropa deportiva para mujer, clínica dental en Cali"
-            style="font-size:16px;padding:16px 18px">
-
-          <label for="duracion" style="margin-top:20px">¿Cuánto debe durar el video?</label>
-          <div class="tarjetas-grid col-3" style="margin-bottom:0">
-            <button class="tarjeta-opcion elegida" data-duracion="corto" onclick="W.elegirDuracion(this)">
-              <span class="tarjeta-icono">⚡</span>
-              <div class="tarjeta-titulo">30 segundos</div>
-              <div class="tarjeta-desc">Ideal para TikTok y Reels</div>
-            </button>
-            <button class="tarjeta-opcion" data-duracion="medio" onclick="W.elegirDuracion(this)">
-              <span class="tarjeta-icono">🎬</span>
-              <div class="tarjeta-titulo">60 segundos</div>
-              <div class="tarjeta-desc">Más contexto y detalle</div>
-            </button>
-            <button class="tarjeta-opcion" data-duracion="largo" onclick="W.elegirDuracion(this)">
-              <span class="tarjeta-icono">🎥</span>
-              <div class="tarjeta-titulo">90 segundos</div>
-              <div class="tarjeta-desc">Mini historia completa</div>
-            </button>
-          </div>
-
-          <div class="wizard-nav" style="justify-content:flex-end">
-            <button class="btn" id="btn-generar-guion" onclick="W.irAPaso2()">
-              Continuar →
-            </button>
-          </div>
+        <div class="s-footer">
+          <div class="s-hint"><div class="s-dots"><div class="s-dot activo"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div></div></div>
+          <button class="btn-cont" id="btn-generar-guion" onclick="W.irAPaso2()">Continuar →</button>
         </div>
-
-        <!-- ===== PASO 2: Formato ===== -->
-        <div class="wizard-pantalla" data-pantalla="2">
-          <p class="eyebrow">Paso 2 de 5</p>
-          <h2 class="serif" style="font-size:22px;margin-bottom:6px">¿Dónde vas a publicar el video?</h2>
-          <p class="ayuda" style="margin-bottom:22px">Elige el formato que mejor se adapte a la plataforma.</p>
-
-          <div class="tarjetas-grid col-3">
-            <button class="tarjeta-opcion elegida" data-formato="9:16" onclick="W.elegirFormato(this)">
-              <span class="tarjeta-icono">📱</span>
-              <div class="tarjeta-titulo">Vertical 9:16</div>
-              <div class="tarjeta-desc">TikTok · Instagram Reels · YouTube Shorts</div>
-            </button>
-            <button class="tarjeta-opcion" data-formato="16:9" onclick="W.elegirFormato(this)">
-              <span class="tarjeta-icono">🖥️</span>
-              <div class="tarjeta-titulo">Horizontal 16:9</div>
-              <div class="tarjeta-desc">YouTube · Facebook · Presentaciones</div>
-            </button>
-            <button class="tarjeta-opcion" data-formato="1:1" onclick="W.elegirFormato(this)">
-              <span class="tarjeta-icono">⬜</span>
-              <div class="tarjeta-titulo">Cuadrado 1:1</div>
-              <div class="tarjeta-desc">Feed de Instagram · LinkedIn</div>
-            </button>
-          </div>
-
-          <label>Banco de imágenes</label>
-          <div class="tarjetas-grid col-2">
-            <button class="tarjeta-opcion elegida" data-banco="pexels" onclick="W.elegirFuente(this)">
-              <span class="tarjeta-icono">🌟</span>
-              <div class="tarjeta-titulo">Banco Prime</div>
-              <div class="tarjeta-desc">Catálogo premium con millones de clips profesionales</div>
-            </button>
-            <button class="tarjeta-opcion" data-banco="pixabay" onclick="W.elegirFuente(this)">
-              <span class="tarjeta-icono">✨</span>
-              <div class="tarjeta-titulo">Banco Plus</div>
-              <div class="tarjeta-desc">Gran variedad de estilos y géneros visuales</div>
-            </button>
-          </div>
-          <!-- BUSCADOR VISUAL DE IMÁGENES -->
-          <div style="margin-top:18px;border:1px solid var(--line);border-radius:4px;padding:16px" id="buscador-imagenes">
-            <p style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px">🔍 Busca imágenes para tu video</p>
-            <div style="display:flex;gap:8px;margin-bottom:12px">
-              <input type="text" id="busqueda-imagenes" placeholder="Ej: Ganesha hindú, restaurante moderno, gimnasio..." style="flex:1;font-size:14px;padding:10px 14px">
-              <button class="btn" onclick="W.buscarImagenes()" type="button" style="padding:10px 18px;font-size:11px;white-space:nowrap">Buscar</button>
-            </div>
-            <div id="resultados-imagenes" style="display:none">
-              <p class="ayuda" style="margin-bottom:8px;font-size:11px">Toca las imágenes para seleccionarlas · Máx. 8</p>
-              <div id="grid-imagenes" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-height:300px;overflow-y:auto"></div>
-              <p id="imagenes-seleccionadas-count" style="font-size:11px;color:var(--gold);margin-top:8px;text-align:center">0 imágenes seleccionadas</p>
-            </div>
-          </div>
-
-          <label style="margin-top:14px">¿Tienes tus propias imágenes o videos? <span style="color:var(--muted);font-size:12px">(opcional · máx. 8)</span></label>
-          <div id="lista-materiales-wizard" style="border:1px solid var(--line);border-radius:3px;max-height:160px;overflow-y:auto;margin-bottom:8px;display:none"></div>
-          <div style="border:2px dashed var(--line);border-radius:4px;padding:16px;text-align:center;cursor:pointer" onclick="document.getElementById('archivo-material-wizard').click()">
-            <p style="font-size:22px;margin-bottom:4px">📁</p>
-            <p style="color:var(--gold);font-size:13px;margin-bottom:2px">Sube tus propios archivos</p>
-            <p class="ayuda" style="margin:0;font-size:11px">JPG, PNG, MP4 · Máx. 8 · Si no subes nada, usamos el banco automático</p>
-          </div>
-          <input type="file" id="archivo-material-wizard" accept="image/*,video/*" multiple style="display:none">
-
-          <div class="wizard-nav">
-            <button class="wizard-nav btn-atras" onclick="W.irA(1)">← Atrás</button>
-            <button class="btn" onclick="W.irA(3)">Continuar →</button>
-          </div>
-        </div>
-
-        <!-- ===== PASO 3: Guion ===== -->
-        <div class="wizard-pantalla" data-pantalla="3">
-          <p class="eyebrow">Paso 3 de 5</p>
-          <h2 class="serif" style="font-size:22px;margin-bottom:6px">Tu <em>guion</em></h2>
-          <p class="ayuda" style="margin-bottom:18px">Lo redactamos nosotros. Léelo, edítalo si quieres, o pide otro.</p>
-
-          <div id="guion-loading" style="text-align:center;padding:40px 0;display:none">
-            <p class="ayuda">Redactando tu guion…</p>
-          </div>
-
-          <textarea class="guion-box" id="guion-editable" placeholder="Tu guion aparecerá aquí…"></textarea>
-
-          <button class="btn line block" id="btn-regenerar" onclick="W.regenerarGuion()" style="margin-bottom:0">
-            ↺ Generar otro guion
-          </button>
-
-          <div class="wizard-nav">
-            <button class="wizard-nav btn-atras" onclick="W.irA(2)">← Atrás</button>
-            <button class="btn" onclick="W.irA(4)">Continuar →</button>
-          </div>
-        </div>
-
-        <!-- ===== PASO 4: Voz y música ===== -->
-        <div class="wizard-pantalla" data-pantalla="4">
-          <p class="eyebrow">Paso 4 de 5</p>
-          <h2 class="serif" style="font-size:22px;margin-bottom:20px">Voz, música <em>y estilo</em></h2>
-
-          <!-- Narración -->
-          <label>Narración</label>
-          <div class="voces-tabs" id="voces-tabs">
-            <button class="voz-tab activo" data-modo="lista" onclick="W.elegirModoVoz(this)">🎙️ Voz estándar</button>
-            <button class="voz-tab" data-modo="premium" style="display:none" onclick="W.elegirModoVoz(this)">⭐ Voz premium</button>
-            <button class="voz-tab" data-modo="propia" onclick="W.elegirModoVoz(this)">🎤 Mi narración</button>
-            <button class="voz-tab" data-modo="ninguna" onclick="W.elegirModoVoz(this)">🔇 Sin voz</button>
-          </div>
-
-          <!-- Panel voz estándar -->
-          <div id="panel-voz-lista">
-            <select id="voz" style="margin-bottom:0"></select>
-          </div>
-
-          <!-- Panel voz premium -->
-          <div id="panel-voz-premium" style="display:none">
-            <select id="filtro-idioma-premium" style="margin-bottom:8px"></select>
-            <div class="canciones-lista" id="lista-voces-premium" style="max-height:180px"></div>
-            <audio id="reproductor-voz-premium" style="display:none"></audio>
-          </div>
-
-          <!-- Panel narración propia -->
-          <div id="panel-voz-propia" style="display:none">
-            <div style="border:2px dashed var(--line);border-radius:4px;padding:24px;text-align:center;cursor:pointer"
-                 onclick="document.getElementById('archivo-narracion').click()">
-              <p style="font-size:28px;margin-bottom:6px">🎤</p>
-              <p style="color:var(--ink);font-size:14px;margin-bottom:4px">Sube tu narración</p>
-              <p class="ayuda" style="margin:0">MP3, WAV o M4A · Lee el guion del paso anterior</p>
-            </div>
-            <input type="file" id="archivo-narracion" accept="audio/*" style="display:none">
-            <p class="ayuda" id="ayuda-narracion-propia" style="margin-top:10px;display:none"></p>
-          </div>
-
-          <!-- Panel sin voz -->
-          <div id="panel-voz-ninguna" style="display:none">
-            <div style="border:1px solid var(--line);border-radius:4px;padding:16px;color:var(--muted);font-size:14px">
-              Tu video tendrá solo música de fondo, sin narración.
-            </div>
-          </div>
-
-          <input type="hidden" id="audio-personalizado" value="">
-          <input type="hidden" id="voz-premium-elegida" value="">
-          <input type="hidden" id="sin-narracion" value="">
-
-          <!-- Música -->
-          <label style="margin-top:24px">Música de fondo</label>
-          <div style="display:flex;gap:10px;margin-bottom:14px">
-            <button class="btn" id="btn-musica-premium" onclick="W.alternarMusica('premium')" style="flex:1;font-size:12px">
-              🎵 Premium por ánimo
-            </button>
-            <button class="btn line" id="btn-musica-estandar" onclick="W.alternarMusica('estandar')" style="flex:1;font-size:12px">
-              📁 Mis canciones
-            </button>
-          </div>
-
-          <!-- Música premium: ánimos -->
-          <div id="seccion-musica-premium">
-            <div class="tarjetas-grid animos" style="margin-bottom:0">
-              <button class="tarjeta-opcion animo-alegre" data-animo="alegre" onclick="W.buscarAnimo(this)">
-                <span class="tarjeta-icono">😄</span>
-                <div class="tarjeta-titulo">Alegre</div>
-              </button>
-              <button class="tarjeta-opcion animo-energica" data-animo="energica" onclick="W.buscarAnimo(this)">
-                <span class="tarjeta-icono">⚡</span>
-                <div class="tarjeta-titulo">Enérgica</div>
-              </button>
-              <button class="tarjeta-opcion animo-corporativa" data-animo="corporativa" onclick="W.buscarAnimo(this)">
-                <span class="tarjeta-icono">💼</span>
-                <div class="tarjeta-titulo">Corporativa</div>
-              </button>
-              <button class="tarjeta-opcion animo-motivacional" data-animo="motivacional" onclick="W.buscarAnimo(this)">
-                <span class="tarjeta-icono">🚀</span>
-                <div class="tarjeta-titulo">Motivacional</div>
-              </button>
-              <button class="tarjeta-opcion animo-cinematica" data-animo="cinematica" onclick="W.buscarAnimo(this)">
-                <span class="tarjeta-icono">🎬</span>
-                <div class="tarjeta-titulo">Cinemática</div>
-              </button>
-              <button class="tarjeta-opcion animo-calmada" data-animo="calmada" onclick="W.buscarAnimo(this)">
-                <span class="tarjeta-icono">🌊</span>
-                <div class="tarjeta-titulo">Calmada</div>
-              </button>
-            </div>
-            <div class="canciones-lista" id="lista-musica-premium">
-              <p class="ayuda" style="margin:14px;text-align:center">Elige un ánimo para ver canciones</p>
-            </div>
-          </div>
-
-          <!-- Música estándar: canciones propias -->
-          <div id="seccion-musica-estandar" style="display:none">
-            <div class="canciones-lista" id="lista-musica">
-              <!-- se llena dinámicamente -->
-            </div>
-            <p class="ayuda" style="margin-top:10px">
-              ¿Tienes tu propia canción?
-              <a href="#" id="abrir-subir-musica" style="color:var(--gold)">Súbela aquí</a>
-            </p>
-            <input type="file" id="archivo-musica" accept="audio/*" style="display:none">
-          </div>
-
-          <audio id="reproductor-musica" style="display:none"></audio>
-          <input type="hidden" id="musica" value="">
-          <input type="hidden" id="musica-premium-url" value="">
-
-          <!-- Volumen -->
-          <label style="margin-top:18px">Volumen de la música
-            <span id="volumen-valor" style="color:var(--gold);margin-left:8px">20%</span>
-          </label>
-          <input type="range" id="volumen-musica" min="0" max="100" value="20"
-            oninput="document.getElementById('volumen-valor').textContent=this.value+'%'"
-            style="width:100%;margin-bottom:22px">
-
-          <!-- Subtítulos -->
-          <label>Subtítulos</label>
-          <div class="toggle-grande activo" id="toggle-subtitulos" onclick="W.toggleSubtitulos()">
-            <div class="toggle-switch"></div>
-            <div class="toggle-grande-texto">
-              <div class="toggle-grande-titulo">Mostrar subtítulos</div>
-              <div class="toggle-grande-desc">El texto de la narración aparece visible en el video</div>
-            </div>
-          </div>
-          <input type="hidden" id="subtitulos-activos" value="1">
-
-          <div id="opciones-subtitulos" style="display:block">
-            <!-- Preview en vivo -->
-            <div class="subtitulos-preview">
-              <span class="subtitulos-preview-texto" id="preview-subtitulo">
-                Así se verán tus subtítulos
-              </span>
-            </div>
-
-            <label>Color del texto</label>
-            <div class="colores-subtitulo">
-              <div class="color-chip elegido" data-color="#FFFFFF" style="background:#FFFFFF;border:1px solid #555"
-                   onclick="W.elegirColorSub(this)" title="Blanco"></div>
-              <div class="color-chip" data-color="#FFEB3B" style="background:#FFEB3B"
-                   onclick="W.elegirColorSub(this)" title="Amarillo"></div>
-              <div class="color-chip" data-color="#FF5252" style="background:#FF5252"
-                   onclick="W.elegirColorSub(this)" title="Rojo"></div>
-              <div class="color-chip" data-color="#69F0AE" style="background:#69F0AE"
-                   onclick="W.elegirColorSub(this)" title="Verde"></div>
-              <div class="color-chip" data-color="#40C4FF" style="background:#40C4FF"
-                   onclick="W.elegirColorSub(this)" title="Azul"></div>
-              <div class="color-chip" data-color="#D6B25E" style="background:#D6B25E"
-                   onclick="W.elegirColorSub(this)" title="Dorado"></div>
-              <input type="color" id="subtitulos-color" value="#FFFFFF"
-                     style="width:32px;height:32px;border:none;background:none;cursor:pointer;border-radius:50%;padding:0"
-                     oninput="W.actualizarPreviewSub()" title="Color personalizado">
-            </div>
-
-            <label>Estilo de letra</label>
-            <div class="tarjetas-grid col-2" style="margin-bottom:0">
-              <button class="tarjeta-opcion elegida" data-fuente="clasica" onclick="W.elegirFuenteSub(this)">
-                <div class="tarjeta-titulo" style="font-weight:700;font-size:16px">Clásica</div>
-                <div class="tarjeta-desc">Gruesa · ideal para TikTok</div>
-              </button>
-              <button class="tarjeta-opcion" data-fuente="ligera" onclick="W.elegirFuenteSub(this)">
-                <div class="tarjeta-titulo" style="font-weight:300;font-size:16px">Ligera</div>
-                <div class="tarjeta-desc">Fina · estilo minimalista</div>
-              </button>
-              <button class="tarjeta-opcion" data-fuente="elegante" onclick="W.elegirFuenteSub(this)">
-                <div class="tarjeta-titulo" style="font-family:Georgia,serif;font-size:16px;font-style:italic">Elegante</div>
-                <div class="tarjeta-desc">Serif · videos premium</div>
-              </button>
-              <button class="tarjeta-opcion" data-fuente="moderna" onclick="W.elegirFuenteSub(this)">
-                <div class="tarjeta-titulo" style="font-family:Impact,sans-serif;font-size:16px;letter-spacing:2px">MODERNA</div>
-                <div class="tarjeta-desc">Impact · máximo impacto</div>
-              </button>
-              <button class="tarjeta-opcion" data-fuente="redondeada" onclick="W.elegirFuenteSub(this)">
-                <div class="tarjeta-titulo" style="font-family:Trebuchet MS,sans-serif;font-size:16px">Redondeada</div>
-                <div class="tarjeta-desc">Suave · amigable y cercana</div>
-              </button>
-              <button class="tarjeta-opcion" data-fuente="viral" onclick="W.elegirFuenteSub(this)">
-                <div class="tarjeta-titulo" style="font-family:Arial Black,sans-serif;font-size:14px;letter-spacing:-0.5px">VIRAL</div>
-                <div class="tarjeta-desc">Negrita extrema · máxima legibilidad</div>
-              </button>
-            </div>
-          </div>
-
-          <input type="hidden" id="subtitulos-fuente" value="clasica">
-
-          <div class="wizard-nav">
-            <button class="wizard-nav btn-atras" onclick="W.irA(3)">← Atrás</button>
-            <button class="btn" onclick="W.irA(5)">Ver resumen →</button>
-          </div>
-        </div>
-
-        <!-- ===== PASO 5: Resumen y producir ===== -->
-        <div class="wizard-pantalla" data-pantalla="5">
-          <p class="eyebrow">Paso 5 de 5</p>
-          <h2 class="serif" style="font-size:22px;margin-bottom:6px">Todo listo para <em>producir</em></h2>
-          <p class="ayuda" style="margin-bottom:22px">Revisa tu configuración antes de empezar.</p>
-
-          <div class="resumen-grid" id="resumen-grid">
-            <!-- se llena dinámicamente -->
-          </div>
-
-          <button class="btn block" id="btn-producir" onclick="W.producir()"
-                  style="font-size:15px;padding:18px;letter-spacing:2.5px">
-            🎬 PRODUCIR VIDEO
-          </button>
-
-          <div class="wizard-nav" style="border-top:none;padding-top:0;justify-content:center;margin-top:12px">
-            <button class="wizard-nav btn-atras" onclick="W.irA(4)" style="font-size:11px">
-              ← Ajustar opciones
-            </button>
-          </div>
-        </div>
-
-        <!-- Cuota siempre visible abajo -->
-        <div class="cuota" style="margin-top:28px">
-          <div>
-            <span class="plan-nombre" id="plan-nombre">—</span><br>
-            <span style="font-size:13px;color:var(--muted)">Videos este mes</span>
-          </div>
-          <span class="num">
-            <span id="cuota-usados">0</span>
-            <i>/ <span id="cuota-limite">0</span></i>
-          </span>
-        </div>
-
       </div>
+
+      <!-- PASO 2 -->
+      <div class="wizard-pantalla" data-pantalla="2">
+        <div class="s-header">
+          <span class="s-eyebrow">Paso 2 de 5</span>
+          <div class="s-headline">Formato <em>e imágenes</em></div>
+          <p class="s-sub">Elige el formato y las imágenes para tu video.</p>
+        </div>
+        <div class="s-body">
+          <div class="s-field">
+            <span class="s-label">Formato de publicación</span>
+            <div class="formato-row">
+              <div class="formato-card elegida" data-formato="9:16" onclick="W.elegirFormato(this)">
+                <span class="formato-icon">📱</span>
+                <div class="formato-name">Vertical 9:16</div>
+                <div class="formato-desc">TikTok · Reels · Shorts</div>
+              </div>
+              <div class="formato-card" data-formato="16:9" onclick="W.elegirFormato(this)">
+                <span class="formato-icon">🖥️</span>
+                <div class="formato-name">Horizontal 16:9</div>
+                <div class="formato-desc">YouTube · Facebook</div>
+              </div>
+              <div class="formato-card" data-formato="1:1" onclick="W.elegirFormato(this)">
+                <span class="formato-icon">⬜</span>
+                <div class="formato-name">Cuadrado 1:1</div>
+                <div class="formato-desc">Feed de Instagram</div>
+              </div>
+            </div>
+          </div>
+          <div class="s-field">
+            <span class="s-label">Banco de imágenes</span>
+            <div id="banco-aviso" class="banco-aviso">
+              <span id="banco-aviso-texto">✓ Usarás las imágenes que seleccionaste</span>
+              <button id="btn-limpiar-seleccion" onclick="W.limpiarSeleccionImagenes()" type="button" style="background:none;border:1px solid rgba(214,178,94,.4);color:var(--gold);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;cursor:pointer;display:none">Limpiar</button>
+            </div>
+            <div class="banco-row">
+              <div class="banco-card elegida" data-banco="pexels" onclick="W.elegirFuente(this)">
+                <div class="banco-card-title">🌟 Banco Prime</div>
+                <div class="banco-card-desc">Millones de clips profesionales</div>
+              </div>
+              <div class="banco-card" data-banco="pixabay" onclick="W.elegirFuente(this)">
+                <div class="banco-card-title">✨ Banco Plus</div>
+                <div class="banco-card-desc">Gran variedad de estilos</div>
+              </div>
+            </div>
+          </div>
+          <div class="s-field">
+            <span class="s-label">Busca imágenes específicas</span>
+            <div id="buscador-imagenes" class="buscador-wrap">
+              <div class="buscador-row">
+                <input type="text" id="busqueda-imagenes" class="buscador-input" placeholder="Ej: Ganesha hindú, restaurante moderno, gimnasio...">
+                <button class="buscador-btn" onclick="W.buscarImagenes()" type="button">Buscar</button>
+              </div>
+              <div id="resultados-imagenes" style="display:none">
+                <p class="ayuda" style="margin-bottom:8px;font-size:11px">Toca las imágenes para seleccionarlas · Máx. 8</p>
+                <div id="grid-imagenes" class="img-grid"></div>
+                <p id="imagenes-seleccionadas-count" style="font-size:11px;color:var(--gold);margin-top:8px;text-align:center">0 imágenes seleccionadas</p>
+              </div>
+            </div>
+          </div>
+          <div class="s-field">
+            <span class="s-label">O sube tus propios archivos <span style="color:var(--muted);font-weight:300">(opcional · máx. 8)</span></span>
+            <div id="lista-materiales-wizard" class="lista-materiales"></div>
+            <div class="upload-zone" onclick="document.getElementById('archivo-material-wizard').click()">
+              <span class="upload-icon">📁</span>
+              <p class="upload-text">Sube tus propios archivos</p>
+              <p class="upload-desc">JPG, PNG, MP4 · Máx. 8 · Si no subes nada, usamos el banco automático</p>
+            </div>
+            <input type="file" id="archivo-material-wizard" accept="image/*,video/*" multiple>
+          </div>
+        </div>
+        <div class="s-footer">
+          <button class="btn-atras" onclick="W.irA(1)">← Atrás</button>
+          <div class="s-hint"><div class="s-dots"><div class="s-dot hecho"></div><div class="s-dot activo"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div></div></div>
+          <button class="btn-cont" onclick="W.irA(3)">Continuar →</button>
+        </div>
+      </div>
+
+      <!-- PASO 3 -->
+      <div class="wizard-pantalla" data-pantalla="3">
+        <div class="s-header">
+          <span class="s-eyebrow">Paso 3 de 5</span>
+          <div class="s-headline">Tu <em>guion</em></div>
+          <p class="s-sub">Lo redactamos nosotros. Léelo, edítalo si quieres, o pide otro.</p>
+        </div>
+        <div class="s-body">
+          <div id="guion-loading" class="guion-loading" style="display:none">
+            <p class="guion-loading-text">Redactando tu guion…</p>
+          </div>
+          <textarea class="guion-box" id="guion-editable" placeholder="Tu guion aparecerá aquí…"></textarea>
+          <button class="btn-regenerar" id="btn-regenerar" onclick="W.regenerarGuion()">↺ Generar otro guion</button>
+          <p id="guion-contador" class="guion-contador">5 generaciones disponibles</p>
+        </div>
+        <div class="s-footer">
+          <button class="btn-atras" onclick="W.irA(2)">← Atrás</button>
+          <div class="s-hint"><div class="s-dots"><div class="s-dot hecho"></div><div class="s-dot hecho"></div><div class="s-dot activo"></div><div class="s-dot"></div><div class="s-dot"></div></div></div>
+          <button class="btn-cont" onclick="W.irA(4)">Continuar →</button>
+        </div>
+      </div>
+
+      <!-- PASO 4 -->
+      <div class="wizard-pantalla" data-pantalla="4">
+        <div class="s-header">
+          <span class="s-eyebrow">Paso 4 de 5</span>
+          <div class="s-headline">Voz, música <em>y estilo</em></div>
+          <p class="s-sub">Personaliza el audio y los subtítulos de tu video.</p>
+        </div>
+        <div class="s-body">
+          <div class="s-field">
+            <span class="s-label">Narración</span>
+            <div class="voz-tabs" id="voces-tabs">
+              <button class="voz-tab activo" data-modo="lista" onclick="W.elegirModoVoz(this)">🎙️ Voz estándar</button>
+              <button class="voz-tab" data-modo="premium" style="display:none" onclick="W.elegirModoVoz(this)">⭐ Premium</button>
+              <button class="voz-tab" data-modo="propia" onclick="W.elegirModoVoz(this)">🎤 Mi narración</button>
+              <button class="voz-tab" data-modo="ninguna" onclick="W.elegirModoVoz(this)">🔇 Sin voz</button>
+            </div>
+            <div id="panel-voz-lista">
+              <select id="voz" class="s-select"></select>
+            </div>
+            <div id="panel-voz-premium" class="panel-voz-hidden">
+              <select id="filtro-idioma-premium" class="s-select" style="margin-bottom:8px"></select>
+              <div class="canciones-lista" id="lista-voces-premium" style="max-height:180px"></div>
+              <audio id="reproductor-voz-premium" style="display:none"></audio>
+            </div>
+            <div id="panel-voz-propia" class="panel-voz-hidden">
+              <div class="upload-zone" onclick="document.getElementById('archivo-narracion').click()">
+                <span class="upload-icon">🎤</span>
+                <p class="upload-text">Sube tu narración</p>
+                <p class="upload-desc">MP3, WAV o M4A · Lee el guion del paso anterior</p>
+              </div>
+              <input type="file" id="archivo-narracion" accept="audio/*">
+              <p class="ayuda" id="ayuda-narracion-propia" style="margin-top:10px;display:none"></p>
+            </div>
+            <div id="panel-voz-ninguna" class="panel-voz-hidden">
+              <div style="border:1px solid var(--line);padding:16px;color:var(--muted);font-size:14px">Tu video tendrá solo música de fondo, sin narración.</div>
+            </div>
+            <input type="hidden" id="audio-personalizado" value="">
+            <input type="hidden" id="voz-premium-elegida" value="">
+            <input type="hidden" id="sin-narracion" value="">
+          </div>
+
+          <div class="s-field">
+            <span class="s-label">Música de fondo</span>
+            <div class="musica-tabs">
+              <button class="musica-tab-btn activo" id="btn-musica-premium" onclick="W.alternarMusica('premium')">🎵 Premium por ánimo</button>
+              <button class="musica-tab-btn" id="btn-musica-estandar" onclick="W.alternarMusica('estandar')">📁 Mis canciones</button>
+            </div>
+            <div id="seccion-musica-premium">
+              <div class="animos-grid">
+                <button class="animo-btn" data-animo="alegre" onclick="W.buscarAnimo(this)"><span class="animo-icon">😄</span><span class="animo-name">Alegre</span></button>
+                <button class="animo-btn" data-animo="energica" onclick="W.buscarAnimo(this)"><span class="animo-icon">⚡</span><span class="animo-name">Enérgica</span></button>
+                <button class="animo-btn" data-animo="corporativa" onclick="W.buscarAnimo(this)"><span class="animo-icon">💼</span><span class="animo-name">Corporativa</span></button>
+                <button class="animo-btn" data-animo="motivacional" onclick="W.buscarAnimo(this)"><span class="animo-icon">🚀</span><span class="animo-name">Motivacional</span></button>
+                <button class="animo-btn" data-animo="cinematica" onclick="W.buscarAnimo(this)"><span class="animo-icon">🎬</span><span class="animo-name">Cinemática</span></button>
+                <button class="animo-btn" data-animo="calmada" onclick="W.buscarAnimo(this)"><span class="animo-icon">🌊</span><span class="animo-name">Calmada</span></button>
+              </div>
+              <div class="canciones-lista" id="lista-musica-premium">
+                <p class="ayuda" style="margin:14px;text-align:center">Elige un ánimo para ver canciones</p>
+              </div>
+            </div>
+            <div id="seccion-musica-estandar" style="display:none">
+              <div class="canciones-lista" id="lista-musica"></div>
+              <p class="ayuda" style="margin-top:10px">¿Tienes tu propia canción? <a href="#" id="abrir-subir-musica" style="color:var(--gold)">Súbela aquí</a></p>
+              <input type="file" id="archivo-musica" accept="audio/*">
+            </div>
+            <audio id="reproductor-musica" style="display:none"></audio>
+            <input type="hidden" id="musica" value="">
+            <input type="hidden" id="musica-premium-url" value="">
+          </div>
+
+          <div class="s-field">
+            <span class="s-label">Volumen de la música <span id="volumen-valor" style="color:var(--gold)">20%</span></span>
+            <div class="volumen-row">
+              <input type="range" id="volumen-musica" min="0" max="100" value="20" oninput="document.getElementById('volumen-valor').textContent=this.value+'%'">
+            </div>
+          </div>
+
+          <div class="s-field">
+            <span class="s-label">Subtítulos</span>
+            <div class="toggle-grande activo" id="toggle-subtitulos" onclick="W.toggleSubtitulos()">
+              <div class="toggle-switch"></div>
+              <div>
+                <div class="toggle-grande-titulo">Mostrar subtítulos</div>
+                <div class="toggle-grande-desc">El texto de la narración aparece visible en el video</div>
+              </div>
+            </div>
+            <input type="hidden" id="subtitulos-activos" value="1">
+            <div id="opciones-subtitulos" style="display:block">
+              <div class="subtitulos-preview"><span class="subtitulos-preview-texto" id="preview-subtitulo">Así se verán tus subtítulos</span></div>
+              <span class="s-label">Color del texto</span>
+              <div class="colores-subtitulo">
+                <div class="color-chip elegido" data-color="#FFFFFF" style="background:#FFFFFF;border:1px solid #555" onclick="W.elegirColorSub(this)" title="Blanco"></div>
+                <div class="color-chip" data-color="#FFEB3B" style="background:#FFEB3B" onclick="W.elegirColorSub(this)" title="Amarillo"></div>
+                <div class="color-chip" data-color="#FF5252" style="background:#FF5252" onclick="W.elegirColorSub(this)" title="Rojo"></div>
+                <div class="color-chip" data-color="#69F0AE" style="background:#69F0AE" onclick="W.elegirColorSub(this)" title="Verde"></div>
+                <div class="color-chip" data-color="#40C4FF" style="background:#40C4FF" onclick="W.elegirColorSub(this)" title="Azul"></div>
+                <div class="color-chip" data-color="#D6B25E" style="background:#D6B25E" onclick="W.elegirColorSub(this)" title="Dorado"></div>
+                <input type="color" id="subtitulos-color" value="#FFFFFF" style="width:30px;height:30px;border:none;background:none;cursor:pointer;border-radius:50%;padding:0" oninput="W.actualizarPreviewSub()" title="Color personalizado">
+              </div>
+              <span class="s-label">Estilo de letra</span>
+              <div class="fuentes-grid">
+                <div class="fuente-card elegida" data-fuente="clasica" onclick="W.elegirFuenteSub(this)">
+                  <div class="fuente-name" style="font-weight:700">Clásica</div>
+                  <div class="fuente-desc">Gruesa · ideal para TikTok</div>
+                </div>
+                <div class="fuente-card" data-fuente="ligera" onclick="W.elegirFuenteSub(this)">
+                  <div class="fuente-name" style="font-weight:300">Ligera</div>
+                  <div class="fuente-desc">Fina · estilo minimalista</div>
+                </div>
+                <div class="fuente-card" data-fuente="elegante" onclick="W.elegirFuenteSub(this)">
+                  <div class="fuente-name" style="font-family:Georgia,serif;font-style:italic">Elegante</div>
+                  <div class="fuente-desc">Serif · videos premium</div>
+                </div>
+                <div class="fuente-card" data-fuente="moderna" onclick="W.elegirFuenteSub(this)">
+                  <div class="fuente-name" style="font-family:Impact,sans-serif;letter-spacing:2px">MODERNA</div>
+                  <div class="fuente-desc">Impact · máximo impacto</div>
+                </div>
+                <div class="fuente-card" data-fuente="redondeada" onclick="W.elegirFuenteSub(this)">
+                  <div class="fuente-name" style="font-family:Trebuchet MS,sans-serif">Redondeada</div>
+                  <div class="fuente-desc">Suave · amigable y cercana</div>
+                </div>
+                <div class="fuente-card" data-fuente="viral" onclick="W.elegirFuenteSub(this)">
+                  <div class="fuente-name" style="font-family:Arial Black,sans-serif;font-size:14px">VIRAL</div>
+                  <div class="fuente-desc">Negrita extrema · máxima legibilidad</div>
+                </div>
+              </div>
+            </div>
+            <input type="hidden" id="subtitulos-fuente" value="clasica">
+          </div>
+        </div>
+        <div class="s-footer">
+          <button class="btn-atras" onclick="W.irA(3)">← Atrás</button>
+          <div class="s-hint"><div class="s-dots"><div class="s-dot hecho"></div><div class="s-dot hecho"></div><div class="s-dot hecho"></div><div class="s-dot activo"></div><div class="s-dot"></div></div></div>
+          <button class="btn-cont" onclick="W.irA(5)">Ver resumen →</button>
+        </div>
+      </div>
+
+      <!-- PASO 5 -->
+      <div class="wizard-pantalla" data-pantalla="5">
+        <div class="s-header">
+          <span class="s-eyebrow">Paso 5 de 5</span>
+          <div class="s-headline">Todo listo para <em>producir</em></div>
+          <p class="s-sub">Revisa tu configuración antes de empezar.</p>
+        </div>
+        <div class="s-body">
+          <div class="resumen-grid" id="resumen-grid"></div>
+          <button class="btn-producir" id="btn-producir" onclick="W.producir()">🎬 PRODUCIR VIDEO</button>
+          <div style="text-align:center;margin-top:14px">
+            <button class="btn-atras" onclick="W.irA(4)">← Ajustar opciones</button>
+          </div>
+          <div style="border:1px solid var(--line);padding:18px;margin-top:20px;text-align:center">
+            <span class="sidebar-plan-name" style="display:block;margin-bottom:4px" id="plan-nombre">Plan</span>
+            <span class="sidebar-plan-num" id="cuota-usados" style="font-size:28px">0</span>
+            <span class="sidebar-plan-of"> / <span id="cuota-limite">0</span> videos este mes</span>
+          </div>
+        </div>
+        <div class="s-footer">
+          <div class="s-hint"><div class="s-dots"><div class="s-dot hecho"></div><div class="s-dot hecho"></div><div class="s-dot hecho"></div><div class="s-dot hecho"></div><div class="s-dot activo"></div></div></div>
+        </div>
+      </div>
+
     </section>
 
-    <!-- ===================== PESTAÑA: MIS VIDEOS ===================== -->
+    <!-- TAB: MIS VIDEOS -->
     <section class="tab-panel" data-panel="videos">
       <div class="videos-grid" id="lista-videos">
         <div class="vacio">Aquí aparecerán tus producciones.<br>Crea tu primer video para estrenar el estudio.</div>
       </div>
     </section>
 
-    <!-- ===================== PESTAÑA: MEMBRESÍA ===================== -->
+    <!-- TAB: MEMBRESÍA -->
     <section class="tab-panel" data-panel="membresia">
       <div class="planes-grid" id="lista-planes"></div>
     </section>
 
-    <!-- ===================== PESTAÑA: REDES ===================== -->
-    <section class="tab-panel" data-panel="cuenta">
-      <div class="card gold" style="max-width:520px;margin:0 auto">
-        <span class="eyebrow">Tu membresía</span>
-        <h2 class="serif" style="font-size:22px;margin-bottom:20px">Mi <em>cuenta</em></h2>
-
-        <div style="border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:16px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-            <div>
-              <p style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Plan actual</p>
-              <p class="serif" style="font-size:22px" id="cuenta-plan-nombre">—</p>
-            </div>
-            <span id="cuenta-plan-badge" style="background:rgba(214,178,94,.12);color:var(--gold);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 14px;border-radius:20px">Activo</span>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-            <div style="border:1px solid var(--line);border-radius:4px;padding:12px">
-              <p style="font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Videos este mes</p>
-              <p style="font-size:20px;font-family:'Jost',sans-serif"><span id="cuenta-usados">0</span> <span style="color:var(--muted);font-size:14px">/ <span id="cuenta-limite">0</span></span></p>
-            </div>
-            <div style="border:1px solid var(--line);border-radius:4px;padding:12px">
-              <p style="font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Renueva el</p>
-              <p style="font-size:15px;font-family:'Jost',sans-serif" id="cuenta-renovacion">—</p>
-            </div>
-          </div>
+    <!-- TAB: REDES -->
+    <section class="tab-panel" data-panel="redes">
+      <div class="cuenta-wrap">
+        <div class="cuenta-card">
+          <span class="cuenta-label">Redes sociales</span>
+          <p class="ayuda" style="margin-top:8px">Vincula tus cuentas para publicar directo desde Viraliza.</p>
+          <button class="btn-full" style="margin-top:16px" id="conectar-redes">Conectar mis redes</button>
         </div>
-
-        <button class="btn block" onclick="Panel.cambiarPestana('membresia')" style="margin-bottom:10px">
-          Cambiar de plan
-        </button>
-        <button class="btn line block" id="btn-cancelar-plan" onclick="Panel.cancelarPlan()" style="border-color:rgba(232,72,85,.4);color:#E84855">
-          Cancelar membresía
-        </button>
-        <p class="ayuda" style="margin-top:10px;text-align:center">Al cancelar, conservas el acceso hasta que venza el período actual.</p>
       </div>
     </section>
 
-    <section class="tab-panel" data-panel="redes">
-      <div class="redes-envoltura card gold">
-        <h2 class="serif" style="font-size:19px;margin-bottom:10px">Conecta tus redes</h2>
-        <p class="ayuda" style="margin-top:0">Vincula tus cuentas para publicar directo desde Viraliza.</p>
-        <button class="btn line block" id="conectar-redes">Conectar mis redes</button>
+    <!-- TAB: MI CUENTA -->
+    <section class="tab-panel" data-panel="cuenta">
+      <div class="cuenta-wrap">
+        <div class="cuenta-card">
+          <span class="cuenta-label">Plan actual</span>
+          <div class="cuenta-val" id="cuenta-plan-nombre">—</div>
+          <div class="cuenta-grid">
+            <div class="cuenta-item">
+              <span class="cuenta-item-label">Videos este mes</span>
+              <div class="cuenta-item-val"><span id="cuenta-usados">0</span> <span style="color:var(--muted);font-size:14px">/ <span id="cuenta-limite">0</span></span></div>
+            </div>
+            <div class="cuenta-item">
+              <span class="cuenta-item-label">Renueva el</span>
+              <div class="cuenta-item-val" id="cuenta-renovacion" style="font-size:15px">—</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn-full" onclick="Panel.cambiarPestana('membresia')">Cambiar de plan</button>
+        <button class="btn-full btn-danger" id="btn-cancelar-plan" onclick="Panel.cancelarPlan()">Cancelar membresía</button>
+        <p class="ayuda" style="text-align:center;margin-top:10px">Al cancelar, conservas el acceso hasta que venza el período actual.</p>
       </div>
     </section>
 
   </div>
 </main>
 
-<!-- Campos ocultos auxiliares -->
 <input type="hidden" id="materiales-elegidos" value="[]">
 <input type="hidden" id="galeria-elegidas" value="[]">
 
-<script src="app.js"></script>
-<script>Panel.iniciar();</script>
-</body>
-</html>
+<script>
+// Adaptar clases del CSS viejo al nuevo para que app.js funcione
+// Mapear selectores que app.js usa
+document.addEventListener('DOMContentLoaded', () => {
+  // Tabs
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => Panel.cambiarPestana(btn.dataset.tab));
+  });
+});
 
+// Sobrescribir pintarCuota para actualizar sidebar
+const _origPintarCuota = null;
+</script>
+
+<script src="app.js"></script>
+
+<script>
+// Extender Panel para actualizar sidebar
+const _origPintarCuota2 = Panel.pintarCuota?.bind(Panel);
+if (_origPintarCuota2) {
+  Panel.pintarCuota = function(cuota) {
+    _origPintarCuota2(cuota);
+    const usados = cuota?.usados ?? 0;
+    const limite = cuota?.limite ?? 0;
+    const pct = limite > 0 ? Math.min(100, (usados/limite)*100) : 0;
+    const el = (id) => document.getElementById(id);
+    if (el('sidebar-plan-nombre')) el('sidebar-plan-nombre').textContent = cuota?.plan || 'Plan';
+    if (el('sidebar-nav-usados')) el('sidebar-nav-usados').textContent = usados;
+    if (el('sidebar-nav-limite')) el('sidebar-nav-limite').textContent = limite;
+    if (el('sidebar-fill')) el('sidebar-fill').style.width = pct + '%';
+  };
+}
+
+// Extender _mostrarPaso para actualizar sidebar
+const _origMostrarPaso = Panel._mostrarPaso?.bind(Panel) || W?._mostrarPaso?.bind(W);
+
+// Actualizar sidebar-steps cuando cambia el paso
+function actualizarSidebarPasos(paso) {
+  document.querySelectorAll('.sidebar-step').forEach(el => {
+    const p = parseInt(el.dataset.paso);
+    el.classList.toggle('activo', p === paso);
+    el.classList.toggle('hecho', p < paso);
+    const num = el.querySelector('.sidebar-step-num');
+    if (num) num.textContent = p < paso ? '✓' : p;
+  });
+}
+
+// Observar cambios en wizard-pantalla
+const observer = new MutationObserver(() => {
+  const activa = document.querySelector('.wizard-pantalla.activa');
+  if (activa) {
+    const paso = parseInt(activa.dataset.pantalla);
+    if (paso) actualizarSidebarPasos(paso);
+  }
+});
+document.querySelectorAll('.wizard-pantalla').forEach(el => {
+  observer.observe(el, { attributes: true, attributeFilter: ['class'] });
+});
+
+Panel.iniciar();
+
+// Sidebar pasos clickeables
+setTimeout(() => {
+  document.querySelectorAll('.sidebar-step').forEach(el => {
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', () => {
+      const paso = parseInt(el.dataset.paso);
+      if (paso && W && W._mostrarPaso) W._mostrarPaso(paso);
+    });
+  });
+}, 500);
+</script>
 
 <!-- MODAL ONBOARDING -->
 <div id="modal-onboarding" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);align-items:center;justify-content:center">
-  <div style="background:#0F0F12;border:1px solid rgba(214,178,94,.3);max-width:480px;width:90%;padding:48px 40px;position:relative;text-align:center">
+  <div style="background:#0F0F12;border:1px solid rgba(214,178,94,.3);max-width:480px;width:90%;padding:48px 40px;text-align:center">
     <div style="font-size:48px;margin-bottom:20px">🎬</div>
     <p style="font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#D6B25E;margin-bottom:12px">Bienvenido a Viraliza</p>
     <h2 style="font-family:'Playfair Display',serif;font-size:28px;margin-bottom:16px;line-height:1.3">Tu estudio de video<br><em style="color:#D6B25E">está listo</em></h2>
-    <p style="color:#8A8480;font-size:15px;line-height:1.7;margin-bottom:32px">En menos de 2 minutos vas a tener tu primer video profesional listo para publicar. Solo escribe el tema y nosotros hacemos el resto.</p>
-    <div style="background:rgba(214,178,94,.06);border:1px solid rgba(214,178,94,.15);padding:20px;margin-bottom:28px;text-align:left">
-      <div style="display:flex;gap:16px;margin-bottom:14px;align-items:center">
-        <span style="width:28px;height:28px;border:1px solid rgba(214,178,94,.4);color:#D6B25E;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;font-family:'Playfair Display',serif">1</span>
-        <span style="font-size:13px;color:#F0EDE5">Escribe el tema de tu video</span>
-      </div>
-      <div style="display:flex;gap:16px;margin-bottom:14px;align-items:center">
-        <span style="width:28px;height:28px;border:1px solid rgba(214,178,94,.4);color:#D6B25E;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;font-family:'Playfair Display',serif">2</span>
-        <span style="font-size:13px;color:#F0EDE5">Elige el formato y la voz</span>
-      </div>
-      <div style="display:flex;gap:16px;align-items:center">
-        <span style="width:28px;height:28px;border:1px solid rgba(214,178,94,.4);color:#D6B25E;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;font-family:'Playfair Display',serif">3</span>
-        <span style="font-size:13px;color:#F0EDE5">Produce y descarga en HD</span>
-      </div>
-    </div>
+    <p style="color:#8A8480;font-size:15px;line-height:1.7;margin-bottom:32px">En menos de 2 minutos vas a tener tu primer video profesional listo para publicar.</p>
     <button onclick="Panel.cerrarOnboarding()" style="background:#D6B25E;color:#09090B;border:none;padding:16px 40px;font-family:'Jost',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;width:100%;margin-bottom:12px">Producir mi primer video →</button>
     <button onclick="Panel.cerrarOnboarding()" style="background:none;border:none;color:#8A8480;font-size:12px;cursor:pointer;letter-spacing:1px">Explorar el panel primero</button>
   </div>
 </div>
+
+</body>
+</html>

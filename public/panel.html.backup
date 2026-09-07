@@ -1,0 +1,532 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi panel — Viraliza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="panel.html">Viraliza<i>.</i></a>
+    <div class="sesion">
+      <span>Hola, <b id="nombre-usuario">…</b></span>
+      <button class="salir" id="salir" type="button">Salir</button>
+    </div>
+  </div>
+</header>
+
+<main class="panel">
+  <div class="wrap">
+
+    <nav class="tabs-panel" id="pestanas">
+      <button class="tab-btn activo" type="button" data-tab="producir">Producir</button>
+      <button class="tab-btn" type="button" data-tab="videos">Mis videos</button>
+      <button class="tab-btn" type="button" data-tab="membresia">Membresía</button>
+      <button class="tab-btn" type="button" data-tab="redes">Redes sociales</button>
+      <button class="tab-btn" type="button" data-tab="cuenta">Mi cuenta</button>
+      <div id="contador-videos-nav" style="margin-left:auto;display:flex;align-items:center;gap:8px;border:1px solid rgba(214,178,94,.2);padding:6px 14px;border-radius:2px">
+        <span style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)">Videos</span>
+        <span style="font-size:14px;font-family:'Playfair Display',serif;color:var(--gold)"><span id="nav-usados">0</span><span style="color:var(--muted);font-size:11px"> / <span id="nav-limite">0</span></span></span>
+      </div>
+    </nav>
+
+    <p class="msg" id="mensaje"></p>
+
+    <!-- ===================== PESTAÑA: PRODUCIR ===================== -->
+    <section class="tab-panel activo" data-panel="producir">
+      <div class="producir-envoltura card gold">
+
+        <!-- Barra de progreso -->
+        <div class="wizard-progreso" id="wizard-progreso">
+          <div class="wizard-paso-indicador activo" data-paso="1">
+            <div class="wizard-paso-circulo">1</div>
+            <span class="wizard-paso-label">Tu idea</span>
+          </div>
+          <div class="wizard-paso-indicador" data-paso="2">
+            <div class="wizard-paso-circulo">2</div>
+            <span class="wizard-paso-label">Formato</span>
+          </div>
+          <div class="wizard-paso-indicador" data-paso="3">
+            <div class="wizard-paso-circulo">3</div>
+            <span class="wizard-paso-label">Guion</span>
+          </div>
+          <div class="wizard-paso-indicador" data-paso="4">
+            <div class="wizard-paso-circulo">4</div>
+            <span class="wizard-paso-label">Voz y música</span>
+          </div>
+          <div class="wizard-paso-indicador" data-paso="5">
+            <div class="wizard-paso-circulo">5</div>
+            <span class="wizard-paso-label">Producir</span>
+          </div>
+        </div>
+
+        <!-- ===== PASO 1: Tu idea ===== -->
+        <div class="wizard-pantalla activa" data-pantalla="1">
+          <p class="eyebrow">Paso 1 de 5</p>
+          <h2 class="serif" style="font-size:22px;margin-bottom:6px">¿Qué quieres <em>contar</em> hoy?</h2>
+          <p class="ayuda" style="margin-bottom:22px">Una frase basta — nosotros escribimos el guion completo.</p>
+
+          <p style="font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">¿Cuál es tu tipo de negocio?</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px" id="chips-nicho">
+            <button class="chip-nicho" data-nicho="restaurante" onclick="W.elegirNicho(this)" type="button">🍽 Restaurante</button>
+            <button class="chip-nicho" data-nicho="inmobiliaria" onclick="W.elegirNicho(this)" type="button">🏠 Inmobiliaria</button>
+            <button class="chip-nicho" data-nicho="gimnasio" onclick="W.elegirNicho(this)" type="button">💪 Gimnasio</button>
+            <button class="chip-nicho" data-nicho="belleza" onclick="W.elegirNicho(this)" type="button">💅 Belleza</button>
+            <button class="chip-nicho" data-nicho="tienda" onclick="W.elegirNicho(this)" type="button">🛍 Tienda</button>
+            <button class="chip-nicho" data-nicho="agencia" onclick="W.elegirNicho(this)" type="button">📱 Agencia</button>
+            <button class="chip-nicho" data-nicho="educacion" onclick="W.elegirNicho(this)" type="button">📚 Educación</button>
+            <button class="chip-nicho" data-nicho="salud" onclick="W.elegirNicho(this)" type="button">🏥 Salud</button>
+          </div>
+
+          <div id="temas-sugeridos" style="display:none;margin-bottom:16px">
+            <p style="font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Ideas para tu video — toca una para usarla</p>
+            <div style="display:flex;flex-direction:column;gap:6px" id="lista-temas-sugeridos"></div>
+          </div>
+
+          <input id="tema" type="text" maxlength="160"
+            placeholder="Escribe el tema de tu video — ej: servicios de plomería en Bogotá, ropa deportiva para mujer, clínica dental en Cali"
+            style="font-size:16px;padding:16px 18px">
+
+          <label for="duracion" style="margin-top:20px">¿Cuánto debe durar el video?</label>
+          <div class="tarjetas-grid col-3" style="margin-bottom:0">
+            <button class="tarjeta-opcion elegida" data-duracion="corto" onclick="W.elegirDuracion(this)">
+              <span class="tarjeta-icono">⚡</span>
+              <div class="tarjeta-titulo">30 segundos</div>
+              <div class="tarjeta-desc">Ideal para TikTok y Reels</div>
+            </button>
+            <button class="tarjeta-opcion" data-duracion="medio" onclick="W.elegirDuracion(this)">
+              <span class="tarjeta-icono">🎬</span>
+              <div class="tarjeta-titulo">60 segundos</div>
+              <div class="tarjeta-desc">Más contexto y detalle</div>
+            </button>
+            <button class="tarjeta-opcion" data-duracion="largo" onclick="W.elegirDuracion(this)">
+              <span class="tarjeta-icono">🎥</span>
+              <div class="tarjeta-titulo">90 segundos</div>
+              <div class="tarjeta-desc">Mini historia completa</div>
+            </button>
+          </div>
+
+          <div class="wizard-nav" style="justify-content:flex-end">
+            <button class="btn" id="btn-generar-guion" onclick="W.irAPaso2()">
+              Continuar →
+            </button>
+          </div>
+        </div>
+
+        <!-- ===== PASO 2: Formato ===== -->
+        <div class="wizard-pantalla" data-pantalla="2">
+          <p class="eyebrow">Paso 2 de 5</p>
+          <h2 class="serif" style="font-size:22px;margin-bottom:6px">¿Dónde vas a publicar el video?</h2>
+          <p class="ayuda" style="margin-bottom:22px">Elige el formato que mejor se adapte a la plataforma.</p>
+
+          <div class="tarjetas-grid col-3">
+            <button class="tarjeta-opcion elegida" data-formato="9:16" onclick="W.elegirFormato(this)">
+              <span class="tarjeta-icono">📱</span>
+              <div class="tarjeta-titulo">Vertical 9:16</div>
+              <div class="tarjeta-desc">TikTok · Instagram Reels · YouTube Shorts</div>
+            </button>
+            <button class="tarjeta-opcion" data-formato="16:9" onclick="W.elegirFormato(this)">
+              <span class="tarjeta-icono">🖥️</span>
+              <div class="tarjeta-titulo">Horizontal 16:9</div>
+              <div class="tarjeta-desc">YouTube · Facebook · Presentaciones</div>
+            </button>
+            <button class="tarjeta-opcion" data-formato="1:1" onclick="W.elegirFormato(this)">
+              <span class="tarjeta-icono">⬜</span>
+              <div class="tarjeta-titulo">Cuadrado 1:1</div>
+              <div class="tarjeta-desc">Feed de Instagram · LinkedIn</div>
+            </button>
+          </div>
+
+          <label>Banco de imágenes</label>
+          <div class="tarjetas-grid col-2">
+            <button class="tarjeta-opcion elegida" data-banco="pexels" onclick="W.elegirFuente(this)">
+              <span class="tarjeta-icono">🌟</span>
+              <div class="tarjeta-titulo">Banco Prime</div>
+              <div class="tarjeta-desc">Catálogo premium con millones de clips profesionales</div>
+            </button>
+            <button class="tarjeta-opcion" data-banco="pixabay" onclick="W.elegirFuente(this)">
+              <span class="tarjeta-icono">✨</span>
+              <div class="tarjeta-titulo">Banco Plus</div>
+              <div class="tarjeta-desc">Gran variedad de estilos y géneros visuales</div>
+            </button>
+          </div>
+          <!-- BUSCADOR VISUAL DE IMÁGENES -->
+          <div style="margin-top:18px;border:1px solid var(--line);border-radius:4px;padding:16px" id="buscador-imagenes">
+            <p style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px">🔍 Busca imágenes para tu video</p>
+            <div style="display:flex;gap:8px;margin-bottom:12px">
+              <input type="text" id="busqueda-imagenes" placeholder="Ej: Ganesha hindú, restaurante moderno, gimnasio..." style="flex:1;font-size:14px;padding:10px 14px">
+              <button class="btn" onclick="W.buscarImagenes()" type="button" style="padding:10px 18px;font-size:11px;white-space:nowrap">Buscar</button>
+            </div>
+            <div id="resultados-imagenes" style="display:none">
+              <p class="ayuda" style="margin-bottom:8px;font-size:11px">Toca las imágenes para seleccionarlas · Máx. 8</p>
+              <div id="grid-imagenes" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-height:300px;overflow-y:auto"></div>
+              <p id="imagenes-seleccionadas-count" style="font-size:11px;color:var(--gold);margin-top:8px;text-align:center">0 imágenes seleccionadas</p>
+            </div>
+          </div>
+
+          <label style="margin-top:14px">¿Tienes tus propias imágenes o videos? <span style="color:var(--muted);font-size:12px">(opcional · máx. 8)</span></label>
+          <div id="lista-materiales-wizard" style="border:1px solid var(--line);border-radius:3px;max-height:160px;overflow-y:auto;margin-bottom:8px;display:none"></div>
+          <div style="border:2px dashed var(--line);border-radius:4px;padding:16px;text-align:center;cursor:pointer" onclick="document.getElementById('archivo-material-wizard').click()">
+            <p style="font-size:22px;margin-bottom:4px">📁</p>
+            <p style="color:var(--gold);font-size:13px;margin-bottom:2px">Sube tus propios archivos</p>
+            <p class="ayuda" style="margin:0;font-size:11px">JPG, PNG, MP4 · Máx. 8 · Si no subes nada, usamos el banco automático</p>
+          </div>
+          <input type="file" id="archivo-material-wizard" accept="image/*,video/*" multiple style="display:none">
+
+          <div class="wizard-nav">
+            <button class="wizard-nav btn-atras" onclick="W.irA(1)">← Atrás</button>
+            <button class="btn" onclick="W.irA(3)">Continuar →</button>
+          </div>
+        </div>
+
+        <!-- ===== PASO 3: Guion ===== -->
+        <div class="wizard-pantalla" data-pantalla="3">
+          <p class="eyebrow">Paso 3 de 5</p>
+          <h2 class="serif" style="font-size:22px;margin-bottom:6px">Tu <em>guion</em></h2>
+          <p class="ayuda" style="margin-bottom:18px">Lo redactamos nosotros. Léelo, edítalo si quieres, o pide otro.</p>
+
+          <div id="guion-loading" style="text-align:center;padding:40px 0;display:none">
+            <p class="ayuda">Redactando tu guion…</p>
+          </div>
+
+          <textarea class="guion-box" id="guion-editable" placeholder="Tu guion aparecerá aquí…"></textarea>
+
+          <button class="btn line block" id="btn-regenerar" onclick="W.regenerarGuion()" style="margin-bottom:0">
+            ↺ Generar otro guion
+          </button>
+
+          <div class="wizard-nav">
+            <button class="wizard-nav btn-atras" onclick="W.irA(2)">← Atrás</button>
+            <button class="btn" onclick="W.irA(4)">Continuar →</button>
+          </div>
+        </div>
+
+        <!-- ===== PASO 4: Voz y música ===== -->
+        <div class="wizard-pantalla" data-pantalla="4">
+          <p class="eyebrow">Paso 4 de 5</p>
+          <h2 class="serif" style="font-size:22px;margin-bottom:20px">Voz, música <em>y estilo</em></h2>
+
+          <!-- Narración -->
+          <label>Narración</label>
+          <div class="voces-tabs" id="voces-tabs">
+            <button class="voz-tab activo" data-modo="lista" onclick="W.elegirModoVoz(this)">🎙️ Voz estándar</button>
+            <button class="voz-tab" data-modo="premium" style="display:none" onclick="W.elegirModoVoz(this)">⭐ Voz premium</button>
+            <button class="voz-tab" data-modo="propia" onclick="W.elegirModoVoz(this)">🎤 Mi narración</button>
+            <button class="voz-tab" data-modo="ninguna" onclick="W.elegirModoVoz(this)">🔇 Sin voz</button>
+          </div>
+
+          <!-- Panel voz estándar -->
+          <div id="panel-voz-lista">
+            <select id="voz" style="margin-bottom:0"></select>
+          </div>
+
+          <!-- Panel voz premium -->
+          <div id="panel-voz-premium" style="display:none">
+            <select id="filtro-idioma-premium" style="margin-bottom:8px"></select>
+            <div class="canciones-lista" id="lista-voces-premium" style="max-height:180px"></div>
+            <audio id="reproductor-voz-premium" style="display:none"></audio>
+          </div>
+
+          <!-- Panel narración propia -->
+          <div id="panel-voz-propia" style="display:none">
+            <div style="border:2px dashed var(--line);border-radius:4px;padding:24px;text-align:center;cursor:pointer"
+                 onclick="document.getElementById('archivo-narracion').click()">
+              <p style="font-size:28px;margin-bottom:6px">🎤</p>
+              <p style="color:var(--ink);font-size:14px;margin-bottom:4px">Sube tu narración</p>
+              <p class="ayuda" style="margin:0">MP3, WAV o M4A · Lee el guion del paso anterior</p>
+            </div>
+            <input type="file" id="archivo-narracion" accept="audio/*" style="display:none">
+            <p class="ayuda" id="ayuda-narracion-propia" style="margin-top:10px;display:none"></p>
+          </div>
+
+          <!-- Panel sin voz -->
+          <div id="panel-voz-ninguna" style="display:none">
+            <div style="border:1px solid var(--line);border-radius:4px;padding:16px;color:var(--muted);font-size:14px">
+              Tu video tendrá solo música de fondo, sin narración.
+            </div>
+          </div>
+
+          <input type="hidden" id="audio-personalizado" value="">
+          <input type="hidden" id="voz-premium-elegida" value="">
+          <input type="hidden" id="sin-narracion" value="">
+
+          <!-- Música -->
+          <label style="margin-top:24px">Música de fondo</label>
+          <div style="display:flex;gap:10px;margin-bottom:14px">
+            <button class="btn" id="btn-musica-premium" onclick="W.alternarMusica('premium')" style="flex:1;font-size:12px">
+              🎵 Premium por ánimo
+            </button>
+            <button class="btn line" id="btn-musica-estandar" onclick="W.alternarMusica('estandar')" style="flex:1;font-size:12px">
+              📁 Mis canciones
+            </button>
+          </div>
+
+          <!-- Música premium: ánimos -->
+          <div id="seccion-musica-premium">
+            <div class="tarjetas-grid animos" style="margin-bottom:0">
+              <button class="tarjeta-opcion animo-alegre" data-animo="alegre" onclick="W.buscarAnimo(this)">
+                <span class="tarjeta-icono">😄</span>
+                <div class="tarjeta-titulo">Alegre</div>
+              </button>
+              <button class="tarjeta-opcion animo-energica" data-animo="energica" onclick="W.buscarAnimo(this)">
+                <span class="tarjeta-icono">⚡</span>
+                <div class="tarjeta-titulo">Enérgica</div>
+              </button>
+              <button class="tarjeta-opcion animo-corporativa" data-animo="corporativa" onclick="W.buscarAnimo(this)">
+                <span class="tarjeta-icono">💼</span>
+                <div class="tarjeta-titulo">Corporativa</div>
+              </button>
+              <button class="tarjeta-opcion animo-motivacional" data-animo="motivacional" onclick="W.buscarAnimo(this)">
+                <span class="tarjeta-icono">🚀</span>
+                <div class="tarjeta-titulo">Motivacional</div>
+              </button>
+              <button class="tarjeta-opcion animo-cinematica" data-animo="cinematica" onclick="W.buscarAnimo(this)">
+                <span class="tarjeta-icono">🎬</span>
+                <div class="tarjeta-titulo">Cinemática</div>
+              </button>
+              <button class="tarjeta-opcion animo-calmada" data-animo="calmada" onclick="W.buscarAnimo(this)">
+                <span class="tarjeta-icono">🌊</span>
+                <div class="tarjeta-titulo">Calmada</div>
+              </button>
+            </div>
+            <div class="canciones-lista" id="lista-musica-premium">
+              <p class="ayuda" style="margin:14px;text-align:center">Elige un ánimo para ver canciones</p>
+            </div>
+          </div>
+
+          <!-- Música estándar: canciones propias -->
+          <div id="seccion-musica-estandar" style="display:none">
+            <div class="canciones-lista" id="lista-musica">
+              <!-- se llena dinámicamente -->
+            </div>
+            <p class="ayuda" style="margin-top:10px">
+              ¿Tienes tu propia canción?
+              <a href="#" id="abrir-subir-musica" style="color:var(--gold)">Súbela aquí</a>
+            </p>
+            <input type="file" id="archivo-musica" accept="audio/*" style="display:none">
+          </div>
+
+          <audio id="reproductor-musica" style="display:none"></audio>
+          <input type="hidden" id="musica" value="">
+          <input type="hidden" id="musica-premium-url" value="">
+
+          <!-- Volumen -->
+          <label style="margin-top:18px">Volumen de la música
+            <span id="volumen-valor" style="color:var(--gold);margin-left:8px">20%</span>
+          </label>
+          <input type="range" id="volumen-musica" min="0" max="100" value="20"
+            oninput="document.getElementById('volumen-valor').textContent=this.value+'%'"
+            style="width:100%;margin-bottom:22px">
+
+          <!-- Subtítulos -->
+          <label>Subtítulos</label>
+          <div class="toggle-grande activo" id="toggle-subtitulos" onclick="W.toggleSubtitulos()">
+            <div class="toggle-switch"></div>
+            <div class="toggle-grande-texto">
+              <div class="toggle-grande-titulo">Mostrar subtítulos</div>
+              <div class="toggle-grande-desc">El texto de la narración aparece visible en el video</div>
+            </div>
+          </div>
+          <input type="hidden" id="subtitulos-activos" value="1">
+
+          <div id="opciones-subtitulos" style="display:block">
+            <!-- Preview en vivo -->
+            <div class="subtitulos-preview">
+              <span class="subtitulos-preview-texto" id="preview-subtitulo">
+                Así se verán tus subtítulos
+              </span>
+            </div>
+
+            <label>Color del texto</label>
+            <div class="colores-subtitulo">
+              <div class="color-chip elegido" data-color="#FFFFFF" style="background:#FFFFFF;border:1px solid #555"
+                   onclick="W.elegirColorSub(this)" title="Blanco"></div>
+              <div class="color-chip" data-color="#FFEB3B" style="background:#FFEB3B"
+                   onclick="W.elegirColorSub(this)" title="Amarillo"></div>
+              <div class="color-chip" data-color="#FF5252" style="background:#FF5252"
+                   onclick="W.elegirColorSub(this)" title="Rojo"></div>
+              <div class="color-chip" data-color="#69F0AE" style="background:#69F0AE"
+                   onclick="W.elegirColorSub(this)" title="Verde"></div>
+              <div class="color-chip" data-color="#40C4FF" style="background:#40C4FF"
+                   onclick="W.elegirColorSub(this)" title="Azul"></div>
+              <div class="color-chip" data-color="#D6B25E" style="background:#D6B25E"
+                   onclick="W.elegirColorSub(this)" title="Dorado"></div>
+              <input type="color" id="subtitulos-color" value="#FFFFFF"
+                     style="width:32px;height:32px;border:none;background:none;cursor:pointer;border-radius:50%;padding:0"
+                     oninput="W.actualizarPreviewSub()" title="Color personalizado">
+            </div>
+
+            <label>Estilo de letra</label>
+            <div class="tarjetas-grid col-2" style="margin-bottom:0">
+              <button class="tarjeta-opcion elegida" data-fuente="clasica" onclick="W.elegirFuenteSub(this)">
+                <div class="tarjeta-titulo" style="font-weight:700;font-size:16px">Clásica</div>
+                <div class="tarjeta-desc">Gruesa · ideal para TikTok</div>
+              </button>
+              <button class="tarjeta-opcion" data-fuente="ligera" onclick="W.elegirFuenteSub(this)">
+                <div class="tarjeta-titulo" style="font-weight:300;font-size:16px">Ligera</div>
+                <div class="tarjeta-desc">Fina · estilo minimalista</div>
+              </button>
+              <button class="tarjeta-opcion" data-fuente="elegante" onclick="W.elegirFuenteSub(this)">
+                <div class="tarjeta-titulo" style="font-family:Georgia,serif;font-size:16px;font-style:italic">Elegante</div>
+                <div class="tarjeta-desc">Serif · videos premium</div>
+              </button>
+              <button class="tarjeta-opcion" data-fuente="moderna" onclick="W.elegirFuenteSub(this)">
+                <div class="tarjeta-titulo" style="font-family:Impact,sans-serif;font-size:16px;letter-spacing:2px">MODERNA</div>
+                <div class="tarjeta-desc">Impact · máximo impacto</div>
+              </button>
+              <button class="tarjeta-opcion" data-fuente="redondeada" onclick="W.elegirFuenteSub(this)">
+                <div class="tarjeta-titulo" style="font-family:Trebuchet MS,sans-serif;font-size:16px">Redondeada</div>
+                <div class="tarjeta-desc">Suave · amigable y cercana</div>
+              </button>
+              <button class="tarjeta-opcion" data-fuente="viral" onclick="W.elegirFuenteSub(this)">
+                <div class="tarjeta-titulo" style="font-family:Arial Black,sans-serif;font-size:14px;letter-spacing:-0.5px">VIRAL</div>
+                <div class="tarjeta-desc">Negrita extrema · máxima legibilidad</div>
+              </button>
+            </div>
+          </div>
+
+          <input type="hidden" id="subtitulos-fuente" value="clasica">
+
+          <div class="wizard-nav">
+            <button class="wizard-nav btn-atras" onclick="W.irA(3)">← Atrás</button>
+            <button class="btn" onclick="W.irA(5)">Ver resumen →</button>
+          </div>
+        </div>
+
+        <!-- ===== PASO 5: Resumen y producir ===== -->
+        <div class="wizard-pantalla" data-pantalla="5">
+          <p class="eyebrow">Paso 5 de 5</p>
+          <h2 class="serif" style="font-size:22px;margin-bottom:6px">Todo listo para <em>producir</em></h2>
+          <p class="ayuda" style="margin-bottom:22px">Revisa tu configuración antes de empezar.</p>
+
+          <div class="resumen-grid" id="resumen-grid">
+            <!-- se llena dinámicamente -->
+          </div>
+
+          <button class="btn block" id="btn-producir" onclick="W.producir()"
+                  style="font-size:15px;padding:18px;letter-spacing:2.5px">
+            🎬 PRODUCIR VIDEO
+          </button>
+
+          <div class="wizard-nav" style="border-top:none;padding-top:0;justify-content:center;margin-top:12px">
+            <button class="wizard-nav btn-atras" onclick="W.irA(4)" style="font-size:11px">
+              ← Ajustar opciones
+            </button>
+          </div>
+        </div>
+
+        <!-- Cuota siempre visible abajo -->
+        <div class="cuota" style="margin-top:28px">
+          <div>
+            <span class="plan-nombre" id="plan-nombre">—</span><br>
+            <span style="font-size:13px;color:var(--muted)">Videos este mes</span>
+          </div>
+          <span class="num">
+            <span id="cuota-usados">0</span>
+            <i>/ <span id="cuota-limite">0</span></i>
+          </span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================== PESTAÑA: MIS VIDEOS ===================== -->
+    <section class="tab-panel" data-panel="videos">
+      <div class="videos-grid" id="lista-videos">
+        <div class="vacio">Aquí aparecerán tus producciones.<br>Crea tu primer video para estrenar el estudio.</div>
+      </div>
+    </section>
+
+    <!-- ===================== PESTAÑA: MEMBRESÍA ===================== -->
+    <section class="tab-panel" data-panel="membresia">
+      <div class="planes-grid" id="lista-planes"></div>
+    </section>
+
+    <!-- ===================== PESTAÑA: REDES ===================== -->
+    <section class="tab-panel" data-panel="cuenta">
+      <div class="card gold" style="max-width:520px;margin:0 auto">
+        <span class="eyebrow">Tu membresía</span>
+        <h2 class="serif" style="font-size:22px;margin-bottom:20px">Mi <em>cuenta</em></h2>
+
+        <div style="border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:16px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div>
+              <p style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Plan actual</p>
+              <p class="serif" style="font-size:22px" id="cuenta-plan-nombre">—</p>
+            </div>
+            <span id="cuenta-plan-badge" style="background:rgba(214,178,94,.12);color:var(--gold);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 14px;border-radius:20px">Activo</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div style="border:1px solid var(--line);border-radius:4px;padding:12px">
+              <p style="font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Videos este mes</p>
+              <p style="font-size:20px;font-family:'Jost',sans-serif"><span id="cuenta-usados">0</span> <span style="color:var(--muted);font-size:14px">/ <span id="cuenta-limite">0</span></span></p>
+            </div>
+            <div style="border:1px solid var(--line);border-radius:4px;padding:12px">
+              <p style="font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Renueva el</p>
+              <p style="font-size:15px;font-family:'Jost',sans-serif" id="cuenta-renovacion">—</p>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn block" onclick="Panel.cambiarPestana('membresia')" style="margin-bottom:10px">
+          Cambiar de plan
+        </button>
+        <button class="btn line block" id="btn-cancelar-plan" onclick="Panel.cancelarPlan()" style="border-color:rgba(232,72,85,.4);color:#E84855">
+          Cancelar membresía
+        </button>
+        <p class="ayuda" style="margin-top:10px;text-align:center">Al cancelar, conservas el acceso hasta que venza el período actual.</p>
+      </div>
+    </section>
+
+    <section class="tab-panel" data-panel="redes">
+      <div class="redes-envoltura card gold">
+        <h2 class="serif" style="font-size:19px;margin-bottom:10px">Conecta tus redes</h2>
+        <p class="ayuda" style="margin-top:0">Vincula tus cuentas para publicar directo desde Viraliza.</p>
+        <button class="btn line block" id="conectar-redes">Conectar mis redes</button>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- Campos ocultos auxiliares -->
+<input type="hidden" id="materiales-elegidos" value="[]">
+<input type="hidden" id="galeria-elegidas" value="[]">
+
+<script src="app.js"></script>
+<script>Panel.iniciar();</script>
+</body>
+</html>
+
+
+<!-- MODAL ONBOARDING -->
+<div id="modal-onboarding" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);align-items:center;justify-content:center">
+  <div style="background:#0F0F12;border:1px solid rgba(214,178,94,.3);max-width:480px;width:90%;padding:48px 40px;position:relative;text-align:center">
+    <div style="font-size:48px;margin-bottom:20px">🎬</div>
+    <p style="font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#D6B25E;margin-bottom:12px">Bienvenido a Viraliza</p>
+    <h2 style="font-family:'Playfair Display',serif;font-size:28px;margin-bottom:16px;line-height:1.3">Tu estudio de video<br><em style="color:#D6B25E">está listo</em></h2>
+    <p style="color:#8A8480;font-size:15px;line-height:1.7;margin-bottom:32px">En menos de 2 minutos vas a tener tu primer video profesional listo para publicar. Solo escribe el tema y nosotros hacemos el resto.</p>
+    <div style="background:rgba(214,178,94,.06);border:1px solid rgba(214,178,94,.15);padding:20px;margin-bottom:28px;text-align:left">
+      <div style="display:flex;gap:16px;margin-bottom:14px;align-items:center">
+        <span style="width:28px;height:28px;border:1px solid rgba(214,178,94,.4);color:#D6B25E;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;font-family:'Playfair Display',serif">1</span>
+        <span style="font-size:13px;color:#F0EDE5">Escribe el tema de tu video</span>
+      </div>
+      <div style="display:flex;gap:16px;margin-bottom:14px;align-items:center">
+        <span style="width:28px;height:28px;border:1px solid rgba(214,178,94,.4);color:#D6B25E;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;font-family:'Playfair Display',serif">2</span>
+        <span style="font-size:13px;color:#F0EDE5">Elige el formato y la voz</span>
+      </div>
+      <div style="display:flex;gap:16px;align-items:center">
+        <span style="width:28px;height:28px;border:1px solid rgba(214,178,94,.4);color:#D6B25E;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;font-family:'Playfair Display',serif">3</span>
+        <span style="font-size:13px;color:#F0EDE5">Produce y descarga en HD</span>
+      </div>
+    </div>
+    <button onclick="Panel.cerrarOnboarding()" style="background:#D6B25E;color:#09090B;border:none;padding:16px 40px;font-family:'Jost',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;width:100%;margin-bottom:12px">Producir mi primer video →</button>
+    <button onclick="Panel.cerrarOnboarding()" style="background:none;border:none;color:#8A8480;font-size:12px;cursor:pointer;letter-spacing:1px">Explorar el panel primero</button>
+  </div>
+</div>
