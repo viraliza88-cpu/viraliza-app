@@ -5,45 +5,64 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Acceso — Viraliza</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="estilos.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#D6B25E;--bg:#07070A;--bg2:#0F0F12;--ink:#F0EDE5;--muted:#A8A4A0;--line:rgba(255,255,255,.1)}
+body{background:var(--bg);color:var(--ink);font-family:"Jost",sans-serif;font-weight:300;min-height:100vh;display:grid;place-items:center;padding:24px 16px;background-image:radial-gradient(600px 400px at 60% 20%,rgba(214,178,94,.06),transparent 65%)}
+.caja{width:100%;max-width:420px}
+.logo{display:block;text-align:center;font-family:"Playfair Display",serif;font-size:26px;color:var(--ink);text-decoration:none;margin-bottom:36px}
+.logo span{color:var(--gold)}
+.tabs{display:flex;border:1px solid var(--line);margin-bottom:24px;overflow:hidden}
+.tab-btn{flex:1;background:none;border:none;color:var(--muted);font-family:"Jost",sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:13px;cursor:pointer;transition:all .2s}
+.tab-btn.activo{background:rgba(214,178,94,.08);color:var(--gold);border-bottom:1px solid var(--gold)}
+.card{background:var(--bg2);border:1px solid rgba(214,178,94,.15);border-top:2px solid var(--gold);padding:32px 28px}
+h1{font-family:"Playfair Display",serif;font-size:24px;text-align:center;margin-bottom:6px;line-height:1.2}
+h1 em{font-style:italic;color:var(--gold)}
+.sub{text-align:center;color:var(--muted);font-size:14px;margin-bottom:28px;line-height:1.6}
+.msg{font-size:13px;padding:10px 14px;margin-bottom:16px;border-radius:2px;display:none}
+.msg.ok{background:rgba(105,240,174,.08);border:1px solid rgba(105,240,174,.2);color:#69F0AE;display:block}
+.msg.err{background:rgba(232,72,85,.08);border:1px solid rgba(232,72,85,.2);color:#E84855;display:block}
+label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px;margin-top:18px}
+input{width:100%;background:rgba(255,255,255,.04);border:none;border-bottom:1px solid rgba(255,255,255,.15);padding:12px 0;font-size:16px;color:var(--ink);outline:none;font-family:"Jost",sans-serif;font-weight:300;transition:border-color .25s;-webkit-appearance:none}
+input::placeholder{color:rgba(255,255,255,.2)}
+input:focus{border-bottom-color:var(--gold)}
+.btn-main{display:block;width:100%;background:var(--gold);color:#09090B;border:none;font-family:"Jost",sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:16px;cursor:pointer;margin-top:28px;transition:all .3s}
+.btn-main:hover{background:#E8C96A;transform:translateY(-1px)}
+.btn-main:active{transform:translateY(0)}
+.alterno{text-align:center;font-size:13px;color:var(--muted);margin-top:20px}
+.alterno a{color:var(--gold);text-decoration:none}
+.alterno a:hover{text-decoration:underline}
+@media(max-width:480px){
+  .card{padding:24px 18px}
+  h1{font-size:22px}
+  input{font-size:16px}
+}
+</style>
 </head>
 <body>
-
-<main class="acceso">
-  <div class="caja">
-    <a class="logo" href="index.html">Viraliza<i>.</i></a>
-
-    <div class="tabs" role="tablist">
-      <button id="tab-login" type="button">Iniciar sesión</button>
-      <button id="tab-registro" type="button">Crear cuenta</button>
-    </div>
-
-    <div class="card gold">
-      <h1 class="serif" id="titulo">Bienvenido <em>de vuelta</em></h1>
-      <p class="sub" id="subtitulo">Entra a tu panel de producción.</p>
-
-      <p class="msg" id="mensaje"></p>
-
-      <div id="campo-nombre" style="display:none">
-        <label for="nombre">Tu nombre</label>
-        <input id="nombre" type="text" autocomplete="name" placeholder="Esteban Rendón">
-      </div>
-
-      <label for="email">Correo</label>
-      <input id="email" type="email" autocomplete="email" placeholder="tu@correo.com">
-
-      <label for="clave">Contraseña</label>
-      <input id="clave" type="password" autocomplete="current-password" placeholder="Mínimo 6 caracteres">
-
-      <button class="btn block" id="accion" type="button">Entrar</button>
-
-      <p class="alterno" id="alterno">¿Aún no tienes cuenta? <a href="#" id="cambiar">Crea una gratis</a></p>
-    </div>
+<div class="caja">
+  <a class="logo" href="index.html">Viraliza<span>.</span></a>
+  <div class="tabs">
+    <button class="tab-btn activo" id="tab-login" type="button">Iniciar sesión</button>
+    <button class="tab-btn" id="tab-registro" type="button">Crear cuenta</button>
   </div>
-</main>
-
+  <div class="card">
+    <h1 id="titulo">Bienvenido <em>de vuelta</em></h1>
+    <p class="sub" id="subtitulo">Entra a tu panel de producción.</p>
+    <p class="msg" id="mensaje"></p>
+    <div id="campo-nombre" style="display:none">
+      <label for="nombre">Tu nombre</label>
+      <input id="nombre" type="text" autocomplete="name" placeholder="Esteban Rendón">
+    </div>
+    <label for="email">Correo electrónico</label>
+    <input id="email" type="email" autocomplete="email" placeholder="tu@correo.com">
+    <label for="clave">Contraseña</label>
+    <input id="clave" type="password" autocomplete="current-password" placeholder="Mínimo 6 caracteres">
+    <button class="btn-main" id="accion" type="button">Entrar</button>
+    <p class="alterno" id="alterno">¿Aún no tienes cuenta? <a href="#" id="cambiar">Crea una gratis</a></p>
+  </div>
+</div>
 <script src="app.js"></script>
 <script>Acceso.iniciar();</script>
 </body>
