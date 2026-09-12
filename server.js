@@ -707,9 +707,10 @@ app.post("/api/narracion", autenticar, (req, res) => {
 });
 
 app.get("/api/planes", (req, res) => {
-  const lista = Object.entries(PLANES)
-    .filter(([clave]) => clave !== "inicial")
-    .map(([clave, p]) => ({ clave, nombre: p.nombre, limite: p.limite, precioCOP: p.precioCOP }));
+  const orden = ["esencial", "signature", "elite", "profesional"];
+  const lista = orden
+    .filter(clave => PLANES[clave])
+    .map(clave => ({ clave, nombre: PLANES[clave].nombre, limite: PLANES[clave].limite, precioCOP: PLANES[clave].precioCOP, produccion_humana: PLANES[clave].produccion_humana || false }));
   res.json({ planes: lista });
 });
 

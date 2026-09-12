@@ -1013,7 +1013,7 @@ const Panel = {
   },
 
   async pintarPlanes(planActual) {
-    if (this._planesCargados) return this.actualizarBotonesPlan(planActual);
+    if (this._planesCargados && this._planes?.length >= 4) return this.actualizarBotonesPlan(planActual);
     try {
       const { planes } = await API.pedir("/api/planes");
       this._planes = planes;
@@ -1131,6 +1131,29 @@ const Panel = {
         </div>
       </div>
 
+      <!-- PLAN PROFESIONAL -->
+      <div style="border:1px solid rgba(214,178,94,.4);margin-bottom:12px;display:flex;align-items:stretch;overflow:hidden;position:relative;background:linear-gradient(135deg,rgba(214,178,94,.06) 0%,transparent 60%)" onmouseover="this.style.borderColor='#D6B25E'" onmouseout="this.style.borderColor='rgba(214,178,94,.4)'">
+        <div style="position:absolute;top:0;right:0;background:#D6B25E;color:#09090B;font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 14px">NUEVO · PREMIUM</div>
+        <div style="width:6px;background:#D6B25E;flex-shrink:0"></div>
+        <div style="flex:1;padding:28px 32px;display:flex;align-items:center;gap:40px">
+          <div style="min-width:160px">
+            <span style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(214,178,94,.7);display:block;margin-bottom:10px">Profesional</span>
+            <div style="font-family:'Playfair Display',serif;font-size:32px;color:#D6B25E">$149.000</div>
+            <span style="font-size:11px;color:rgba(255,255,255,.2)">COP / mes</span>
+          </div>
+          <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:6px 24px">
+            <span style="font-size:12px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:8px"><span style="color:#D6B25E;font-size:10px">✓</span> <strong style="color:#F0EDE5">3 videos</strong> profesionales/mes</span>
+            <span style="font-size:12px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:8px"><span style="color:#D6B25E;font-size:10px">✓</span> Producción humana + IA</span>
+            <span style="font-size:12px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:8px"><span style="color:#D6B25E;font-size:10px">✓</span> Capturas reales de tu negocio</span>
+            <span style="font-size:12px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:8px"><span style="color:#D6B25E;font-size:10px">✓</span> Entrega en 24-48 horas</span>
+            <span style="font-size:12px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:8px"><span style="color:#D6B25E;font-size:10px">✓</span> Versión 9:16 + 16:9</span>
+            <span style="font-size:12px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:8px"><span style="color:#D6B25E;font-size:10px">✓</span> Revisión incluida</span>
+          </div>
+          <div style="flex-shrink:0">
+            <button data-plan="profesional" type="button" style="background:#D6B25E;border:1px solid #D6B25E;color:#09090B;padding:13px 28px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;white-space:nowrap;font-family:inherit;font-weight:700;transition:all .2s" onmouseover="if(!this.disabled){this.style.background='#E8C96A'}" onmouseout="if(!this.disabled&&!this.dataset.actual){this.style.background='#D6B25E'}">Elegir Profesional</button>
+          </div>
+        </div>
+      </div>
       <p style="text-align:center;margin-top:20px;font-size:12px;color:rgba(255,255,255,.2);display:flex;gap:20px;justify-content:center;flex-wrap:wrap">
         <span style="display:flex;align-items:center;gap:6px"><span style="color:#D6B25E">✓</span> Tarjeta crédito/débito</span>
         <span style="display:flex;align-items:center;gap:6px"><span style="color:#D6B25E">✓</span> PSE</span>
