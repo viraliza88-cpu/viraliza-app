@@ -370,6 +370,27 @@ setInterval(() => {
   }
 }, 5 * 60 * 1000);
 app.use(express.json());
+const VIDEOS_DIR = "/var/www/viraliza-app/public/videos";
+const MAX_VIDEOS_GB = 20;
+if (!fs.existsSync(VIDEOS_DIR)) fs.mkdirSync(VIDEOS_DIR, { recursive: true });
+
+async function limpiarVideosViejos() {
+  try {
+    const archivos = fs.readdirSync(VIDEOS_DIR)
+      .filter(f => f.endsWith(".mp4"))
+      .map(f => { const s = fs.statSync(`${VIDEOS_DIR}/${f}`); return { nombre: f, size: s.size, mtime: s.mtime }; })
+      .sort((a, b) => a.mtime - b.mtime);
+    let totalBytes = archivos.reduce((s, f) => s + f.size, 0);
+    const limiteBytes = MAX_VIDEOS_GB * 1024 * 1024 * 1024;
+    while (totalBytes > limiteBytes && archivos.length > 0) {
+      const viejo = archivos.shift();
+      fs.unlinkSync(`${VIDEOS_DIR}/${viejo.nombre}`);
+      totalBytes -= viejo.size;
+      console.log(`[LIMPIEZA] Borrado: ${viejo.nombre}`);
+    }
+  } catch(e) { console.error("[LIMPIEZA] Error:", e.message); }
+}
+
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/videos", express.static(VIDEOS_DIR, {
   maxAge: "1d",
