@@ -1044,6 +1044,14 @@ const Panel = {
         "Buscador visual de imágenes",
         "✨ Transiciones cinematográficas",
       ],
+      profesional: [
+        "3 videos cinematográficos al mes",
+        "Producción humana + IA profesional",
+        "Capturas reales de tu negocio",
+        "Entrega en 24-48 horas",
+        "Versión 9:16 + 16:9 incluida",
+        "Revisión incluida",
+      ],
     };
     const cont = document.getElementById("lista-planes");
     cont.style.cssText = "padding:0;display:block";
