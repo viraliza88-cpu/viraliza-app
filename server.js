@@ -184,9 +184,11 @@ async function cuotaDe(usuarioId, plan) {
 
 async function planEfectivo(perfil) {
   if (!perfil) return "inicial";
-  const vencida = perfil.plan && perfil.plan !== "inicial" && perfil.plan_expira && new Date(perfil.plan_expira) < new Date();
+  const planPago = perfil.plan && perfil.plan.toLowerCase() !== "inicial";
+  const vencida = planPago && perfil.plan_expira && new Date(perfil.plan_expira) < new Date();
   if (vencida) {
-    await supabaseAdmin.from("perfiles").update({ plan: "inicial", plan_expira: null }).eq("id", perfil.id);
+    console.log(`[MEMBRESIA] Plan vencido para ${perfil.id} — degradando a Inicial`);
+    await supabaseAdmin.from("perfiles").update({ plan: "Inicial", plan_expira: null, videos_este_mes: 0 }).eq("id", perfil.id);
     return "inicial";
   }
   return perfil.plan || "inicial";
