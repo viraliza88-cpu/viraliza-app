@@ -160,10 +160,11 @@ async function redactarPalabrasClave(tema, guion) {
 }
 
 const PLANES = {
-  inicial:   { nombre: "Inicial",   limite: 2,   sello: true,  precioCOP: 0      },
-  esencial:  { nombre: "Esencial",  limite: 15,  sello: false, precioCOP: 39900  },
-  signature: { nombre: "Signature", limite: 50,  sello: false, precioCOP: 89900  },
-  elite:     { nombre: "Élite",     limite: 150, sello: false, precioCOP: 199900 },
+  inicial:      { nombre: "Inicial",      limite: 1,   sello: true,  precioCOP: 0,      produccion_humana: false },
+  esencial:     { nombre: "Esencial",     limite: 15,  sello: false, precioCOP: 39900,  produccion_humana: false },
+  signature:    { nombre: "Signature",    limite: 50,  sello: false, precioCOP: 89900,  produccion_humana: false },
+  elite:        { nombre: "Élite",        limite: 150, sello: false, precioCOP: 199900, produccion_humana: false },
+  profesional:  { nombre: "Profesional",  limite: 3,   sello: false, precioCOP: 149000, produccion_humana: true  },
 };
 
 function mesActual() {

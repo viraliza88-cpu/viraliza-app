@@ -929,6 +929,16 @@ const Panel = {
       const planesConTrans = ["Signature","Élite","Elite"];
       campoTrans.style.display = planesConTrans.includes(cuota.plan) ? "block" : "none";
     }
+    // Mostrar brief profesional si aplica
+    const wizardPanel = document.querySelector('[data-panel="producir"]');
+    const briefPanel = document.getElementById("panel-brief-profesional");
+    if (cuota.plan === "Profesional") {
+      if (wizardPanel) wizardPanel.style.display = "none";
+      if (briefPanel) briefPanel.style.display = "block";
+    } else {
+      if (wizardPanel) wizardPanel.style.display = "";
+      if (briefPanel) briefPanel.style.display = "none";
+    }
     const cuentaRenovacion = document.getElementById("cuenta-renovacion");
     if (cuentaRenovacion) cuentaRenovacion.textContent = cuota.expira ? new Date(cuota.expira).toLocaleDateString("es-CO",{day:"numeric",month:"long",year:"numeric"}) : "Sin expiración";
     const cuentaPlanNombre = document.getElementById("cuenta-plan-nombre");
@@ -949,6 +959,34 @@ const Panel = {
       } else {
         elRenovacion.textContent = cuota.plan === "Inicial" ? "Plan gratuito" : "Sin fecha · Plan manual";
       }
+    }
+  },
+
+  async enviarBrief() {
+    const negocio = document.getElementById("brief-negocio")?.value?.trim();
+    const url = document.getElementById("brief-url")?.value?.trim();
+    const tono = document.getElementById("brief-tono")?.value;
+    const descripcion = document.getElementById("brief-descripcion")?.value?.trim();
+    const btn = document.getElementById("btn-enviar-brief");
+    if (!negocio || !descripcion) {
+      mostrarMensaje("Completa el nombre del negocio y la descripción.", "err");
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = "Enviando brief…";
+    try {
+      const r = await API.pedir("/api/brief-profesional", {
+        method: "POST",
+        body: JSON.stringify({ negocio, url, tono, descripcion })
+      });
+      mostrarMensaje("✓ Brief enviado. Te entregamos tu video en 24-48 horas.", "ok");
+      btn.textContent = "Brief enviado ✓";
+      document.getElementById("brief-negocio").value = "";
+      document.getElementById("brief-descripcion").value = "";
+    } catch(e) {
+      mostrarMensaje(e.message, "err");
+      btn.disabled = false;
+      btn.textContent = "Enviar brief";
     }
   },
 
