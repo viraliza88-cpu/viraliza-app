@@ -371,6 +371,13 @@ setInterval(() => {
 }, 5 * 60 * 1000);
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/videos", express.static(VIDEOS_DIR, {
+  maxAge: "1d",
+  setHeaders: (res) => {
+    res.setHeader("Content-Type", "video/mp4");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+  }
+}));
 
 const CACHE_SESIONES = new Map();
 const DURACION_CACHE_MS = 5 * 60 * 1000;
@@ -1271,17 +1278,19 @@ async function sincronizarVideo(video) {
       const urlMotor = rutaMotor.startsWith("http") ? rutaMotor : `${MOTOR_URL}${rutaMotor.startsWith("/") ? "" : "/"}${rutaMotor}`;
       const rOrigen = await fetch(urlMotor);
       const bytes = Buffer.from(await rOrigen.arrayBuffer());
-      const rutaStorage = `${video.usuario_id}/${video.id}.mp4`;
-      const { error: errorSubida } = await supabaseAdmin.storage.from("videos").upload(rutaStorage, bytes, {
-        contentType: "video/mp4",
-        upsert: true,
-      });
-      if (errorSubida) throw new Error("no se pudo subir a Supabase Storage: " + errorSubida.message);
-      const { data: publico } = supabaseAdmin.storage.from("videos").getPublicUrl(rutaStorage);
+      
+      // Guardar en servidor local
+      const nombreArchivo = `${video.id}.mp4`;
+      const rutaLocal = `${VIDEOS_DIR}/${nombreArchivo}`;
+      fs.writeFileSync(rutaLocal, bytes);
+      const urlPublica = `https://viralizacol.com/videos/${nombreArchivo}`;
+      
+      // Limpiar videos viejos si es necesario
+      limpiarVideosViejos().catch(console.error);
 
       const { data: actualizado } = await supabaseAdmin
         .from("videos")
-        .update({ estado: "listo", progreso: 100, urls: [publico.publicUrl] })
+        .update({ estado: "listo", progreso: 100, urls: [urlPublica] })
         .eq("id", video.id)
         .select()
         .single();
@@ -1330,7 +1339,15 @@ app.delete("/api/videos/:id", autenticar, async (req, res) => {
     if (video.urls && video.urls[0]) {
       const urlParts = video.urls[0].split("/videos/");
       if (urlParts[1]) {
-        await supabaseAdmin.storage.from("videos").remove([decodeURIComponent(urlParts[1])]);
+        // Eliminar archivo local si existe
+        try {
+          const urlVideo = video.urls?.[0] || "";
+          const nombreArchivo = urlVideo.split("/videos/").pop();
+          if (nombreArchivo) {
+            const rutaLocal = `${VIDEOS_DIR}/${nombreArchivo}`;
+            if (fs.existsSync(rutaLocal)) fs.unlinkSync(rutaLocal);
+          }
+        } catch(e) { console.error("Error borrando archivo local:", e.message); }
       }
     }
     // Eliminar de la base de datos
