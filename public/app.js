@@ -528,12 +528,12 @@ const W = {
     const arrow = document.getElementById("trans-arrow");
     if (!boxB) return;
     const configs = {
-      "None": { anim: "none", desc: "Corte directo entre imágenes", arrow: "→" },
-      "FadeIn": { anim: "fadeInTrans .6s ease", desc: "Fundido suave — elegante y profesional", arrow: "✦" },
-      "SlideLeft": { anim: "slideLeftTrans .5s ease", desc: "Deslizamiento lateral — dinámico y moderno", arrow: "⟶" },
-      "ZoomIn": { anim: "zoomInTrans .5s ease", desc: "Zoom de entrada — impactante y visual", arrow: "⊕" },
-      "CircleOpen": { anim: "circleOpenTrans .6s ease", desc: "Apertura circular — creativo y llamativo", arrow: "◎" },
-      "Shuffle": { anim: "fadeInTrans .4s ease", desc: "Transición aleatoria en cada imagen", arrow: "🎲" },
+      "None":    { anim: "none",                    desc: "Corte directo — sin efectos entre imágenes", arrow: "→" },
+      "FadeIn":  { anim: "fadeInTrans .7s ease",    desc: "Fundido de entrada — suave y elegante", arrow: "✦" },
+      "FadeOut": { anim: "fadeOutTrans .7s ease",   desc: "Fundido de salida — cinematográfico", arrow: "◈" },
+      "SlideIn": { anim: "slideInTrans .5s ease",   desc: "Deslizamiento de entrada — dinámico y moderno", arrow: "⟶" },
+      "ZoomIn":  { anim: "zoomInTrans .6s ease",    desc: "Zoom de entrada — impactante y visual", arrow: "⊕" },
+      "Shuffle": { anim: "shuffleTrans .5s ease",   desc: "Transición aleatoria en cada imagen", arrow: "🎲" },
     };
     const cfg = configs[btn.dataset.trans] || configs["None"];
     if (desc) desc.textContent = cfg.desc;

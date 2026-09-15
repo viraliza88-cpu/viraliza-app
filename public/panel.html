@@ -320,9 +320,10 @@ input[type=range]{flex:1;accent-color:var(--gold)}
 input[type=file]{display:none}
 
 @keyframes fadeInTrans{from{opacity:0}to{opacity:1}}
-@keyframes slideLeftTrans{from{transform:translateX(30px);opacity:0}to{transform:translateX(0);opacity:1}}
-@keyframes zoomInTrans{from{transform:scale(1.3);opacity:0}to{transform:scale(1);opacity:1}}
-@keyframes circleOpenTrans{from{clip-path:circle(0% at 50% 50%)}to{clip-path:circle(100% at 50% 50%)}}
+@keyframes fadeOutTrans{from{opacity:1}to{opacity:0}}
+@keyframes slideInTrans{from{transform:translateX(40px);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes zoomInTrans{from{transform:scale(1.4);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes shuffleTrans{0%{opacity:0;transform:scale(1.1) rotate(1deg)}100%{opacity:1;transform:scale(1) rotate(0deg)}}
 @media(max-width:900px){
   .sidebar{display:none}
   .sesion span{display:none}
