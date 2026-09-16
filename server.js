@@ -1175,12 +1175,12 @@ app.post("/api/videos", autenticar, async (req, res) => {
   const FUENTES_VALIDAS = ["pexels", "pixabay", "coverr"];
   const fuenteVideo = FUENTES_VALIDAS.includes(fuente) ? fuente : "pexels";
   const FUENTES_VALIDAS_SUBTITULO = {
-    clasica: "BeVietnamPro-Bold.ttf",
-    ligera: "BeVietnamPro-Medium.ttf",
-    elegante: "Charm-Regular.ttf",
-    moderna: "UTM Kabel KT.ttf",
+    clasica:    "BeVietnamPro-Bold.ttf",
+    ligera:     "BeVietnamPro-Medium.ttf",
+    elegante:   "Charm-Regular.ttf",
+    moderna:    "UTM Kabel KT.ttf",
     redondeada: "Charm-Bold.ttf",
-    viral: "BeVietnamPro-Bold.ttf",
+    viral:      "BeVietnamPro-Medium.ttf",
   };
 
   let audioFinal = undefined;
@@ -1245,7 +1245,19 @@ app.post("/api/videos", autenticar, async (req, res) => {
     bgm_volume: typeof bgmVolumen === "number" ? Math.max(0, Math.min(1, bgmVolumen)) : 0.2,
     subtitle_enabled: subtitulosActivos !== false,
     font_name: FUENTES_VALIDAS_SUBTITULO[subtitulosFuente] || "BeVietnamPro-Bold.ttf",
-    font_size: aspecto === "16:9" ? 64 : 84,
+    font_size: (() => {
+      // Base por formato
+      let base = aspecto === "16:9" ? 60 : aspecto === "1:1" ? 70 : 80;
+      // Reducir si el guion es largo (muchas palabras por escena)
+      const palabras = (guionFinal || "").split(/\s+/).length;
+      if (palabras > 120) base = Math.round(base * 0.82);
+      else if (palabras > 80) base = Math.round(base * 0.90);
+      // Reducir para fuentes condensadas/uppercase que ocupan más ancho
+      if (["moderna", "viral"].includes(subtitulosFuente)) base = Math.round(base * 0.88);
+      // Reducir ligeramente para cursivas que son más anchas
+      if (["elegante", "redondeada"].includes(subtitulosFuente)) base = Math.round(base * 0.93);
+      return Math.max(44, Math.min(base, 92));
+    })(),
     text_color: /^#[0-9A-Fa-f]{6}$/.test(subtitulosColor || "") ? subtitulosColor : "#FFFFFF",
     stroke_color: "#000000",
     stroke_width: 3.2,

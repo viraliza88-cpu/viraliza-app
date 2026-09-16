@@ -669,13 +669,19 @@ const W = {
     btn.classList.add("elegida");
     this.estado.subtitulosFuente = btn.dataset.fuente;
     document.getElementById("subtitulos-fuente").value = btn.dataset.fuente;
+    // Preview fiel a las fuentes reales del motor
+    // BeVietnamPro-Bold → sans-serif bold
+    // BeVietnamPro-Medium → sans-serif normal  
+    // Charm-Regular → cursiva serif ligera
+    // UTM Kabel KT → sans-serif condensada uppercase
+    // Charm-Bold → cursiva serif gruesa
     const mapaFuentes = {
-      clasica:    { family: "Jost, sans-serif",       weight: "700", size: "20px", letterSpacing: "0px",   transform: "none" },
-      ligera:     { family: "Jost, sans-serif",       weight: "300", size: "18px", letterSpacing: "1px",   transform: "none" },
-      elegante:   { family: "Georgia, serif",         weight: "400", size: "19px", letterSpacing: "0.5px", transform: "none", style: "italic" },
-      moderna:    { family: "Impact, sans-serif",     weight: "900", size: "22px", letterSpacing: "3px",   transform: "uppercase" },
-      redondeada: { family: "Trebuchet MS, sans-serif", weight: "600", size: "18px", letterSpacing: "0px", transform: "none" },
-      viral:      { family: "Arial Black, sans-serif", weight: "900", size: "21px", letterSpacing: "-0.5px", transform: "uppercase" },
+      clasica:    { family: "'Jost', sans-serif",        weight: "700", size: "21px", letterSpacing: "0.5px",  transform: "none",      style: "normal",  desc: "BeVietnamPro Bold — gruesa y directa" },
+      ligera:     { family: "'Jost', sans-serif",        weight: "400", size: "19px", letterSpacing: "1px",    transform: "none",      style: "normal",  desc: "BeVietnamPro Medium — limpia y legible" },
+      elegante:   { family: "Georgia, serif",            weight: "400", size: "19px", letterSpacing: "0.5px",  transform: "none",      style: "italic",  desc: "Charm Regular — cursiva elegante" },
+      moderna:    { family: "'Arial Narrow', sans-serif",weight: "700", size: "20px", letterSpacing: "4px",    transform: "uppercase", style: "normal",  desc: "UTM Kabel — compacta en mayúsculas" },
+      redondeada: { family: "Georgia, serif",            weight: "700", size: "20px", letterSpacing: "0.5px",  transform: "none",      style: "italic",  desc: "Charm Bold — cursiva con fuerza" },
+      viral:      { family: "'Jost', sans-serif",        weight: "300", size: "18px", letterSpacing: "2px",    transform: "uppercase", style: "normal",  desc: "BeVietnamPro Medium — espaciada" },
     };
     const cfg = mapaFuentes[btn.dataset.fuente] || mapaFuentes.clasica;
     const el = document.getElementById("preview-subtitulo");
@@ -685,6 +691,9 @@ const W = {
     el.style.letterSpacing = cfg.letterSpacing;
     el.style.textTransform = cfg.transform;
     el.style.fontStyle = cfg.style || "normal";
+    // Mostrar descripción de la fuente real
+    const descEl = document.getElementById("preview-fuente-desc");
+    if (descEl) descEl.textContent = cfg.desc;
   },
 
   // ---- Paso 5: resumen ----
