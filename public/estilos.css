@@ -19,7 +19,7 @@ a{color:inherit;text-decoration:none}
 
 /* Botones */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--gold);color:#141209;font-family:"Jost",sans-serif;font-weight:500;font-size:13px;letter-spacing:2.5px;text-transform:uppercase;padding:15px 30px;border:1px solid var(--gold);cursor:pointer;transition:background .2s,color .2s}
-.btn:hover{background:transparent;color:var(--gold)}
+.btn:hover{background:rgba(214,178,94,.08);color:var(--gold)}
 .btn.line{background:transparent;color:var(--ink);border-color:var(--line-soft)}
 .btn.line:hover{border-color:var(--gold);color:var(--gold)}
 .btn:disabled{opacity:.5;cursor:wait}
