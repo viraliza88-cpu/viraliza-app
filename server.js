@@ -1120,18 +1120,26 @@ app.post("/api/videos", autenticar, async (req, res) => {
       const materialesSubidos = [];
       for (const img of imagenesSeleccionadas.slice(0, 8)) {
         try {
-          const rImg = await fetch(img.url, { signal: AbortSignal.timeout(15000) });
+          const rImg = await fetch(img.url, { signal: AbortSignal.timeout(30000) });
           if (!rImg.ok) continue;
           const bytes = await rImg.arrayBuffer();
+          // Detectar si es video o imagen por URL o content-type
+          const contentType = rImg.headers.get("content-type") || "";
+          const esVideo = contentType.includes("video") || img.url.includes(".mp4") || img.url.includes("video");
+          const tipo = esVideo ? "video/mp4" : "image/jpeg";
+          const ext = esVideo ? "mp4" : "jpg";
           const formData = new FormData();
-          formData.append("file", new Blob([bytes], { type: "image/jpeg" }), `imagen-${crypto.randomUUID()}.jpg`);
+          formData.append("file", new Blob([bytes], { type: tipo }), `material-${crypto.randomUUID()}.${ext}`);
           const rMotor = await fetch(`${MOTOR_URL}/api/v1/video_materials`, { method: "POST", body: formData });
           const j = await rMotor.json();
-          if (j?.data?.file) materialesSubidos.push(j.data.file);
-        } catch(e) { console.error("Error descargando imagen:", e.message); }
+          if (j?.data?.file) {
+            materialesSubidos.push(j.data.file);
+            console.log(`[MATERIAL] ${esVideo ? "Video" : "Imagen"} subido: ${j.data.file}`);
+          }
+        } catch(e) { console.error("Error descargando material:", e.message); }
       }
       if (materialesSubidos.length > 0) materiales = materialesSubidos;
-    } catch(e) { console.error("Error procesando imágenes:", e.message); }
+    } catch(e) { console.error("Error procesando materiales:", e.message); }
   }
   tema = sanitizar(tema, 200);
   guion = sanitizar(guion, 3000);
@@ -1226,6 +1234,7 @@ app.post("/api/videos", autenticar, async (req, res) => {
     video_source: usaPropios ? "local" : fuenteVideo,
     video_materials: usaPropios ? materiales.map((m) => ({ provider: "local", url: m })) : undefined,
     video_material_count: usaPropios ? materiales.length : undefined,
+    only_local_materials: usaPropios ? true : undefined,
     video_language: "es",
     voice_name: vozPremium ? `elevenlabs:${vozPremium}:premium` : (voz || "es-CO-SalomeNeural-Female"),
     voice_rate: 0.98,

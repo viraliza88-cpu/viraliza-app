@@ -524,6 +524,7 @@ input[type=file]{display:none}
           </div>
           <div class="s-field">
             <span class="s-label">Busca imágenes específicas</span>
+            <p style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:8px">🔍 Buscar imágenes</p>
             <div id="buscador-imagenes" class="buscador-wrap">
               <div class="buscador-row">
                 <input type="text" id="busqueda-imagenes" class="buscador-input" placeholder="Ej: Ganesha hindú, restaurante moderno, gimnasio...">
@@ -536,6 +537,21 @@ input[type=file]{display:none}
               </div>
             </div>
           </div>
+          <div class="s-field">
+            <p style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:8px">🎬 Buscar clips de video</p>
+            <div id="buscador-videos" class="buscador-wrap">
+              <div class="buscador-row">
+                <input type="text" id="busqueda-videos" class="buscador-input" placeholder="Ej: restaurante cocinando, personas gym, ciudad de noche..." onkeydown="if(event.key==='Enter')W.buscarVideos()">
+                <button class="buscador-btn" onclick="W.buscarVideos()" type="button">Buscar</button>
+              </div>
+              <div id="resultados-videos" style="display:none">
+                <p class="ayuda" style="margin-bottom:8px;font-size:11px">Toca los clips para seleccionarlos · Máx. 8 entre imágenes y videos</p>
+                <div id="grid-videos" class="img-grid"></div>
+                <p id="videos-seleccionados-count" style="font-size:11px;color:var(--gold);margin-top:8px;text-align:center">0 clips seleccionados</p>
+              </div>
+            </div>
+          </div>
+
           <div class="s-field">
             <span class="s-label">O sube tus propios archivos <span style="color:var(--muted);font-weight:300">(opcional · máx. 8)</span></span>
             <div id="lista-materiales-wizard" class="lista-materiales"></div>

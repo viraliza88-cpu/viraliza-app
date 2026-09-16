@@ -237,6 +237,92 @@ const W = {
     if (limpiarBtn) limpiarBtn.style.display = "none";
   },
 
+  async buscarVideos() {
+    const q = document.getElementById("busqueda-videos")?.value?.trim();
+    if (!q) return mostrarMensaje("Escribe qué quieres buscar.", "err");
+    const grid = document.getElementById("grid-videos");
+    const cont = document.getElementById("resultados-videos");
+    if (!grid || !cont) return;
+    grid.innerHTML = `<p class="ayuda" style="grid-column:1/-1;text-align:center;padding:20px">Buscando clips…</p>`;
+    cont.style.display = "block";
+    try {
+      const terminos = q.split(",").map(t => t.trim()).filter(Boolean);
+      const r = await API.pedir("/api/galeria/buscar", {
+        method: "POST",
+        body: JSON.stringify({ terminos: terminos.length ? terminos : [q], orientacion: this.estado.formato || "9:16" })
+      });
+      const clips = r?.resultados || [];
+      if (!clips.length) {
+        grid.innerHTML = `<p class="ayuda" style="grid-column:1/-1;text-align:center;padding:20px">No encontramos clips. Prueba con otras palabras.</p>`;
+        return;
+      }
+      grid.innerHTML = "";
+      clips.forEach(clip => {
+        const div = document.createElement("div");
+        div.style.cssText = "position:relative;cursor:pointer;border:2px solid transparent;border-radius:4px;overflow:hidden;background:#111;aspect-ratio:16/9;grid-column:span 1";
+        div.dataset.url = clip.url;
+        const img = document.createElement("img");
+        img.src = clip.miniatura;
+        img.style.cssText = "width:100%;height:100%;object-fit:cover;display:block;transition:all .3s";
+        const overlay = document.createElement("div");
+        overlay.style.cssText = "position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);transition:all .2s";
+        overlay.innerHTML = `<span style="width:40px;height:40px;background:rgba(214,178,94,.85);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px">▶</span>`;
+        const badge = document.createElement("span");
+        badge.style.cssText = "position:absolute;top:6px;left:6px;background:rgba(0,0,0,.75);color:#D6B25E;font-size:8px;letter-spacing:1px;text-transform:uppercase;padding:3px 8px";
+        badge.textContent = "VIDEO HD";
+        const check = document.createElement("div");
+        check.style.cssText = "position:absolute;top:6px;right:6px;width:22px;height:22px;background:#D6B25E;border-radius:50%;display:none;align-items:center;justify-content:center;color:#09090B;font-size:12px;font-weight:700";
+        check.textContent = "✓";
+        div.appendChild(img); div.appendChild(overlay); div.appendChild(badge); div.appendChild(check);
+        div.onclick = () => {
+          const sel = this.estado.imagenesSeleccionadas || [];
+          const ya = sel.find(i => i.url === clip.url);
+          if (ya) {
+            this.estado.imagenesSeleccionadas = sel.filter(i => i.url !== clip.url);
+            div.style.borderColor = "transparent"; check.style.display = "none";
+          } else {
+            if (sel.length >= 8) return mostrarMensaje("Máximo 8 elementos.", "err");
+            this.estado.imagenesSeleccionadas = [...sel, { url: clip.url, ancho: 1920, alto: 1080 }];
+            div.style.borderColor = "#D6B25E"; check.style.display = "flex";
+          }
+          const total = this.estado.imagenesSeleccionadas.length;
+          const cv = document.getElementById("videos-seleccionados-count");
+          const ci = document.getElementById("imagenes-seleccionadas-count");
+          if (cv) cv.textContent = `${total} elemento(s) seleccionado(s)`;
+          if (ci) ci.textContent = `${total} elemento(s) seleccionado(s)`;
+          const at = document.getElementById("banco-aviso-texto");
+          const bl = document.getElementById("btn-limpiar-seleccion");
+          if (at) at.textContent = total > 0 ? `✓ Usarás ${total} elemento(s)` : "";
+          if (bl) bl.style.display = total > 0 ? "inline-block" : "none";
+        };
+        let videoPreview = null;
+        div.onmouseover = () => {
+          overlay.style.display = "none";
+          if (!videoPreview) {
+            videoPreview = document.createElement("video");
+            videoPreview.src = clip.url;
+            videoPreview.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;border-radius:2px";
+            videoPreview.muted = true;
+            videoPreview.loop = true;
+            videoPreview.playsInline = true;
+            div.appendChild(videoPreview);
+          }
+          videoPreview.play().catch(()=>{});
+          check.style.zIndex = "3";
+        };
+        div.onmouseout = () => {
+          overlay.style.display = "flex";
+          if (videoPreview) { videoPreview.pause(); videoPreview.currentTime = 0; }
+          check.style.zIndex = "1";
+        };
+        grid.appendChild(div);
+      });
+    } catch(e) {
+      console.error("buscarVideos:", e);
+      grid.innerHTML = `<p class="ayuda" style="grid-column:1/-1;text-align:center;padding:20px">Error buscando. Intenta de nuevo.</p>`;
+    }
+  },
+
   async buscarImagenes() {
     const q = document.getElementById("busqueda-imagenes").value.trim();
     if (!q) return mostrarMensaje("Escribe qué quieres buscar.", "err");
