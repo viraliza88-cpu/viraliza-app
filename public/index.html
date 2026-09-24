@@ -416,13 +416,55 @@ footer{padding:52px 0;border-top:1px solid var(--line)}
       <div>
         <span class="eyebrow reveal">El proceso</span>
         <h2 class="serif reveal" style="font-size:clamp(30px,4vw,48px);margin-bottom:44px;font-family:'Playfair Display',serif">Cinco pasos.<br><em>Un video listo.</em></h2>
-        <div class="steps">
-          <div class="step reveal"><div class="step-n">1</div><div><h3>Escribe tu idea</h3><p>Una frase es suficiente. Elige tu tipo de negocio o escribe el tema directamente.</p><span class="step-t">~30 segundos</span></div></div>
-          <div class="step reveal rd1"><div class="step-n">2</div><div><h3>Busca y elige tus imágenes</h3><p>Usa el buscador visual para encontrar exactamente las imágenes que necesitas. Selecciona las que quieres o sube las tuyas.</p><span class="step-t">~20 segundos</span></div></div>
-          <div class="step reveal rd2"><div class="step-n">3</div><div><h3>Lee y ajusta el guion</h3><p>El guion aparece listo para editar. Si no te convence, genera otro. Hasta 5 versiones.</p><span class="step-t">1-2 minutos</span></div></div>
-          <div class="step reveal"><div class="step-n">4</div><div><h3>Voz, música y transiciones</h3><p>Escucha la voz antes de elegir. Selecciona el ánimo musical, subtítulos y transiciones.</p><span class="step-t">~1 minuto</span></div></div>
-          <div class="step reveal rd1"><div class="step-n">5</div><div><h3>Produce y descarga</h3><p>En 2-5 minutos tu video aparece listo para descargar y publicar donde quieras.</p><span class="step-t">2-5 minutos</span></div></div>
+        <div class="steps" id="steps-animados">
+          <div class="step reveal" data-step="1"><div class="step-n">1</div><div><h3>Escribe tu idea</h3><p>Una frase es suficiente. Elige tu tipo de negocio o escribe el tema directamente.</p><span class="step-t">~30 segundos</span></div></div>
+          <div class="step reveal rd1" data-step="2"><div class="step-n">2</div><div><h3>Busca y elige tus imágenes</h3><p>Usa el buscador visual para encontrar exactamente las imágenes que necesitas. Selecciona las que quieres o sube las tuyas.</p><span class="step-t">~20 segundos</span></div></div>
+          <div class="step reveal rd2" data-step="3"><div class="step-n">3</div><div><h3>Lee y ajusta el guion</h3><p>El guion aparece listo para editar. Si no te convence, genera otro con un clic.</p><span class="step-t">1-2 minutos</span></div></div>
+          <div class="step reveal" data-step="4"><div class="step-n">4</div><div><h3>Voz, música y transiciones</h3><p>Escucha la voz antes de elegir. Selecciona el ánimo musical, subtítulos y transiciones.</p><span class="step-t">~1 minuto</span></div></div>
+          <div class="step reveal rd1" data-step="5"><div class="step-n">5</div><div><h3>Produce y descarga</h3><p>En 2-5 minutos tu video aparece listo para descargar y publicar donde quieras.</p><span class="step-t">2-5 minutos</span></div></div>
         </div>
+        <script>
+        (function() {
+          const steps = document.querySelectorAll('#steps-animados .step');
+          let current = 0;
+          let interval;
+          function activar(i) {
+            steps.forEach((s, idx) => {
+              const n = s.querySelector('.step-n');
+              if (idx === i) {
+                s.style.opacity = '1';
+                n.style.background = '#D6B25E';
+                n.style.color = '#08080B';
+                n.style.transform = 'scale(1.15)';
+                n.style.boxShadow = '0 0 20px rgba(214,178,94,.4)';
+              } else {
+                s.style.opacity = idx < i ? '0.5' : '0.35';
+                n.style.background = idx < i ? 'rgba(214,178,94,.2)' : 'rgba(255,255,255,.06)';
+                n.style.color = idx < i ? '#D6B25E' : 'rgba(255,255,255,.3)';
+                n.style.transform = 'scale(1)';
+                n.style.boxShadow = 'none';
+              }
+              s.style.transition = 'opacity .5s';
+              n.style.transition = 'all .4s';
+            });
+          }
+          function iniciar() {
+            activar(0);
+            interval = setInterval(() => {
+              current = (current + 1) % steps.length;
+              activar(current);
+            }, 2000);
+          }
+          // Iniciar cuando la sección es visible
+          const obs = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+              if (e.isIntersecting) { iniciar(); obs.disconnect(); }
+            });
+          }, { threshold: 0.3 });
+          const sec = document.getElementById('steps-animados');
+          if (sec) obs.observe(sec);
+        })();
+        </script>
       </div>
       <div class="mockup reveal">
         <div class="mk-top"><div class="mk-dots"><div class="mk-dot" style="background:#FF5F57"></div><div class="mk-dot" style="background:#FFBD2E"></div><div class="mk-dot" style="background:#28CA41"></div></div><span style="font-size:11px;color:var(--muted);margin-left:10px;letter-spacing:1px">viralizacol.com · Studio</span></div>
