@@ -1,4 +1,19 @@
-﻿// ============================================================
+// ============================================================
+
+// ── Telegram Bot ──
+const TELEGRAM_TOKEN = "8951820016:AAEpAVXY_N8wx5Uu7uXANLQ6KM73OdPZ2Gc";
+const TELEGRAM_CHAT_ID = "983426190";
+async function telegram(mensaje) {
+  try {
+    await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: mensaje, parse_mode: "HTML" }),
+      signal: AbortSignal.timeout(5000),
+    });
+  } catch(e) { console.error("[TELEGRAM]", e.message); }
+}
+
 //  VIRALIZA — Servidor principal
 //  Plataforma de producción de video · v1.0 (con Supabase)
 // ============================================================
@@ -1401,6 +1416,7 @@ app.post("/api/registro", rateLimiter(10), async (req, res) => {
   } catch (e) {
     console.error("Error enviando bienvenida:", e.message);
   }
+  telegram(`🔐 <b>Nuevo registro + login</b>\n📧 ${email}\n👤 ${nombre}\n🕐 ${new Date().toLocaleString("es-CO",{timeZone:"America/Bogota"})}`);
   res.json({ token: data.session.access_token, nombre: String(nombre).trim() });
 });
 
@@ -1428,6 +1444,8 @@ app.post("/api/login", rateLimiter(15), async (req, res) => {
   if (error || !data?.session) {
     return res.status(401).json({ error: "Correo o contraseña incorrectos." });
   }
+  const ipLogin = req.headers["x-forwarded-for"]?.split(",")[0] || req.socket.remoteAddress || "—";
+  telegram(`🔑 <b>Login</b>\n📧 ${email}\n🌐 ${ipLogin}\n🕐 ${new Date().toLocaleString("es-CO",{timeZone:"America/Bogota"})}`);
   res.json({ token: data.session.access_token, nombre: data.user.user_metadata?.nombre || "" });
 });
 
