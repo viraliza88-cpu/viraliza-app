@@ -148,28 +148,41 @@ async function preguntarGroq(mensajes) {
   const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${GROQ_API_KEY}` },
-    body: JSON.stringify({ model: GROQ_MODELO, temperature: 0.7, messages: mensajes }),
+    body: JSON.stringify({ model: GROQ_MODELO, temperature: 0.9, messages: mensajes }),
   });
   const j = await r.json();
   if (!r.ok) throw new Error(j?.error?.message || "El redactor no respondió.");
   return j.choices?.[0]?.message?.content?.trim() || "";
 }
 
+// Enfoques variados para generar guiones diferentes cada vez
+const ENFOQUES_GUION = [
+  { angulo: "beneficio principal", apertura: "Empieza con el beneficio más poderoso que obtiene el cliente.", tono: "directo y seguro" },
+  { angulo: "problema y solución", apertura: "Empieza describiendo el problema que resuelve este negocio.", tono: "empático y resolutivo" },
+  { angulo: "resultado transformador", apertura: "Empieza con el resultado final que logra el cliente.", tono: "inspirador y aspiracional" },
+  { angulo: "dato o estadística", apertura: "Empieza con un dato o cifra impactante del sector.", tono: "informativo y contundente" },
+  { angulo: "historia corta", apertura: "Empieza con una situación cotidiana que el cliente reconoce.", tono: "cercano y narrativo" },
+  { angulo: "comparación", apertura: "Empieza comparando cómo era antes y cómo es ahora con este servicio.", tono: "revelador y persuasivo" },
+  { angulo: "urgencia", apertura: "Empieza con una razón de por qué actuar ahora y no después.", tono: "urgente pero honesto" },
+  { angulo: "prueba social", apertura: "Empieza mencionando que muchas personas ya lo están usando.", tono: "confiable y validado" },
+];
+
 async function redactarGuion(tema, duracion) {
   const palabras = PALABRAS_POR_DURACION[duracion] || PALABRAS_POR_DURACION.corto;
+  // Elegir enfoque aleatorio para garantizar variabilidad
+  const enfoque = ENFOQUES_GUION[Math.floor(Math.random() * ENFOQUES_GUION.length)];
+  const semilla = Math.floor(Math.random() * 9999);
   const texto = await preguntarGroq([
     {
       role: "system",
       content:
         "Guionista experto en videos virales para TikTok y Reels en Colombia. " +
-        "Estructura: 1) Gancho impactante en la primera frase (pregunta o dato sorprendente). " +
-        "2) Desarrollo con frases cortas y ritmo rápido. 3) Cierre con llamada a la acción. " +
-        "Habla como colombiano real. 100% español. Sin introducciones tipo 'hoy les voy a hablar'. " +
-        "Solo devuelve el guion, sin explicaciones.",
+        "Habla como colombiano real. 100% español latino. Sin introducciones tipo 'hoy les voy a hablar'. " +
+        "Solo devuelve el guion, sin explicaciones ni títulos.",
     },
     {
       role: "user",
-      content: `Escribe un guion de ventas en español para este tema: "${tema}". Extensión: ${palabras} palabras. IMPORTANTE: No uses signos de interrogación ni exclamación. No uses frases como "Sabías que" o "Hoy te traigo". Usa solo afirmaciones directas y profesionales. Solo devuelve el guion, nada más.`,
+      content: `Escribe un guion de ventas en español para este tema: "${tema}". Extensión: ${palabras} palabras. Ángulo: ${enfoque.angulo}. ${enfoque.apertura} Tono: ${enfoque.tono}. IMPORTANTE: No uses signos de interrogación ni exclamación. No uses frases como "Sabías que" o "Hoy te traigo". Usa afirmaciones directas. Variación #${semilla}. Solo devuelve el guion, nada más.`,
     },
   ]);
   return texto.replace(/^["']|["']$/g, "").trim();
