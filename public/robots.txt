@@ -1,0 +1,13 @@
+User-agent: *
+Disallow: /panel.html
+Disallow: /admin.html
+Disallow: /login.html
+Disallow: /pago-completado.html
+Disallow: /error.html
+Disallow: /videos/
+Allow: /
+Allow: /index.html
+Allow: /terminos.html
+Allow: /privacidad.html
+
+Sitemap: https://viralizacol.com/sitemap.xml

@@ -16,27 +16,25 @@ input[type="text"],input[type="email"],input[type="password"],input[type="number
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#07070A;--bg2:#0A0A0D;--bg3:#0F0F12;--bg4:#141418;
-  --ink:#F5F3ED;--muted:#ABA5A0;
-  --gold:#D6B25E;--gold2:#E8C96A;
-  --line:rgba(255,255,255,.06);--line2:rgba(214,178,94,.25);
+  --bg:#FAFAFA;--bg2:#FFFFFF;--bg3:#F0F0F0;--bg4:#E8E8E8;
+  --ink:#111111;--cafe:#444444;--muted:#888888;
+  --gold:#C9980A;--gold2:#D4A017;
+  --line:#E5E5E5;--line2:rgba(201,152,10,.3);
 }
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:"Jost",sans-serif;font-weight:500;font-size:16px;line-height:1.65;min-height:100vh;overflow-x:hidden}
+body{background:var(--bg);color:var(--ink);font-family:"Jost",sans-serif;font-weight:400;font-size:15px;line-height:1.6;min-height:100vh;overflow-x:hidden}
 em{font-style:italic;color:var(--gold)}
 input,textarea,select,button{font-family:inherit}
 
 /* HEADER */
-.top{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,7,10,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);height:52px;display:flex;align-items:center}
+.top{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);height:52px;display:flex;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,.05)}
 .top .wrap{display:flex;justify-content:space-between;align-items:center;max-width:100%;padding:0 28px;width:100%}
-.logo{font-family:"Playfair Display",serif;font-size:28px;color:var(--ink);text-decoration:none;font-weight:600;letter-spacing:-.5px}
+.logo{font-family:"Playfair Display",serif;font-size:20px;color:var(--ink);text-decoration:none}
 .logo span{color:var(--gold)}
 .sesion{display:flex;align-items:center;gap:16px}
 .sesion span{font-size:13px;color:var(--muted)}
 .sesion b{color:var(--ink);font-weight:500}
-.salir{background:none;border:1px solid rgba(255,255,255,.1);color:var(--muted);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:7px 14px;cursor:pointer;font-family:inherit;transition:all .2s}
-.salir:hover{border-color:rgba(214,178,94,.3);color:var(--gold)}
-.salir{background:none;border:1px solid var(--line);color:var(--muted);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:7px 16px;cursor:pointer;transition:all .2s}
+.salir{background:none;border:1px solid var(--line);color:var(--muted);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:7px 16px;cursor:pointer;transition:all .2s;font-family:inherit}
 .salir:hover{border-color:var(--line2);color:var(--gold)}
 .admin-link{color:var(--gold);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none}
 
@@ -57,24 +55,24 @@ input,textarea,select,button{font-family:inherit}
 .sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid var(--line)}
 .sidebar-logo-name{font-family:"Playfair Display",serif;font-size:18px;color:var(--ink)}
 .sidebar-logo-name span{color:var(--gold)}
-.sidebar-logo-sub{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(214,178,94,.4);margin-top:2px}
+.sidebar-logo-sub{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(201,152,10,.55);margin-top:2px}
 .sidebar-steps{flex:1;padding:8px 0}
 .sidebar-step{display:flex;align-items:center;gap:12px;padding:12px 18px;position:relative;cursor:default;transition:background .2s}
-.sidebar-step.activo{background:rgba(214,178,94,.06)}
+.sidebar-step.activo{background:rgba(201,152,10,.06)}
 .sidebar-step.activo::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:2px;background:var(--gold);border-radius:0 2px 2px 0}
-.sidebar-step-num{width:30px;height:30px;border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-family:"Playfair Display",serif;font-size:14px;font-style:italic;color:rgba(255,255,255,.68);flex-shrink:0;transition:all .2s}
-.sidebar-step.activo .sidebar-step-num{border-color:rgba(214,178,94,.5);color:var(--gold)}
-.sidebar-step.hecho .sidebar-step-num{background:rgba(214,178,94,.15);border-color:rgba(214,178,94,.3);color:var(--gold);font-style:normal;font-size:10px}
-.sidebar-step-label{font-size:13px;color:rgba(255,255,255,.72);transition:color .2s;font-weight:400;letter-spacing:.3px}
+.sidebar-step-num{width:30px;height:30px;border:1px solid rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;font-family:"Playfair Display",serif;font-size:14px;font-style:italic;color:rgba(0,0,0,.28);flex-shrink:0;transition:all .2s}
+.sidebar-step.activo .sidebar-step-num{border-color:rgba(201,152,10,.55);color:var(--gold)}
+.sidebar-step.hecho .sidebar-step-num{background:rgba(201,152,10,.15);border-color:rgba(201,152,10,.3);color:var(--gold);font-style:normal;font-size:10px}
+.sidebar-step-label{font-size:13px;color:rgba(0,0,0,.4);transition:color .2s;font-weight:400;letter-spacing:.3px}
 .sidebar-step.activo .sidebar-step-label{color:var(--ink);font-weight:500}
-.sidebar-step.hecho .sidebar-step-label{color:rgba(214,178,94,.6)}
-.sidebar-step-time{font-size:10px;color:rgba(255,255,255,.66);margin-top:2px}
-.sidebar-step.activo .sidebar-step-time{color:rgba(214,178,94,.5)}
+.sidebar-step.hecho .sidebar-step-label{color:rgba(201,152,10,.75)}
+.sidebar-step-time{font-size:10px;color:rgba(0,0,0,.28)}
+.sidebar-step.activo .sidebar-step-time{color:rgba(201,152,10,.6)}
 .sidebar-bottom{padding:14px 18px;border-top:1px solid var(--line)}
 .sidebar-plan-name{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;justify-content:space-between}
 .sidebar-plan-num{font-family:"Playfair Display",serif;font-size:20px;color:var(--ink);font-style:italic}
-.sidebar-plan-of{font-size:11px;color:rgba(255,255,255,.68)}
-.sidebar-track{background:rgba(255,255,255,.05);height:2px;margin-top:6px;border-radius:1px}
+.sidebar-plan-of{font-size:11px;color:rgba(0,0,0,.3)}
+.sidebar-track{background:rgba(0,0,0,.08);height:2px;margin-top:6px;border-radius:1px}
 .sidebar-fill{height:100%;background:var(--gold);border-radius:1px;transition:width .5s}
 
 /* MAIN CONTENT */
@@ -88,103 +86,103 @@ input,textarea,select,button{font-family:inherit}
 
 /* STUDIO HEADER */
 .s-header{padding:32px 44px 24px;border-bottom:1px solid var(--line)}
-.s-eyebrow{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(214,178,94,.5);margin-bottom:12px;display:block}
+.s-eyebrow{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,152,10,.65);margin-bottom:12px;display:block}
 .s-headline{font-family:"Playfair Display",serif;font-size:36px;color:var(--ink);line-height:1.1;letter-spacing:-.5px}
-.s-sub{font-size:13px;color:rgba(255,255,255,.72);margin-top:6px;font-weight:300;line-height:1.5}
+.s-sub{font-size:13px;color:var(--cafe);margin-top:6px;font-weight:400;line-height:1.5}
 
 /* STUDIO BODY */
 .s-body{flex:1;padding:28px 44px;overflow-y:auto}
 
 /* STUDIO FOOTER */
-.s-footer{padding:16px 44px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.01)}
+.s-footer{padding:16px 44px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.015)}
 .s-dots{display:flex;gap:5px}
-.s-dot{width:22px;height:2px;background:rgba(255,255,255,.07);border-radius:1px}
+.s-dot{width:22px;height:2px;background:rgba(0,0,0,.1);border-radius:1px}
 .s-dot.activo{background:var(--gold)}
-.s-dot.hecho{background:rgba(214,178,94,.3)}
-.s-hint{font-size:11px;color:rgba(255,255,255,.65);display:flex;align-items:center;gap:12px}
-.btn-cont{background:var(--gold);color:#09090B;border:none;padding:13px 32px;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:background .2s}
+.s-dot.hecho{background:rgba(201,152,10,.35)}
+.s-hint{font-size:11px;color:rgba(0,0,0,.25);display:flex;align-items:center;gap:12px}
+.btn-cont{background:var(--gold);color:#111111;border:none;padding:13px 32px;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:background .2s;box-shadow:0 4px 14px rgba(201,152,10,.35)}
 .btn-cont:hover{background:var(--gold2)}
-.btn-atras{background:none;border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.72);padding:13px 20px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s}
-.btn-atras:hover{border-color:rgba(214,178,94,.3);color:var(--gold)}
+.btn-atras{background:none;border:1px solid var(--line);color:var(--cafe);padding:13px 20px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.btn-atras:hover{border-color:var(--line2);color:var(--gold)}
 
 /* CAMPOS STUDIO */
 .s-field{margin-bottom:26px}
-.s-label{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:10px;display:block;font-weight:500}
-.s-input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.3);padding:10px 0;font-size:16px;color:var(--ink);outline:none;font-family:inherit;transition:border-color .25s}
-.s-input:focus{border-color:rgba(214,178,94,.4)}
-.s-input::placeholder{color:rgba(255,255,255,.65);font-size:14px}
-.s-textarea{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.1);padding:10px 0;font-size:16px;color:var(--ink);outline:none;font-family:inherit;resize:none;transition:border-color .25s;line-height:1.6}
-.s-textarea:focus{border-color:rgba(214,178,94,.4)}
-.s-textarea::placeholder{color:rgba(255,255,255,.65);font-size:14px}
+.s-label{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--cafe);margin-bottom:10px;display:block;font-weight:500}
+.s-input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(0,0,0,.2);padding:10px 0;font-size:16px;color:var(--ink);outline:none;font-family:inherit;transition:border-color .25s}
+.s-input:focus{border-color:rgba(201,152,10,.5)}
+.s-input::placeholder{color:rgba(0,0,0,.3);font-size:14px}
+.s-textarea{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(0,0,0,.15);padding:10px 0;font-size:16px;color:var(--ink);outline:none;font-family:inherit;resize:none;transition:border-color .25s;line-height:1.6}
+.s-textarea:focus{border-color:rgba(201,152,10,.5)}
+.s-textarea::placeholder{color:rgba(0,0,0,.3);font-size:14px}
 
 /* NICHOS */
 .nicho-wrap{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.nicho-tag{padding:7px 14px;border:1px solid rgba(255,255,255,.2);font-size:11px;color:rgba(255,255,255,.84);cursor:pointer;border-radius:20px;transition:all .2s;background:none}
-.nicho-tag:hover{border-color:rgba(214,178,94,.3);color:rgba(214,178,94,.7)}
-.nicho-tag.elegida{border-color:rgba(214,178,94,.5);color:var(--gold);background:rgba(214,178,94,.08)}
+.nicho-tag{padding:7px 14px;border:1px solid rgba(0,0,0,.15);font-size:11px;color:var(--cafe);cursor:pointer;border-radius:20px;transition:all .2s;background:none}
+.nicho-tag:hover{border-color:rgba(201,152,10,.4);color:rgba(201,152,10,.85)}
+.nicho-tag.elegida{border-color:rgba(201,152,10,.6);color:var(--gold);background:rgba(201,152,10,.08)}
 
 /* DURACIÓN */
 .dur-row{display:flex;gap:12px;margin-top:10px}
-.dur-card{flex:1;border:1px solid rgba(255,255,255,.15);padding:20px 16px;cursor:pointer;transition:all .2s;position:relative;text-align:left}
-.dur-card:hover{border-color:rgba(214,178,94,.5);background:rgba(214,178,94,.03)}
-.dur-card.elegida{border-color:rgba(214,178,94,.4);background:rgba(214,178,94,.04)}
+.dur-card{flex:1;border:1px solid rgba(0,0,0,.12);padding:20px 16px;cursor:pointer;transition:all .2s;position:relative;text-align:left}
+.dur-card:hover{border-color:rgba(201,152,10,.5);background:rgba(201,152,10,.04)}
+.dur-card.elegida{border-color:rgba(201,152,10,.5);background:rgba(201,152,10,.05)}
 .dur-card.elegida::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
-.dur-num{font-family:"Playfair Display",serif;font-size:28px;color:rgba(255,255,255,.88);font-style:italic;margin-bottom:6px}
+.dur-num{font-family:"Playfair Display",serif;font-size:28px;color:rgba(0,0,0,.55);font-style:italic;margin-bottom:6px}
 .dur-card.elegida .dur-num{color:var(--gold)}
-.dur-name{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.8)}
-.dur-card.elegida .dur-name{color:rgba(214,178,94,.8)}
-.dur-desc{font-size:11px;color:rgba(255,255,255,.74);margin-top:4px}
+.dur-name{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--cafe)}
+.dur-card.elegida .dur-name{color:rgba(201,152,10,.9)}
+.dur-desc{font-size:11px;color:rgba(0,0,0,.4);margin-top:4px}
 
 /* FORMATO */
 .formato-row{display:flex;gap:12px;margin-top:10px}
-.formato-card{flex:1;border:1px solid rgba(255,255,255,.07);padding:20px 14px;cursor:pointer;transition:all .2s;text-align:center}
-.formato-card:hover{border-color:rgba(214,178,94,.2)}
-.formato-card.elegida{border-color:rgba(214,178,94,.4);background:rgba(214,178,94,.04)}
+.formato-card{flex:1;border:1px solid var(--line);padding:20px 14px;cursor:pointer;transition:all .2s;text-align:center}
+.formato-card:hover{border-color:rgba(201,152,10,.3)}
+.formato-card.elegida{border-color:rgba(201,152,10,.4);background:rgba(201,152,10,.05)}
 .formato-card.elegida .formato-icon{color:var(--gold)}
-.formato-icon{font-size:24px;display:block;margin-bottom:8px;color:rgba(255,255,255,.72);transition:color .2s}
-.formato-name{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.72);margin-bottom:4px}
+.formato-icon{font-size:24px;display:block;margin-bottom:8px;color:rgba(0,0,0,.3);transition:color .2s}
+.formato-name{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--cafe);margin-bottom:4px}
 .formato-card.elegida .formato-name{color:var(--gold)}
-.formato-desc{font-size:10px;color:rgba(255,255,255,.65)}
+.formato-desc{font-size:10px;color:rgba(0,0,0,.3)}
 
 /* BANCO */
 .banco-row{display:flex;gap:12px;margin-top:10px}
-.banco-card{flex:1;border:1px solid rgba(255,255,255,.15);padding:16px;cursor:pointer;transition:all .2s}
-.banco-card:hover{border-color:rgba(214,178,94,.4);background:rgba(214,178,94,.03)}
-.banco-card.elegida{border-color:var(--gold);background:rgba(214,178,94,.08);box-shadow:0 0 0 1px rgba(214,178,94,.2)}
-.banco-card-title{font-size:14px;color:rgba(255,255,255,.84);margin-bottom:4px;font-weight:500}
+.banco-card{flex:1;border:1px solid rgba(0,0,0,.12);padding:16px;cursor:pointer;transition:all .2s}
+.banco-card:hover{border-color:rgba(201,152,10,.4);background:rgba(201,152,10,.03)}
+.banco-card.elegida{border-color:var(--gold);background:rgba(201,152,10,.08);box-shadow:0 0 0 1px rgba(201,152,10,.2)}
+.banco-card-title{font-size:14px;color:var(--cafe);margin-bottom:4px;font-weight:500}
 .banco-card.elegida .banco-card-title{color:var(--gold)}
-.banco-card-desc{font-size:11px;color:rgba(255,255,255,.72)}
-.banco-aviso{display:none;background:rgba(214,178,94,.06);border:1px solid rgba(214,178,94,.2);padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--gold);justify-content:space-between;align-items:center}
+.banco-card-desc{font-size:11px;color:rgba(0,0,0,.4)}
+.banco-aviso{display:none;background:rgba(201,152,10,.06);border:1px solid rgba(201,152,10,.25);padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--gold);justify-content:space-between;align-items:center}
 
 /* BUSCADOR */
 .buscador-wrap{border:1px solid var(--line);padding:18px;margin-top:16px}
-.buscador-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(214,178,94,.5);margin-bottom:12px;display:block}
+.buscador-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(201,152,10,.6);margin-bottom:12px;display:block}
 .buscador-row{display:flex;gap:8px;margin-bottom:12px}
-.buscador-input{flex:1;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);padding:10px 14px;font-size:14px;color:var(--ink);outline:none;font-family:inherit}
-.buscador-input:focus{border-color:rgba(214,178,94,.3)}
-.buscador-btn{background:var(--gold);color:#09090B;border:none;padding:10px 18px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.buscador-input{flex:1;background:rgba(0,0,0,.02);border:1px solid rgba(0,0,0,.12);padding:10px 14px;font-size:14px;color:var(--ink);outline:none;font-family:inherit}
+.buscador-input:focus{border-color:rgba(201,152,10,.4)}
+.buscador-btn{background:var(--gold);color:#111111;border:none;padding:10px 18px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;white-space:nowrap}
 .img-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-height:480px;overflow-y:auto;padding:4px}
-.img-grid .img-item{position:relative;overflow:hidden;border-radius:3px;cursor:pointer;border:2px solid transparent;background:#111}
+.img-grid .img-item{position:relative;overflow:hidden;border-radius:3px;cursor:pointer;border:2px solid transparent;background:#E5E5E5}
 .img-grid .img-item img{width:100%;height:100%;object-fit:cover;display:block;transition:all .3s}
 .img-grid .img-item.landscape{grid-column:span 2;aspect-ratio:16/9}
 .img-grid .img-item.portrait{aspect-ratio:2/3}
 .img-grid .img-item.square{aspect-ratio:1}
 
 /* SUBIDA */
-.upload-zone{border:1px dashed rgba(214,178,94,.25);padding:28px 20px;text-align:center;cursor:pointer;transition:all .3s;margin-top:12px;background:rgba(214,178,94,.02);position:relative;overflow:hidden}
-.upload-zone:hover{border-color:rgba(214,178,94,.5);background:rgba(214,178,94,.05);transform:translateY(-1px)}
+.upload-zone{border:1px dashed rgba(201,152,10,.3);padding:28px 20px;text-align:center;cursor:pointer;transition:all .3s;margin-top:12px;background:rgba(201,152,10,.03);position:relative;overflow:hidden}
+.upload-zone:hover{border-color:rgba(201,152,10,.55);background:rgba(201,152,10,.06);transform:translateY(-1px)}
 .upload-zone:hover .upload-icon{color:var(--gold);transform:translateY(-3px)}
-.upload-icon{font-size:32px;display:block;margin-bottom:10px;color:rgba(255,255,255,.72);transition:all .3s}
+.upload-icon{font-size:32px;display:block;margin-bottom:10px;color:rgba(0,0,0,.3);transition:all .3s}
 .upload-text{font-size:14px;color:var(--gold);margin-bottom:6px;font-weight:500;letter-spacing:.5px}
-.upload-desc{font-size:11px;color:rgba(255,255,255,.72);line-height:1.6}
+.upload-desc{font-size:11px;color:var(--cafe);line-height:1.6}
 
 /* GUION */
-.guion-box{width:100%;background:rgba(255,255,255,.02);border:1px solid var(--line);padding:20px;font-size:15px;color:var(--ink);line-height:1.8;resize:vertical;min-height:180px;outline:none;font-family:inherit;transition:border-color .2s}
-.guion-box:focus{border-color:rgba(214,178,94,.3)}
+.guion-box{width:100%;background:rgba(0,0,0,.015);border:1px solid var(--line);padding:20px;font-size:15px;color:var(--ink);line-height:1.8;resize:vertical;min-height:180px;outline:none;font-family:inherit;transition:border-color .2s}
+.guion-box:focus{border-color:rgba(201,152,10,.35)}
 .guion-loading{text-align:center;padding:48px 0}
-.guion-loading-text{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(214,178,94,.5)}
+.guion-loading-text{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(201,152,10,.6)}
 .btn-regenerar{width:100%;background:none;border:1px solid var(--line);color:var(--muted);padding:12px;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-top:12px;font-family:inherit}
-.btn-regenerar:hover{border-color:rgba(214,178,94,.3);color:var(--gold)}
+.btn-regenerar:hover{border-color:rgba(201,152,10,.35);color:var(--gold)}
 .btn-regenerar:disabled{opacity:.4;cursor:not-allowed}
 .guion-contador{text-align:center;font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:8px}
 
@@ -193,31 +191,31 @@ input,textarea,select,button{font-family:inherit}
 .voz-tab{flex:1;background:none;border:none;border-right:1px solid var(--line);color:var(--muted);font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:11px 8px;cursor:pointer;transition:all .2s;font-family:inherit}
 .voz-tab:last-child{border-right:none}
 .voz-tab:hover{color:var(--ink)}
-.voz-tab.activo{background:rgba(214,178,94,.08);color:var(--gold)}
+.voz-tab.activo{background:rgba(201,152,10,.08);color:var(--gold)}
 .s-select{width:100%;background:var(--bg3);border:1px solid var(--line);color:var(--ink);padding:12px 16px;font-size:14px;outline:none;font-family:inherit;cursor:pointer}
-.s-select:focus{border-color:rgba(214,178,94,.3)}
+.s-select:focus{border-color:rgba(201,152,10,.35)}
 .panel-voz-hidden{display:none}
 
 /* MÚSICA */
 .musica-tabs{display:flex;gap:10px;margin-bottom:16px}
 .musica-tab-btn{flex:1;background:none;border:1px solid var(--line);color:var(--muted);padding:11px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:inherit}
-.musica-tab-btn.activo{border-color:var(--gold);color:var(--gold);background:rgba(214,178,94,.06)}
+.musica-tab-btn.activo{border-color:var(--gold);color:var(--gold);background:rgba(201,152,10,.06)}
 .animos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
-.animo-btn{border:1px solid rgba(255,255,255,.15);background:none;padding:14px 8px;cursor:pointer;transition:all .2s;text-align:center;font-family:inherit}
-.animo-btn:hover{border-color:rgba(214,178,94,.4);background:rgba(214,178,94,.04)}
-.animo-btn.elegida{border-color:var(--gold);background:rgba(214,178,94,.1);box-shadow:0 0 0 1px rgba(214,178,94,.2)}
+.animo-btn{border:1px solid rgba(0,0,0,.12);background:none;padding:14px 8px;cursor:pointer;transition:all .2s;text-align:center;font-family:inherit}
+.animo-btn:hover{border-color:rgba(201,152,10,.4);background:rgba(201,152,10,.04)}
+.animo-btn.elegida{border-color:var(--gold);background:rgba(201,152,10,.1);box-shadow:0 0 0 1px rgba(201,152,10,.2)}
 .animo-icon{font-size:22px;display:block;margin-bottom:6px}
-.animo-name{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.84)}
+.animo-name{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--cafe)}
 .animo-btn.elegida .animo-name{color:var(--gold)}
 .canciones-lista{max-height:200px;overflow-y:auto;border:1px solid var(--line)}
 .opcion-musica{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .2s;gap:12px}
 .opcion-musica:last-child{border-bottom:none}
-.opcion-musica:hover{background:rgba(255,255,255,.03)}
-.opcion-musica.seleccionada{background:rgba(214,178,94,.06);border-left:2px solid var(--gold)}
-.nombre-cancion{font-size:13px;color:rgba(255,255,255,.88);flex:1}
+.opcion-musica:hover{background:rgba(0,0,0,.02)}
+.opcion-musica.seleccionada{background:rgba(201,152,10,.06);border-left:2px solid var(--gold)}
+.nombre-cancion{font-size:13px;color:var(--cafe);flex:1}
 .opcion-musica.seleccionada .nombre-cancion{color:var(--gold)}
-.btn-escuchar{background:rgba(214,178,94,.08);border:1px solid rgba(214,178,94,.3);color:var(--gold);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:7px 14px;cursor:pointer;white-space:nowrap;transition:all .2s;font-family:inherit;border-radius:2px}
-.btn-escuchar:hover{background:rgba(214,178,94,.15);border-color:var(--gold)}
+.btn-escuchar{background:rgba(201,152,10,.08);border:1px solid rgba(201,152,10,.35);color:var(--gold);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:7px 14px;cursor:pointer;white-space:nowrap;transition:all .2s;font-family:inherit;border-radius:2px}
+.btn-escuchar:hover{background:rgba(201,152,10,.15);border-color:var(--gold)}
 .btn-escuchar:active{transform:scale(.97)}
 
 /* VOLUMEN */
@@ -227,33 +225,33 @@ input[type=range]{flex:1;accent-color:var(--gold)}
 
 /* SUBTÍTULOS */
 .toggle-grande{display:flex;align-items:center;gap:16px;border:1px solid var(--line);padding:16px;cursor:pointer;transition:all .2s;margin-bottom:16px}
-.toggle-grande.activo{border-color:rgba(214,178,94,.3);background:rgba(214,178,94,.04)}
+.toggle-grande.activo{border-color:rgba(201,152,10,.35);background:rgba(201,152,10,.04)}
 .toggle-switch{width:40px;height:22px;border:1px solid var(--line);border-radius:11px;position:relative;transition:all .2s;flex-shrink:0}
-.toggle-grande.activo .toggle-switch{border-color:var(--gold);background:rgba(214,178,94,.2)}
-.toggle-switch::after{content:'';position:absolute;width:16px;height:16px;background:rgba(255,255,255,.3);border-radius:50%;top:2px;left:2px;transition:all .2s}
+.toggle-grande.activo .toggle-switch{border-color:var(--gold);background:rgba(201,152,10,.2)}
+.toggle-switch::after{content:'';position:absolute;width:16px;height:16px;background:rgba(0,0,0,.3);border-radius:50%;top:2px;left:2px;transition:all .2s}
 .toggle-grande.activo .toggle-switch::after{left:20px;background:var(--gold)}
-.toggle-grande-titulo{font-size:14px;color:rgba(255,255,255,.84)}
+.toggle-grande-titulo{font-size:14px;color:var(--cafe)}
 .toggle-grande.activo .toggle-grande-titulo{color:var(--ink)}
-.toggle-grande-desc{font-size:11px;color:rgba(255,255,255,.68);margin-top:2px}
-.subtitulos-preview{border:1px solid var(--line);padding:28px 16px;text-align:center;margin-bottom:18px;background:rgba(0,0,0,.3)}
+.toggle-grande-desc{font-size:11px;color:rgba(0,0,0,.35);margin-top:2px}
+.subtitulos-preview{border:1px solid var(--line);padding:28px 16px;text-align:center;margin-bottom:18px;background:#1A1A1A}
 .subtitulos-preview-texto{font-size:18px;color:#fff;font-weight:700;text-shadow:1px 1px 3px rgba(0,0,0,.8)}
 .colores-subtitulo{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;margin-top:8px;align-items:center}
 .color-chip{width:30px;height:30px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .2s}
 .color-chip.elegido{border-color:var(--gold);transform:scale(1.15)}
 .fuentes-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}
-.fuente-card{border:1px solid rgba(255,255,255,.15);padding:16px;cursor:pointer;transition:all .2s;text-align:center}
-.fuente-card:hover{border-color:rgba(214,178,94,.4);background:rgba(214,178,94,.03)}
-.fuente-card.elegida{border-color:var(--gold);background:rgba(214,178,94,.08);box-shadow:0 0 0 1px rgba(214,178,94,.2)}
+.fuente-card{border:1px solid rgba(0,0,0,.12);padding:16px;cursor:pointer;transition:all .2s;text-align:center}
+.fuente-card:hover{border-color:rgba(201,152,10,.4);background:rgba(201,152,10,.03)}
+.fuente-card.elegida{border-color:var(--gold);background:rgba(201,152,10,.08);box-shadow:0 0 0 1px rgba(201,152,10,.2)}
 .fuente-card.elegida .fuente-name{color:var(--gold)}
-.fuente-name{font-size:16px;color:rgba(255,255,255,.88);margin-bottom:4px;transition:color .2s}
-.fuente-desc{font-size:10px;color:rgba(255,255,255,.74);letter-spacing:.5px}
+.fuente-name{font-size:16px;color:var(--cafe);margin-bottom:4px;transition:color .2s}
+.fuente-desc{font-size:10px;color:rgba(0,0,0,.4);letter-spacing:.5px}
 
 /* RESUMEN */
 .resumen-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:28px}
 .resumen-item{border:1px solid var(--line);padding:16px}
 .resumen-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block}
 .resumen-val{font-size:14px;color:var(--ink)}
-.btn-producir{width:100%;background:var(--gold);color:#09090B;border:none;padding:20px;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.btn-producir{width:100%;background:var(--gold);color:#111111;border:none;padding:20px;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .2s;box-shadow:0 4px 14px rgba(201,152,10,.35)}
 .btn-producir:hover{background:var(--gold2)}
 .btn-producir:disabled{opacity:.5;cursor:not-allowed}
 
@@ -266,62 +264,62 @@ input[type=range]{flex:1;accent-color:var(--gold)}
 .video-title{font-size:14px;color:var(--ink);margin-bottom:6px;line-height:1.4}
 .video-meta{font-size:11px;color:var(--muted);margin-bottom:12px}
 .video-estado-badge{font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;display:inline-block}
-.video-estado-badge.listo{background:rgba(105,240,174,.1);color:#69F0AE}
-.video-estado-badge.produciendo{background:rgba(214,178,94,.1);color:var(--gold)}
-.video-estado-badge.fallido{background:rgba(232,72,85,.1);color:#E84855}
+.video-estado-badge.listo{background:rgba(27,138,90,.12);color:#1B8A5A}
+.video-estado-badge.produciendo{background:rgba(201,152,10,.12);color:#A97D08}
+.video-estado-badge.fallido{background:rgba(198,40,57,.12);color:#C62839}
 .video-acciones{display:flex;gap:8px;margin-top:10px}
 .video-acciones a,.video-acciones button{flex:1;background:none;border:1px solid var(--line);color:var(--muted);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:9px 8px;cursor:pointer;text-align:center;text-decoration:none;transition:all .2s;font-family:inherit}
-.video-acciones a:hover,.video-acciones button:hover{border-color:rgba(214,178,94,.3);color:var(--gold)}
+.video-acciones a:hover,.video-acciones button:hover{border-color:rgba(201,152,10,.35);color:var(--gold)}
 .progreso{background:var(--line);height:2px;margin:10px 0;overflow:hidden}
 .progreso i{display:block;height:100%;background:var(--gold);transition:width .5s}
 .vacio{grid-column:1/-1;text-align:center;padding:80px 20px;color:var(--muted);font-size:15px;line-height:1.8}
 
 /* MEMBRESÍA */
 .planes-grid{padding:28px 32px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
-.plan-card{background:var(--bg3);border:1px solid rgba(255,255,255,.1);padding:32px;display:flex;flex-direction:column;transition:all .3s;position:relative}
-.plan-card:hover{border-color:rgba(214,178,94,.3);transform:translateY(-2px)}
-.plan-card.actual{border-color:var(--gold);background:rgba(214,178,94,.04)}
-.plan-card.actual::before{content:"Plan actual";position:absolute;top:-1px;left:0;right:0;text-align:center;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#09090B;background:var(--gold);padding:5px}
-.plan-tier{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.76);margin-bottom:16px;display:block;margin-top:8px}
+.plan-card{background:var(--bg3);border:1px solid rgba(0,0,0,.1);padding:32px;display:flex;flex-direction:column;transition:all .3s;position:relative}
+.plan-card:hover{border-color:rgba(201,152,10,.35);transform:translateY(-2px)}
+.plan-card.actual{border-color:var(--gold);background:rgba(201,152,10,.05)}
+.plan-card.actual::before{content:"Plan actual";position:absolute;top:-1px;left:0;right:0;text-align:center;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#111111;background:var(--gold);padding:5px}
+.plan-tier{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;display:block;margin-top:8px}
 .plan-card.actual .plan-tier{margin-top:20px}
 .plan-precio{font-family:"Playfair Display",serif;font-size:36px;color:var(--ink);margin-bottom:4px}
-.plan-precio-sub{font-size:12px;color:rgba(255,255,255,.72);margin-bottom:24px;display:block}
+.plan-precio-sub{font-size:12px;color:var(--cafe);margin-bottom:24px;display:block}
 .plan-features{list-style:none;flex:1;margin-bottom:24px}
-.plan-features li{font-size:13px;color:rgba(255,255,255,.84);padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:10px}
-.plan-features li::before{content:"";width:14px;height:14px;border:1px solid rgba(214,178,94,.4);flex-shrink:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%23D6B25E' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") center/10px no-repeat}
+.plan-features li{font-size:13px;color:var(--cafe);padding:8px 0;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.plan-features li::before{content:"";width:14px;height:14px;border:1px solid rgba(201,152,10,.5);flex-shrink:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%23C9980A' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") center/10px no-repeat}
 .plan-features li strong{color:var(--ink)}
-.plan-btn{background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);padding:14px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;width:100%;transition:all .2s;font-family:inherit}
-.plan-btn:hover{border-color:var(--gold);color:var(--gold);background:rgba(214,178,94,.05)}
-.plan-card.actual .plan-btn{background:var(--gold);color:#09090B;border-color:var(--gold);font-weight:700}
+.plan-btn{background:none;border:1px solid rgba(0,0,0,.15);color:var(--muted);padding:14px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;width:100%;transition:all .2s;font-family:inherit}
+.plan-btn:hover{border-color:var(--gold);color:var(--gold);background:rgba(201,152,10,.05)}
+.plan-card.actual .plan-btn{background:var(--gold);color:#111111;border-color:var(--gold);font-weight:700}
 
 /* MI CUENTA */
 .cuenta-wrap{padding:28px 44px;max-width:540px}
-.cuenta-card{background:var(--bg3);border:1px solid rgba(255,255,255,.1);padding:28px;margin-bottom:16px}
-.cuenta-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.76);margin-bottom:8px;display:block}
+.cuenta-card{background:var(--bg3);border:1px solid rgba(0,0,0,.1);padding:28px;margin-bottom:16px}
+.cuenta-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:block}
 .cuenta-val{font-family:"Playfair Display",serif;font-size:28px;color:var(--ink)}
 .cuenta-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
-.cuenta-item{border:1px solid rgba(255,255,255,.1);padding:16px}
-.cuenta-item-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.74);margin-bottom:8px;display:block}
+.cuenta-item{border:1px solid rgba(0,0,0,.1);padding:16px}
+.cuenta-item-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:block}
 .cuenta-item-val{font-size:20px;color:var(--ink)}
-.btn-full{width:100%;background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);padding:14px;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;margin-bottom:10px;transition:all .2s;font-family:inherit}
-.btn-full:hover{border-color:rgba(214,178,94,.4);color:var(--gold);background:rgba(214,178,94,.04)}
-.btn-danger{border-color:rgba(232,72,85,.3);color:#E84855}
-.btn-danger:hover{border-color:#E84855;background:rgba(232,72,85,.05);color:#E84855}
+.btn-full{width:100%;background:none;border:1px solid rgba(0,0,0,.15);color:var(--muted);padding:14px;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;margin-bottom:10px;transition:all .2s;font-family:inherit}
+.btn-full:hover{border-color:rgba(201,152,10,.4);color:var(--gold);background:rgba(201,152,10,.04)}
+.btn-danger{border-color:rgba(198,40,57,.35);color:#C62839}
+.btn-danger:hover{border-color:#C62839;background:rgba(198,40,57,.05);color:#C62839}
 
 /* MSG */
 .msg{padding:12px 16px;margin:0;font-size:13px;display:none;border-radius:2px}
-.msg.err{background:rgba(232,72,85,.1);color:#E84855;border:1px solid rgba(232,72,85,.2);display:block}
-.msg.ok{background:rgba(105,240,174,.08);color:#69F0AE;border:1px solid rgba(105,240,174,.15);display:block}
+.msg.err{background:rgba(198,40,57,.08);color:#C62839;border:1px solid rgba(198,40,57,.25);display:block}
+.msg.ok{background:rgba(27,138,90,.08);color:#1B8A5A;border:1px solid rgba(27,138,90,.25);display:block}
 
 /* MISC */
 .ayuda{font-size:12px;color:var(--muted);line-height:1.6}
 .temas-sugeridos-wrap{margin-bottom:18px}
-.tema-sugerido{display:block;width:100%;background:rgba(255,255,255,.02);border:1px solid var(--line);color:rgba(255,255,255,.76);padding:10px 14px;font-size:13px;cursor:pointer;text-align:left;margin-bottom:6px;transition:all .2s;font-family:inherit}
-.tema-sugerido:hover{border-color:rgba(214,178,94,.3);color:var(--gold)}
+.tema-sugerido{display:block;width:100%;background:rgba(0,0,0,.015);border:1px solid var(--line);color:var(--cafe);padding:10px 14px;font-size:13px;cursor:pointer;text-align:left;margin-bottom:6px;transition:all .2s;font-family:inherit}
+.tema-sugerido:hover{border-color:rgba(201,152,10,.35);color:var(--gold)}
 .lista-materiales{border:1px solid var(--line);max-height:140px;overflow-y:auto;margin-bottom:8px;display:none}
-.material-item{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13px;color:rgba(255,255,255,.8)}
+.material-item{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13px;color:var(--cafe)}
 .material-item:last-child{border-bottom:none}
-.btn-eliminar{background:none;border:none;color:rgba(232,72,85,.6);cursor:pointer;font-size:14px}
+.btn-eliminar{background:none;border:none;color:rgba(198,40,57,.7);cursor:pointer;font-size:14px}
 input[type=file]{display:none}
 
 @keyframes fadeInTrans{from{opacity:0}to{opacity:1}}
@@ -332,33 +330,25 @@ input[type=file]{display:none}
 @media(max-width:900px){
   .sidebar{display:none}
   .sesion span{display:none}
-  .logo{font-size:22px}
+  .logo{font-size:18px}
   .tabs-bar{padding-left:0;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
   .tabs-bar::-webkit-scrollbar{display:none}
   .studio-main{margin-left:0}
   .tabs-bar-right{display:none}
-  .tab-btn{padding:0 16px;font-size:10px;flex-shrink:0}
-  .s-header{padding:24px 20px 18px}
-  .s-body{padding:20px}
-  .s-footer{padding:14px 20px}
-  .s-headline{font-size:28px}
+  .tab-btn{padding:0 14px;font-size:10px;flex-shrink:0}
 }
 @media(max-width:768px){
   .s-header,.s-body,.s-footer,.cuenta-wrap{padding-left:16px;padding-right:16px}
-  .s-headline{font-size:26px;letter-spacing:-.3px}
-  .s-sub{font-size:13px}
-  .s-eyebrow{font-size:8px;letter-spacing:3px}
   .resumen-grid{grid-template-columns:1fr}
   .dur-row{display:grid !important;grid-template-columns:repeat(3,1fr);gap:8px}
-  .formato-row{flex-direction:column;gap:8px}
-  .formato-card{padding:14px 10px}
-  .dur-card{padding:14px 8px !important;text-align:center}
+  .formato-row{flex-direction:column}
+  .dur-card{padding:14px 8px !important}
   .dur-num{font-size:22px !important}
   .dur-name{font-size:9px !important;letter-spacing:1px}
   .dur-desc{font-size:10px !important}
   .animos-grid{grid-template-columns:repeat(3,1fr)}
-  .s-header{padding-top:20px}
-  .s-body{padding-top:16px}
+  .s-header{padding-top:24px}
+  .s-body{padding-top:20px}
   .cuota{margin:16px}
   .img-grid{grid-template-columns:repeat(2,1fr) !important}
   .plan-row{flex-direction:column !important}
@@ -370,100 +360,22 @@ input[type=file]{display:none}
   .videos-grid{padding:16px !important;grid-template-columns:repeat(2,1fr) !important}
   .wizard-progreso{gap:6px}
   .wizard-paso-label{display:none}
-  .nicho-wrap{gap:6px}
-  .nicho-tag{padding:6px 12px;font-size:12px}
-  .buscador-wrap{padding:12px}
-  .buscador-row{flex-direction:column;gap:8px}
-  .buscador-input{width:100%}
-  .buscador-btn{width:100%;padding:12px}
-  .voz-tabs{flex-wrap:wrap}
-  .voz-tab{flex:1 1 45%;font-size:10px;padding:10px 6px}
-  .musica-tabs{flex-direction:column;gap:8px}
-  .musica-tab-btn{width:100%}
-  .fuentes-grid{grid-template-columns:1fr 1fr}
-  .toggle-grande{padding:12px}
-  .upload-zone{padding:20px 12px}
-  .btn-cont,.btn-atras{padding:12px 18px;font-size:9px}
-  .btn-producir{padding:16px;font-size:12px}
-  .s-input{font-size:16px}
-  .s-label{font-size:9px;letter-spacing:2px}
-  .resumen-item{padding:12px}
-  .tab-btn{padding:0 12px;font-size:10px}
-  .cuenta-wrap{padding:20px 16px}
 }
 @media(max-width:480px){
-  .top .wrap{padding:0 12px}
-  .logo{font-size:20px}
-  .salir{font-size:9px;padding:6px 10px;letter-spacing:1px}
-  .tabs-bar{height:40px}
-  .tab-btn{font-size:9px;padding:0 10px;letter-spacing:.5px}
-  .studio-layout{padding-top:92px}
-  .s-headline{font-size:22px}
-  .s-sub{font-size:12px;line-height:1.5}
+  .top .wrap{padding:0 14px}
   .animos-grid{grid-template-columns:repeat(2,1fr)}
-  .videos-grid{grid-template-columns:1fr !important;padding:12px !important}
-  .video-card{margin-bottom:4px}
-  .colores-subtitulo{gap:8px}
-  .fuentes-grid{grid-template-columns:1fr 1fr}
-  .dur-row{grid-template-columns:1fr 1fr 1fr !important}
-  .dur-num{font-size:20px !important}
-  .nicho-tag{font-size:11px;padding:5px 10px}
-  .s-footer{flex-wrap:wrap;gap:10px}
-  .s-dots{display:none}
-  .btn-cont{width:100%;justify-content:center;text-align:center}
-  .btn-atras{font-size:9px;padding:10px 14px}
-  .upload-zone{padding:16px 10px}
-  .upload-icon{font-size:24px}
-  .upload-text{font-size:13px}
-  .guion-box{font-size:14px;padding:14px}
-  .s-select{font-size:14px;padding:10px 12px}
-  .canciones-lista{max-height:160px}
-  .opcion-musica{padding:10px 12px}
-  .nombre-cancion{font-size:12px}
-  .btn-escuchar{font-size:9px;padding:6px 10px}
-  .fuente-card{padding:12px 8px}
-  .fuente-name{font-size:14px}
-  .resumen-grid{gap:8px}
-  .resumen-item{padding:10px}
-  .resumen-label{font-size:8px}
-  .resumen-val{font-size:13px}
-  .btn-producir{font-size:11px;letter-spacing:2px;padding:14px}
-  .planes-grid{padding:12px}
-  .plan-card{padding:20px 16px}
-  .plan-precio{font-size:28px}
   .videos-grid{grid-template-columns:1fr !important}
-  .video-acciones{flex-wrap:wrap}
-  .video-acciones a,.video-acciones button{font-size:9px;padding:8px 6px}
-}
-@media(max-width:360px){
-  .logo{font-size:18px}
-  .tab-btn{font-size:8px;padding:0 8px}
-  .s-headline{font-size:20px}
-  .dur-row{grid-template-columns:1fr !important}
-  .btn-cont{font-size:8px;letter-spacing:2px}
+  .colores-subtitulo{gap:8px}
+  .fuente-cards{grid-template-columns:1fr 1fr !important}
+  .tab-btn{font-size:9px;padding:0 10px;letter-spacing:1px}
 }
 </style>
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-WSK6YL1L8S"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-WSK6YL1L8S');
-</script>
-<script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "ymx3afcvw4");
-</script>
 </head>
 <body>
 
 <header class="top">
   <div class="wrap">
-    <a class="logo" href="panel.html">Viraliza<span>.</span></a>
+    <a class="logo" href="panel-studio.html">Viraliza<span>.</span></a>
     <div class="sesion">
       <span>Hola, <b id="nombre-usuario">…</b></span>
       <button class="salir" id="salir" type="button">Salir</button>
@@ -475,7 +387,7 @@ input[type=file]{display:none}
   <button class="tab-btn activo" type="button" data-tab="producir">Producir</button>
   <button class="tab-btn" type="button" data-tab="videos">Mis videos</button>
   <button class="tab-btn" type="button" data-tab="membresia">Membresía</button>
-  <button class="tab-btn" type="button" data-tab="redes">Ideas de contenido</button>
+  <button class="tab-btn" type="button" data-tab="redes">Redes sociales</button>
   <button class="tab-btn" type="button" data-tab="cuenta">Mi cuenta</button>
   <div class="tabs-bar-right">
     <span class="videos-count">Videos <span id="nav-usados">0</span> / <span id="nav-limite">0</span></span>
@@ -508,11 +420,11 @@ input[type=file]{display:none}
       </div>
       <div class="sidebar-step" data-paso="5">
         <div class="sidebar-step-num">5</div>
-        <div><div class="sidebar-step-label">Producir</div><div class="sidebar-step-time" data-paso="5">~2 min</div></div>
+        <div><div class="sidebar-step-label">Producir</div><div class="sidebar-step-time">2-5 min</div></div>
       </div>
     </div>
     <div class="sidebar-bottom">
-      <div class="sidebar-plan-name"><span id="sidebar-plan-nombre">Plan</span><span style="font-size:8px;color:rgba(255,255,255,.66)">activo</span></div>
+      <div class="sidebar-plan-name"><span id="sidebar-plan-nombre">Plan</span><span style="font-size:8px;color:rgba(255,255,255,.15)">activo</span></div>
       <div><span class="sidebar-plan-num" id="sidebar-nav-usados">0</span><span class="sidebar-plan-of"> / <span id="sidebar-nav-limite">0</span> videos</span></div>
       <div class="sidebar-track"><div class="sidebar-fill" id="sidebar-fill" style="width:0%"></div></div>
     </div>
@@ -615,7 +527,7 @@ input[type=file]{display:none}
           </div>
           <div class="s-field">
             <span class="s-label">Busca imágenes específicas</span>
-            <p style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.76);margin-bottom:8px">🔍 Buscar imágenes</p>
+            <p style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:8px">🔍 Buscar imágenes</p>
             <div id="buscador-imagenes" class="buscador-wrap">
               <div class="buscador-row">
                 <input type="text" id="busqueda-imagenes" class="buscador-input" placeholder="Ej: Ganesha hindú, restaurante moderno, gimnasio...">
@@ -629,7 +541,7 @@ input[type=file]{display:none}
             </div>
           </div>
           <div class="s-field">
-            <p style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.76);margin-bottom:8px">🎬 Buscar clips de video</p>
+            <p style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:8px">🎬 Buscar clips de video</p>
             <div id="buscador-videos" class="buscador-wrap">
               <div class="buscador-row">
                 <input type="text" id="busqueda-videos" class="buscador-input" placeholder="Ej: restaurante cocinando, personas gym, ciudad de noche..." onkeydown="if(event.key==='Enter')W.buscarVideos()">
@@ -644,7 +556,7 @@ input[type=file]{display:none}
           </div>
 
           <div class="s-field">
-            <span class="s-label">Sube tus propios archivos <span style="color:rgba(255,255,255,.68);font-weight:300;font-size:10px">opcional · máx. 8 · JPG, PNG, MP4</span></span>
+            <span class="s-label">Sube tus propios archivos <span style="color:rgba(255,255,255,.2);font-weight:300;font-size:10px">opcional · máx. 8 · JPG, PNG, MP4</span></span>
             <div id="lista-materiales-wizard" class="lista-materiales"></div>
             <div class="upload-zone" onclick="document.getElementById('archivo-material-wizard').click()">
               <span class="upload-icon">📁</span>
@@ -699,7 +611,7 @@ input[type=file]{display:none}
               <button class="voz-tab" data-modo="propia" onclick="W.elegirModoVoz(this)">🎤 Mi narración</button>
               <button class="voz-tab" data-modo="ninguna" onclick="W.elegirModoVoz(this)">🔇 Sin voz</button>
             </div>
-            <div id="panel-voz-lista" style="border:none;padding:0;background:none">
+            <div id="panel-voz-lista">
               <select id="voz" class="s-select"></select>
             </div>
             <div id="panel-voz-premium" class="panel-voz-hidden">
@@ -708,28 +620,12 @@ input[type=file]{display:none}
               <audio id="reproductor-voz-premium" style="display:none"></audio>
             </div>
             <div id="panel-voz-propia" class="panel-voz-hidden">
-              <!-- Instructivo con guion visible -->
-              <div style="border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);padding:14px 16px;margin-bottom:12px">
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-                  <span style="font-size:13px">📋</span>
-                  <span style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.5);font-weight:600">Qué debes grabar</span>
-                </div>
-                <p style="font-size:12px;color:rgba(255,255,255,.5);line-height:1.6;margin-bottom:10px">Tu audio debe decir <strong style="color:rgba(255,255,255,.75)">exactamente el mismo texto</strong> que aparece en el guion — eso será lo que se escuche en el video y lo que aparecerá en los subtítulos.</p>
-                <div id="guion-narracion-preview" style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);padding:12px;font-size:12px;color:rgba(255,255,255,.5);line-height:1.6;max-height:100px;overflow-y:auto;font-style:italic">
-                  El guion aparecerá aquí una vez que lo escribas en el paso anterior.
-                </div>
-                <div style="margin-top:10px;display:flex;gap:16px;flex-wrap:wrap">
-                  <span style="font-size:11px;color:rgba(255,255,255,.3)">✓ Graba en un lugar silencioso</span>
-                  <span style="font-size:11px;color:rgba(255,255,255,.3)">✓ Lee despacio y claro</span>
-                  <span style="font-size:11px;color:rgba(255,255,255,.3)">✓ MP3, WAV o M4A</span>
-                </div>
-              </div>
-              <div class="upload-zone" id="zona-subir-narracion" style="cursor:pointer">
+              <div class="upload-zone" onclick="document.getElementById('archivo-narracion').click()">
                 <span class="upload-icon">🎤</span>
-                <p class="upload-text">Subir mi narración</p>
-                <p class="upload-desc">Toca aquí para seleccionar tu archivo de audio</p>
+                <p class="upload-text">Sube tu narración</p>
+                <p class="upload-desc">MP3, WAV o M4A · Lee el guion del paso anterior</p>
               </div>
-              <input type="file" id="archivo-narracion" accept="audio/*" style="display:none">
+              <input type="file" id="archivo-narracion" accept="audio/*">
               <p class="ayuda" id="ayuda-narracion-propia" style="margin-top:10px;display:none"></p>
             </div>
             <div id="panel-voz-ninguna" class="panel-voz-hidden">
@@ -743,9 +639,8 @@ input[type=file]{display:none}
           <div class="s-field">
             <span class="s-label">Música de fondo</span>
             <div class="musica-tabs">
-              <button class="musica-tab-btn activo" id="btn-musica-premium" onclick="W.alternarMusica('premium')">🎵 Por ánimo</button>
+              <button class="musica-tab-btn activo" id="btn-musica-premium" onclick="W.alternarMusica('premium')">🎵 Premium por ánimo</button>
               <button class="musica-tab-btn" id="btn-musica-estandar" onclick="W.alternarMusica('estandar')">📁 Mis canciones</button>
-              <button class="musica-tab-btn" id="btn-musica-ninguna" onclick="W.alternarMusica('ninguna')">🔇 Sin música</button>
             </div>
             <div id="seccion-musica-premium">
               <div class="animos-grid">
@@ -765,7 +660,6 @@ input[type=file]{display:none}
               <p class="ayuda" style="margin-top:10px">¿Tienes tu propia canción? <a href="#" id="abrir-subir-musica" style="color:var(--gold)">Súbela aquí</a></p>
               <input type="file" id="archivo-musica" accept="audio/*">
             </div>
-            <div id="seccion-musica-ninguna" style="display:none;border:1px solid rgba(255,255,255,.08);padding:16px;color:var(--muted);font-size:13px;text-align:center">🔇 El video tendrá solo la narración, sin música de fondo.</div>
             <audio id="reproductor-musica" style="display:none"></audio>
             <input type="hidden" id="musica" value="">
             <input type="hidden" id="musica-premium-url" value="">
@@ -783,42 +677,42 @@ input[type=file]{display:none}
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px" id="grid-transiciones">
               <div class="trans-card elegida" data-trans="None" onclick="W.elegirTransicion(this)" style="border:1px solid rgba(255,255,255,.15);padding:16px;cursor:pointer;transition:all .2s;text-align:center">
                 <div style="font-size:22px;margin-bottom:8px">⬜</div>
-                <div style="font-size:11px;color:rgba(255,255,255,.88);margin-bottom:4px;font-weight:500">Sin transición</div>
-                <div style="font-size:10px;color:rgba(255,255,255,.72)">Corte directo</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:4px;font-weight:500">Sin transición</div>
+                <div style="font-size:10px;color:rgba(255,255,255,.3)">Corte directo</div>
               </div>
               <div class="trans-card" data-trans="FadeIn" onclick="W.elegirTransicion(this)" style="border:1px solid rgba(255,255,255,.15);padding:16px;cursor:pointer;transition:all .2s;text-align:center">
                 <div style="font-size:22px;margin-bottom:8px">🌅</div>
-                <div style="font-size:11px;color:rgba(255,255,255,.88);margin-bottom:4px;font-weight:500">Fundido entrada</div>
-                <div style="font-size:10px;color:rgba(255,255,255,.72)">Suave y elegante</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:4px;font-weight:500">Fundido entrada</div>
+                <div style="font-size:10px;color:rgba(255,255,255,.3)">Suave y elegante</div>
               </div>
               <div class="trans-card" data-trans="FadeOut" onclick="W.elegirTransicion(this)" style="border:1px solid rgba(255,255,255,.15);padding:16px;cursor:pointer;transition:all .2s;text-align:center">
                 <div style="font-size:22px;margin-bottom:8px">🌇</div>
-                <div style="font-size:11px;color:rgba(255,255,255,.88);margin-bottom:4px;font-weight:500">Fundido salida</div>
-                <div style="font-size:10px;color:rgba(255,255,255,.72)">Suave y cinematográfico</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:4px;font-weight:500">Fundido salida</div>
+                <div style="font-size:10px;color:rgba(255,255,255,.3)">Suave y cinematográfico</div>
               </div>
               <div class="trans-card" data-trans="SlideIn" onclick="W.elegirTransicion(this)" style="border:1px solid rgba(255,255,255,.15);padding:16px;cursor:pointer;transition:all .2s;text-align:center">
                 <div style="font-size:22px;margin-bottom:8px">⬅️</div>
-                <div style="font-size:11px;color:rgba(255,255,255,.88);margin-bottom:4px;font-weight:500">Deslizar entrada</div>
-                <div style="font-size:10px;color:rgba(255,255,255,.72)">Dinámico y moderno</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:4px;font-weight:500">Deslizar entrada</div>
+                <div style="font-size:10px;color:rgba(255,255,255,.3)">Dinámico y moderno</div>
               </div>
               <div class="trans-card" data-trans="ZoomIn" onclick="W.elegirTransicion(this)" style="border:1px solid rgba(255,255,255,.15);padding:16px;cursor:pointer;transition:all .2s;text-align:center">
                 <div style="font-size:22px;margin-bottom:8px">🔍</div>
-                <div style="font-size:11px;color:rgba(255,255,255,.88);margin-bottom:4px;font-weight:500">Zoom entrada</div>
-                <div style="font-size:10px;color:rgba(255,255,255,.72)">Impactante y visual</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:4px;font-weight:500">Zoom entrada</div>
+                <div style="font-size:10px;color:rgba(255,255,255,.3)">Impactante y visual</div>
               </div>
               <div class="trans-card" data-trans="Shuffle" onclick="W.elegirTransicion(this)" style="border:1px solid rgba(255,255,255,.15);padding:16px;cursor:pointer;transition:all .2s;text-align:center">
                 <div style="font-size:22px;margin-bottom:8px">🎲</div>
-                <div style="font-size:11px;color:rgba(255,255,255,.88);margin-bottom:4px;font-weight:500">Aleatoria</div>
-                <div style="font-size:10px;color:rgba(255,255,255,.72)">Variada y sorpresiva</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:4px;font-weight:500">Aleatoria</div>
+                <div style="font-size:10px;color:rgba(255,255,255,.3)">Variada y sorpresiva</div>
               </div>
             </div>
             <!-- Preview de transición -->
             <div id="trans-preview" style="margin-top:16px;border:1px solid rgba(255,255,255,.1);padding:16px;background:rgba(0,0,0,.3);text-align:center">
-              <p style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.72);margin-bottom:12px">Vista previa de la transición</p>
+              <p style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:12px">Vista previa de la transición</p>
               <div style="position:relative;height:80px;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:4px">
-                <div id="trans-box-a" style="width:120px;height:70px;background:linear-gradient(135deg,#1a1a2e,#D6B25E44);display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,.8);letter-spacing:1px">Imagen 1</div>
+                <div id="trans-box-a" style="width:120px;height:70px;background:linear-gradient(135deg,#1a1a2e,#D6B25E44);display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,.5);letter-spacing:1px">Imagen 1</div>
                 <div style="font-size:18px;color:rgba(214,178,94,.5)" id="trans-arrow">→</div>
-                <div id="trans-box-b" style="width:120px;height:70px;background:linear-gradient(135deg,#0d1117,#D6B25E66);display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,.8);letter-spacing:1px">Imagen 2</div>
+                <div id="trans-box-b" style="width:120px;height:70px;background:linear-gradient(135deg,#0d1117,#D6B25E66);display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,.5);letter-spacing:1px">Imagen 2</div>
               </div>
               <p id="trans-desc" style="font-size:11px;color:rgba(214,178,94,.6);margin-top:10px;letter-spacing:.5px">Corte directo entre imágenes</p>
             </div>
@@ -889,24 +783,10 @@ input[type=file]{display:none}
         <div class="s-header">
           <span class="s-eyebrow">Paso 5 de 5</span>
           <div class="s-headline">Todo listo para <em>producir</em></div>
-          <p class="s-sub">Revisa tu configuración antes de empezar. Tiempo estimado: <span id="tiempo-estimado-produccion" style="color:var(--gold)">~2 min</span></p>
+          <p class="s-sub">Revisa tu configuración antes de empezar.</p>
         </div>
         <div class="s-body">
           <div class="resumen-grid" id="resumen-grid"></div>
-
-          <!-- Preview de voz -->
-          <div style="border:1px solid rgba(255,255,255,.07);padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:14px">
-            <div style="flex:1">
-              <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px">Vista previa de voz</div>
-              <div style="font-size:13px;color:rgba(255,255,255,.6)" id="preview-voz-nombre">Cargando...</div>
-            </div>
-            <button id="btn-preview-voz" onclick="W.previewVozFinal()" type="button"
-              style="background:rgba(214,178,94,.08);border:1px solid rgba(214,178,94,.3);color:var(--gold);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:10px 18px;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0">
-              ▶ Escuchar
-            </button>
-            <audio id="audio-preview-voz-final" style="display:none"></audio>
-          </div>
-
           <button class="btn-producir" id="btn-producir" onclick="W.producir()">🎬 PRODUCIR VIDEO</button>
           <div style="text-align:center;margin-top:14px">
             <button class="btn-atras" onclick="W.irA(4)">← Ajustar opciones</button>
@@ -938,55 +818,37 @@ input[type=file]{display:none}
 
     <!-- TAB: REDES -->
     <section class="tab-panel" data-panel="redes">
-      <div style="padding:44px 44px 32px;max-width:900px">
-        <span style="font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(214,178,94,.5);display:block;margin-bottom:12px">Ideas de contenido</span>
-        <div style="font-family:'Playfair Display',serif;font-size:32px;color:var(--ink);margin-bottom:8px;line-height:1.2">Ideas para <em style="color:var(--gold)">tu negocio</em></div>
-        <p style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:32px;line-height:1.7;font-weight:300">Elige tu tipo de negocio y te damos 10 ideas de videos probadas. Un clic y empiezas a producir.</p>
-
-        <!-- Selector de nicho -->
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:32px" id="nichos-grid">
-          <button class="nicho-btn" data-nicho="restaurante" onclick="W.elegirNicho(this)" style="border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);padding:16px 8px;cursor:pointer;font-family:inherit;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='rgba(214,178,94,.3)'" onmouseout="if(!this.classList.contains('elegido'))this.style.borderColor='rgba(255,255,255,.08)'">
-            <div style="font-size:28px;margin-bottom:6px">🍽️</div>
-            <div style="font-size:11px;color:rgba(255,255,255,.75);letter-spacing:.5px">Restaurante</div>
-          </button>
-          <button class="nicho-btn" data-nicho="salon" onclick="W.elegirNicho(this)" style="border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);padding:16px 8px;cursor:pointer;font-family:inherit;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='rgba(214,178,94,.3)'" onmouseout="if(!this.classList.contains('elegido'))this.style.borderColor='rgba(255,255,255,.08)'">
-            <div style="font-size:28px;margin-bottom:6px">💇</div>
-            <div style="font-size:11px;color:rgba(255,255,255,.75);letter-spacing:.5px">Salón / Peluquería</div>
-          </button>
-          <button class="nicho-btn" data-nicho="gimnasio" onclick="W.elegirNicho(this)" style="border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);padding:16px 8px;cursor:pointer;font-family:inherit;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='rgba(214,178,94,.3)'" onmouseout="if(!this.classList.contains('elegido'))this.style.borderColor='rgba(255,255,255,.08)'">
-            <div style="font-size:28px;margin-bottom:6px">💪</div>
-            <div style="font-size:11px;color:rgba(255,255,255,.75);letter-spacing:.5px">Gimnasio / Fitness</div>
-          </button>
-          <button class="nicho-btn" data-nicho="tienda" onclick="W.elegirNicho(this)" style="border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);padding:16px 8px;cursor:pointer;font-family:inherit;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='rgba(214,178,94,.3)'" onmouseout="if(!this.classList.contains('elegido'))this.style.borderColor='rgba(255,255,255,.08)'">
-            <div style="font-size:28px;margin-bottom:6px">🛍️</div>
-            <div style="font-size:11px;color:rgba(255,255,255,.75);letter-spacing:.5px">Tienda / Boutique</div>
-          </button>
-          <button class="nicho-btn" data-nicho="inmobiliaria" onclick="W.elegirNicho(this)" style="border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);padding:16px 8px;cursor:pointer;font-family:inherit;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='rgba(214,178,94,.3)'" onmouseout="if(!this.classList.contains('elegido'))this.style.borderColor='rgba(255,255,255,.08)'">
-            <div style="font-size:28px;margin-bottom:6px">🏠</div>
-            <div style="font-size:11px;color:rgba(255,255,255,.75);letter-spacing:.5px">Inmobiliaria</div>
-          </button>
-          <button class="nicho-btn" data-nicho="clinica" onclick="W.elegirNicho(this)" style="border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);padding:16px 8px;cursor:pointer;font-family:inherit;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='rgba(214,178,94,.3)'" onmouseout="if(!this.classList.contains('elegido'))this.style.borderColor='rgba(255,255,255,.08)'">
-            <div style="font-size:28px;margin-bottom:6px">🏥</div>
-            <div style="font-size:11px;color:rgba(255,255,255,.75);letter-spacing:.5px">Clínica / Salud</div>
-          </button>
-          <button class="nicho-btn" data-nicho="educacion" onclick="W.elegirNicho(this)" style="border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);padding:16px 8px;cursor:pointer;font-family:inherit;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='rgba(214,178,94,.3)'" onmouseout="if(!this.classList.contains('elegido'))this.style.borderColor='rgba(255,255,255,.08)'">
-            <div style="font-size:28px;margin-bottom:6px">📚</div>
-            <div style="font-size:11px;color:rgba(255,255,255,.75);letter-spacing:.5px">Educación / Cursos</div>
-          </button>
-          <button class="nicho-btn" data-nicho="emprendedor" onclick="W.elegirNicho(this)" style="border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);padding:16px 8px;cursor:pointer;font-family:inherit;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='rgba(214,178,94,.3)'" onmouseout="if(!this.classList.contains('elegido'))this.style.borderColor='rgba(255,255,255,.08)'">
-            <div style="font-size:28px;margin-bottom:6px">🚀</div>
-            <div style="font-size:11px;color:rgba(255,255,255,.75);letter-spacing:.5px">Emprendedor</div>
-          </button>
-        </div>
-
-        <!-- Ideas del nicho seleccionado -->
-        <div id="ideas-nicho" style="display:none">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
-            <span style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(214,178,94,.7)" id="ideas-titulo">Ideas para tu negocio</span>
-            <div style="flex:1;height:1px;background:rgba(255,255,255,.06)"></div>
+      <div style="padding:44px;max-width:680px">
+        <span style="font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(214,178,94,.5);display:block;margin-bottom:12px">Publicación directa</span>
+        <div style="font-family:'Playfair Display',serif;font-size:32px;color:var(--ink);margin-bottom:8px;line-height:1.2">Conecta tus <em style="color:var(--gold)">redes sociales</em></div>
+        <p style="font-size:14px;color:rgba(255,255,255,.4);margin-bottom:36px;line-height:1.7;font-weight:300">Vincula tus cuentas para publicar tus videos directamente desde Viraliza sin descargar ni subir manualmente.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
+          <div style="border:1px solid rgba(255,255,255,.1);padding:24px;text-align:center;transition:border-color .2s" onmouseover="this.style.borderColor='rgba(214,178,94,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)'">
+            <div style="font-size:36px;margin-bottom:12px">🎵</div>
+            <div style="font-size:14px;color:rgba(255,255,255,.8);margin-bottom:4px;font-weight:500">TikTok</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:18px">Publica directo en tu perfil</div>
+            <button onclick="alert('Integración con TikTok próximamente disponible. ¡Muy pronto!')" style="width:100%;background:rgba(214,178,94,.08);border:1px solid rgba(214,178,94,.3);color:var(--gold);font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:11px;cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.background='rgba(214,178,94,.15)'" onmouseout="this.style.background='rgba(214,178,94,.08)'">Conectar</button>
           </div>
-          <div id="ideas-lista" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"></div>
+          <div style="border:1px solid rgba(255,255,255,.1);padding:24px;text-align:center;transition:border-color .2s" onmouseover="this.style.borderColor='rgba(214,178,94,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)'">
+            <div style="font-size:36px;margin-bottom:12px">📸</div>
+            <div style="font-size:14px;color:rgba(255,255,255,.8);margin-bottom:4px;font-weight:500">Instagram</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:18px">Reels y stories automáticos</div>
+            <button onclick="alert('Integración con Instagram próximamente disponible. ¡Muy pronto!')" style="width:100%;background:rgba(214,178,94,.08);border:1px solid rgba(214,178,94,.3);color:var(--gold);font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:11px;cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.background='rgba(214,178,94,.15)'" onmouseout="this.style.background='rgba(214,178,94,.08)'">Conectar</button>
+          </div>
+          <div style="border:1px solid rgba(255,255,255,.1);padding:24px;text-align:center;transition:border-color .2s" onmouseover="this.style.borderColor='rgba(214,178,94,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)'">
+            <div style="font-size:36px;margin-bottom:12px">▶️</div>
+            <div style="font-size:14px;color:rgba(255,255,255,.8);margin-bottom:4px;font-weight:500">YouTube</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:18px">Shorts y videos largos</div>
+            <button onclick="alert('Integración con YouTube próximamente disponible. ¡Muy pronto!')" style="width:100%;background:rgba(214,178,94,.08);border:1px solid rgba(214,178,94,.3);color:var(--gold);font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:11px;cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.background='rgba(214,178,94,.15)'" onmouseout="this.style.background='rgba(214,178,94,.08)'">Conectar</button>
+          </div>
+          <div style="border:1px solid rgba(255,255,255,.1);padding:24px;text-align:center;transition:border-color .2s" onmouseover="this.style.borderColor='rgba(214,178,94,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)'">
+            <div style="font-size:36px;margin-bottom:12px">👥</div>
+            <div style="font-size:14px;color:rgba(255,255,255,.8);margin-bottom:4px;font-weight:500">Facebook</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:18px">Reels y páginas de negocio</div>
+            <button onclick="alert('Integración con Facebook próximamente disponible. ¡Muy pronto!')" style="width:100%;background:rgba(214,178,94,.08);border:1px solid rgba(214,178,94,.3);color:var(--gold);font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:11px;cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.background='rgba(214,178,94,.15)'" onmouseout="this.style.background='rgba(214,178,94,.08)'">Conectar</button>
+          </div>
         </div>
+        <p style="font-size:11px;color:rgba(255,255,255,.15);text-align:center;letter-spacing:.5px">Integraciones en desarrollo · Disponibles próximamente</p>
       </div>
     </section>
 
@@ -999,46 +861,26 @@ input[type=file]{display:none}
         <!-- Plan actual -->
         <div style="border:1px solid rgba(214,178,94,.3);padding:28px;margin-bottom:16px;background:rgba(214,178,94,.03);position:relative;overflow:hidden">
           <div style="position:absolute;top:0;right:0;background:rgba(214,178,94,.1);padding:6px 16px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold)">Activo</div>
-          <span style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.72);display:block;margin-bottom:8px">Plan actual</span>
+          <span style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.3);display:block;margin-bottom:8px">Plan actual</span>
           <div style="font-family:'Playfair Display',serif;font-size:36px;color:var(--ink);margin-bottom:20px" id="cuenta-plan-nombre">—</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
             <div style="border:1px solid rgba(255,255,255,.08);padding:16px">
-              <span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.72);display:block;margin-bottom:8px">Videos este mes</span>
+              <span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);display:block;margin-bottom:8px">Videos este mes</span>
               <div style="font-family:'Playfair Display',serif;font-size:28px;color:var(--ink)">
-                <span id="cuenta-usados">0</span><span style="font-size:16px;color:rgba(255,255,255,.7);font-family:Jost,sans-serif"> / <span id="cuenta-limite">0</span></span>
+                <span id="cuenta-usados">0</span><span style="font-size:16px;color:rgba(255,255,255,.25);font-family:Jost,sans-serif"> / <span id="cuenta-limite">0</span></span>
               </div>
             </div>
             <div style="border:1px solid rgba(255,255,255,.08);padding:16px">
-              <span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.72);display:block;margin-bottom:8px">Renueva el</span>
+              <span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);display:block;margin-bottom:8px">Renueva el</span>
               <div style="font-size:16px;color:var(--ink);margin-top:4px" id="cuenta-renovacion">—</div>
             </div>
           </div>
         </div>
 
-        <!-- Referidos -->
-        <div style="border:1px solid rgba(255,255,255,.07);padding:28px;margin-bottom:16px">
-          <span style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.4);display:block;margin-bottom:12px">Programa de referidos</span>
-          <p style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;margin-bottom:16px">Comparte tu enlace. Por cada amigo que se registre, ganas <strong style="color:#D6B25E">3 videos extra</strong> al mes.</p>
-          <div style="background:#0A0A0D;border:1px solid rgba(255,255,255,.06);padding:12px 16px;display:flex;align-items:center;gap:10px;margin-bottom:12px">
-            <span id="link-referido" style="font-size:12px;color:rgba(255,255,255,.5);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Cargando...</span>
-            <button onclick="copiarReferido()" style="background:#D6B25E;color:#09090B;border:none;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:8px 14px;cursor:pointer;font-family:inherit;white-space:nowrap">Copiar</button>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            <div style="border:1px solid rgba(255,255,255,.06);padding:14px;text-align:center">
-              <div style="font-family:'Playfair Display',serif;font-size:28px;color:#D6B25E" id="ref-count">0</div>
-              <div style="font-size:10px;color:rgba(255,255,255,.35);letter-spacing:1px;text-transform:uppercase;margin-top:4px">Referidos</div>
-            </div>
-            <div style="border:1px solid rgba(255,255,255,.06);padding:14px;text-align:center">
-              <div style="font-family:'Playfair Display',serif;font-size:28px;color:#D6B25E" id="ref-bonus">0</div>
-              <div style="font-size:10px;color:rgba(255,255,255,.35);letter-spacing:1px;text-transform:uppercase;margin-top:4px">Videos extra</div>
-            </div>
-          </div>
-        </div>
-
         <!-- Acciones -->
-        <button onclick="Panel.cambiarPestana('membresia')" style="width:100%;background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);padding:14px;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;margin-bottom:10px;transition:all .2s;font-family:inherit" onmouseover="this.style.borderColor='rgba(214,178,94,.4)';this.style.color='#D6B25E'" onmouseout="this.style.borderColor='rgba(255,255,255,.15)';this.style.color='rgba(255,255,255,.5)'">Cambiar de plan</button>
+        <button onclick="Panel.cambiarPestana('membresia')" style="width:100%;background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);padding:14px;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;margin-bottom:10px;transition:all .2s;font-family:inherit" onmouseover="this.style.borderColor='rgba(214,178,94,.4)';this.style.color='#D6B25E'" onmouseout="this.style.borderColor='rgba(255,255,255,.15)';this.style.color='rgba(255,255,255,.5)'">Cambiar de plan</button>
         <button id="btn-cancelar-plan" onclick="Panel.cancelarPlan()" style="width:100%;background:none;border:1px solid rgba(232,72,85,.25);color:rgba(232,72,85,.6);padding:14px;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:inherit" onmouseover="this.style.borderColor='#E84855';this.style.color='#E84855'" onmouseout="this.style.borderColor='rgba(232,72,85,.25)';this.style.color='rgba(232,72,85,.6)'">Cancelar membresía</button>
-        <p style="font-size:11px;color:rgba(255,255,255,.68);text-align:center;margin-top:12px;line-height:1.6">Al cancelar conservas el acceso hasta que venza el período actual. Los videos producidos son tuyos para siempre.</p>
+        <p style="font-size:11px;color:rgba(255,255,255,.2);text-align:center;margin-top:12px;line-height:1.6">Al cancelar conservas el acceso hasta que venza el período actual. Los videos producidos son tuyos para siempre.</p>
       </div>
     </section>
 
@@ -1110,19 +952,6 @@ document.querySelectorAll('.wizard-pantalla').forEach(el => {
 Panel.iniciar();
 
 // Modal preview video
-function compartirVideo(id, tema) {
-  const url = `https://viralizacol.com/v/${id}`;
-  if (navigator.share) {
-    navigator.share({ title: tema, text: "Mira este video que produje con Viraliza", url });
-  } else {
-    navigator.clipboard.writeText(url).then(() => {
-      mostrarMensaje("Enlace copiado — compártelo por WhatsApp o donde quieras.", "ok");
-    }).catch(() => {
-      prompt("Copia este enlace:", url);
-    });
-  }
-}
-
 function abrirModalVideo(url, tema) {
   const modal = document.getElementById("modal-video-preview");
   const player = document.getElementById("modal-video-player");
@@ -1158,117 +987,23 @@ setTimeout(() => {
 <!-- MODAL VIDEO PREVIEW -->
 <div id="modal-video-preview" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.92);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:20px" onclick="cerrarModalVideo()">
   <div style="position:relative;max-width:400px;width:100%;max-height:90vh" onclick="event.stopPropagation()">
-    <button onclick="cerrarModalVideo()" style="position:absolute;top:-44px;right:0;background:none;border:none;color:rgba(255,255,255,.8);font-size:13px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit">✕ Cerrar</button>
+    <button onclick="cerrarModalVideo()" style="position:absolute;top:-44px;right:0;background:none;border:none;color:rgba(255,255,255,.5);font-size:13px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit">✕ Cerrar</button>
     <video id="modal-video-player" controls playsinline style="width:100%;max-height:80vh;display:block;background:#000"></video>
-    <p id="modal-video-tema" style="font-size:13px;color:rgba(255,255,255,.8);margin-top:12px;text-align:center;line-height:1.5"></p>
+    <p id="modal-video-tema" style="font-size:13px;color:rgba(255,255,255,.5);margin-top:12px;text-align:center;line-height:1.5"></p>
   </div>
 </div>
 
 <!-- MODAL ONBOARDING -->
-<div id="modal-onboarding" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.92);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:24px">
-  <div style="background:#0C0C0F;border:1px solid rgba(214,178,94,.25);max-width:520px;width:100%;overflow:hidden">
-    <!-- Header -->
-    <div style="background:linear-gradient(135deg,rgba(214,178,94,.08),rgba(214,178,94,.03));padding:36px 40px 28px;text-align:center;border-bottom:1px solid rgba(255,255,255,.05)">
-      <p style="font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#D6B25E;margin-bottom:12px">Bienvenido a Viraliza</p>
-      <h2 style="font-family:'Playfair Display',serif;font-size:26px;line-height:1.3;color:#F0EDE5">Tu estudio de video<br><em style="color:#D6B25E">está listo</em></h2>
-    </div>
-    <!-- Pasos -->
-    <div style="padding:28px 40px;display:flex;flex-direction:column;gap:16px">
-      <div style="display:flex;align-items:flex-start;gap:16px">
-        <div style="width:36px;height:36px;background:rgba(214,178,94,.12);border:1px solid rgba(214,178,94,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Playfair Display',serif;font-size:16px;color:#D6B25E">1</div>
-        <div>
-          <div style="font-size:13px;font-weight:600;color:#F0EDE5;margin-bottom:3px">Escribe el tema de tu negocio</div>
-          <div style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.5">Una frase es suficiente — "restaurante de comida antioqueña en Medellín". Nosotros hacemos el resto.</div>
-        </div>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:16px">
-        <div style="width:36px;height:36px;background:rgba(214,178,94,.12);border:1px solid rgba(214,178,94,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Playfair Display',serif;font-size:16px;color:#D6B25E">2</div>
-        <div>
-          <div style="font-size:13px;font-weight:600;color:#F0EDE5;margin-bottom:3px">Elige voz, música y estilo</div>
-          <div style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.5">Selecciona la voz que más te guste, un ánimo musical y el estilo de los subtítulos.</div>
-        </div>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:16px">
-        <div style="width:36px;height:36px;background:rgba(214,178,94,.12);border:1px solid rgba(214,178,94,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Playfair Display',serif;font-size:16px;color:#D6B25E">3</div>
-        <div>
-          <div style="font-size:13px;font-weight:600;color:#F0EDE5;margin-bottom:3px">Produce y descarga en 2-5 minutos</div>
-          <div style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.5">Tu video queda listo para TikTok, Reels o YouTube. Sin cámara, sin editor, sin excusas.</div>
-        </div>
-      </div>
-    </div>
-    <!-- CTAs -->
-    <div style="padding:0 40px 32px;display:flex;flex-direction:column;gap:10px">
-      <button onclick="Panel.cerrarOnboarding(true)" style="background:#D6B25E;color:#09090B;border:none;padding:16px;font-family:'Jost',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;width:100%">Producir mi primer video →</button>
-      <button onclick="Panel.cerrarOnboarding(false)" style="background:none;border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.4);padding:12px;font-family:'Jost',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;width:100%">Explorar el panel primero</button>
-    </div>
+<div id="modal-onboarding" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);align-items:center;justify-content:center">
+  <div style="background:#0F0F12;border:1px solid rgba(214,178,94,.3);max-width:480px;width:90%;padding:48px 40px;text-align:center">
+    <div style="font-size:48px;margin-bottom:20px">🎬</div>
+    <p style="font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#D6B25E;margin-bottom:12px">Bienvenido a Viraliza</p>
+    <h2 style="font-family:'Playfair Display',serif;font-size:28px;margin-bottom:16px;line-height:1.3">Tu estudio de video<br><em style="color:#D6B25E">está listo</em></h2>
+    <p style="color:#8A8480;font-size:15px;line-height:1.7;margin-bottom:32px">En menos de 2 minutos vas a tener tu primer video profesional listo para publicar.</p>
+    <button onclick="Panel.cerrarOnboarding()" style="background:#D6B25E;color:#09090B;border:none;padding:16px 40px;font-family:'Jost',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;width:100%;margin-bottom:12px">Producir mi primer video →</button>
+    <button onclick="Panel.cerrarOnboarding()" style="background:none;border:none;color:#8A8480;font-size:12px;cursor:pointer;letter-spacing:1px">Explorar el panel primero</button>
   </div>
 </div>
 
-
-<!-- BANNER COOKIES -->
-<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#0F0F12;border-top:1px solid rgba(214,178,94,.25);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
-  <p style="font-size:13px;color:rgba(255,255,255,.6);margin:0;line-height:1.6;flex:1;min-width:200px">Usamos cookies esenciales para el funcionamiento de la plataforma y tu sesión. Al continuar, aceptas nuestra <a href="privacidad.html" style="color:#D6B25E;text-decoration:none">política de privacidad</a>.</p>
-  <button onclick="aceptarCookies()" style="background:#D6B25E;color:#09090B;border:none;padding:10px 24px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0">Aceptar</button>
-</div>
-<script>
-function copiarReferido() {
-  const link = document.getElementById('link-referido')?.textContent;
-  if (!link || link === 'Cargando...') return;
-  navigator.clipboard.writeText(link).then(() => {
-    const btn = document.querySelector('[onclick="copiarReferido()"]');
-    if (btn) { btn.textContent = '✓ Copiado'; setTimeout(() => btn.textContent = 'Copiar', 2000); }
-  }).catch(() => { prompt('Copia este enlace:', link); });
-}
-
-async function cargarReferidos() {
-  try {
-    const d = await API.pedir('/api/referidos/mi-codigo');
-    const el = document.getElementById('link-referido');
-    const cnt = document.getElementById('ref-count');
-    const bon = document.getElementById('ref-bonus');
-    if (el) el.textContent = d.link;
-    if (cnt) cnt.textContent = d.referidos || 0;
-    if (bon) bon.textContent = d.videosBonus || 0;
-  } catch(e) {
-    const el = document.getElementById('link-referido');
-    if (el) el.textContent = 'Error cargando enlace';
-  }
-}
-
-// Notificaciones push del navegador
-function pedirPermisosNotificacion() {
-  if ("Notification" in window && Notification.permission === "default") {
-    Notification.requestPermission();
-  }
-}
-
-function notificarVideoListo(tema) {
-  if ("Notification" in window && Notification.permission === "granted") {
-    const n = new Notification("🎬 Tu video está listo — Viraliza", {
-      body: tema || "Tu video terminó de producirse. Entra a descargarlo.",
-      icon: "/favicon.ico",
-      badge: "/favicon.ico",
-      tag: "video-listo",
-      requireInteraction: true,
-    });
-    n.onclick = () => {
-      window.focus();
-      Panel.cambiarPestana("videos");
-      n.close();
-    };
-  }
-}
-
-function aceptarCookies(){
-  localStorage.setItem('cookies_ok','1');
-  document.getElementById('cookie-banner').style.display='none';
-}
-(function(){
-  if(!localStorage.getItem('cookies_ok')){
-    var b=document.getElementById('cookie-banner');
-    if(b) b.style.display='flex';
-  }
-})();
-</script>
 </body>
 </html>

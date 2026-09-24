@@ -86,34 +86,12 @@ const Acceso = {
       };
       let respuesta;
       if (this.modo === "registro") {
-        const nombreVal = document.getElementById("nombre").value.trim();
-        if (!nombreVal || nombreVal.length < 2) {
-          mostrarMensaje("Escribe tu nombre para continuar.", "err");
-          boton.disabled = false;
-          return;
-        }
-        const emailVal = document.getElementById("email").value.trim();
-        if (!emailVal || !emailVal.includes("@")) {
-          mostrarMensaje("Escribe un correo válido.", "err");
-          boton.disabled = false;
-          return;
-        }
-        const claveVal = document.getElementById("clave").value;
-        if (!claveVal || claveVal.length < 6) {
-          mostrarMensaje("La contraseña debe tener mínimo 6 caracteres.", "err");
-          boton.disabled = false;
-          return;
-        }
-        cuerpo.nombre = nombreVal;
+        cuerpo.nombre = document.getElementById("nombre").value;
         respuesta = await API.pedir("/api/registro", { method: "POST", body: JSON.stringify(cuerpo) });
       } else {
         respuesta = await API.pedir("/api/login", { method: "POST", body: JSON.stringify(cuerpo) });
       }
       API.guardarSesion(respuesta.token, respuesta.nombre);
-      // Evento GA4: registro
-      if (this.modo === "registro" && typeof gtag !== "undefined") {
-        gtag("event", "sign_up", { method: "email" });
-      }
       const plan = new URLSearchParams(location.search).get("plan");
       if (plan && this.modo === "registro") {
         location.href = "panel.html?pagar=" + plan;
@@ -437,17 +415,6 @@ const W = {
     document.getElementById("tema").focus();
   },
 
-  actualizarTiempoEstimado() {
-    const duracion = this.estado.duracion || "corto";
-    const TIEMPOS = { corto: "~2 min", medio: "~3 min", largo: "~5 min" };
-    const el = document.querySelector('.sidebar-step-time[data-paso="5"]') ||
-               document.querySelectorAll('.sidebar-step-time')[4];
-    if (el) el.textContent = TIEMPOS[duracion] || "2-5 min";
-    // También en el paso 5
-    const el2 = document.getElementById("tiempo-estimado-produccion");
-    if (el2) el2.textContent = TIEMPOS[duracion] || "2-5 min";
-  },
-
   elegirDuracion(btn) {
     document.querySelectorAll("[data-duracion]").forEach((b) => b.classList.remove("elegida"));
     btn.classList.add("elegida");
@@ -548,23 +515,7 @@ const W = {
   },
 
   // ---- Paso 4: voz ----
-  actualizarGuionNarracion() {
-    const guion = document.getElementById("guion")?.value?.trim();
-    const preview = document.getElementById("guion-narracion-preview");
-    if (preview) {
-      if (guion && guion.length > 10) {
-        preview.style.color = "rgba(255,255,255,.75)";
-        preview.style.fontStyle = "normal";
-        preview.textContent = guion;
-      } else {
-        preview.style.color = "rgba(255,255,255,.4)";
-        preview.style.fontStyle = "italic";
-        preview.textContent = "El guion aparecerá aquí una vez que lo escribas en el paso anterior.";
-      }
-    }
-  },
   elegirModoVoz(btn) {
-    this.actualizarGuionNarracion();
     document.querySelectorAll(".voz-tab").forEach((b) => b.classList.remove("activo"));
     btn.classList.add("activo");
     const modo = btn.dataset.modo;
@@ -583,27 +534,15 @@ const W = {
 
   // ---- Paso 4: música ----
   alternarMusica(modo) {
-    // Resetear todos los tabs
-    ["premium","estandar","ninguna"].forEach(m => {
-      const btn = document.getElementById("btn-musica-" + m);
-      if (btn) btn.className = "musica-tab-btn" + (m === modo ? " activo" : "");
-    });
-    // Mostrar/ocultar secciones
-    const secciones = { premium: "seccion-musica-premium", estandar: "seccion-musica-estandar", ninguna: "seccion-musica-ninguna" };
-    Object.entries(secciones).forEach(([m, id]) => {
-      const el = document.getElementById(id);
-      if (el) el.style.display = m === modo ? "block" : "none";
-    });
-    // Si elige sin música, limpiar selección
-    if (modo === "ninguna") {
-      document.getElementById("musica-premium-url").value = "";
-      document.getElementById("musica").value = "";
-      this.estado.musicaPremiumUrl = "";
-      this.estado.musicaArchivo = "";
-      // Pausar audio si estaba reproduciendo
-      const audio = document.getElementById("reproductor-musica");
-      if (audio && !audio.paused) audio.pause();
-    }
+    const esPremium = modo === "premium";
+    document.getElementById("btn-musica-premium").className = esPremium ? "btn" : "btn line";
+    document.getElementById("btn-musica-estandar").className = esPremium ? "btn line" : "btn";
+    document.getElementById("seccion-musica-premium").style.display = esPremium ? "block" : "none";
+    document.getElementById("seccion-musica-estandar").style.display = esPremium ? "none" : "block";
+    document.getElementById("btn-musica-premium").style.flex = "1";
+    document.getElementById("btn-musica-estandar").style.flex = "1";
+    document.getElementById("btn-musica-premium").style.fontSize = "12px";
+    document.getElementById("btn-musica-estandar").style.fontSize = "12px";
   },
 
   async buscarAnimo(btn) {
@@ -620,60 +559,38 @@ const W = {
         return;
       }
       cont.innerHTML = "";
-      cont.style.cssText = "display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:4px 0 8px;border:none;max-height:none;overflow:visible";
-      pistas.forEach((p, idx) => {
-        const card = document.createElement("div");
-        const sel = idx === 0;
-        card.style.cssText = "border:1px solid " + (sel ? "var(--gold)" : "rgba(255,255,255,.08)") + ";background:" + (sel ? "rgba(214,178,94,.06)" : "rgba(255,255,255,.02)") + ";padding:10px 12px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:6px";
-        card.innerHTML = `
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
-            <div style="flex:1;min-width:0">
-              <div style="font-size:12px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.nombre.replace(/</g,"&lt;")}</div>
-              <div style="font-size:10px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(p.artista||"").replace(/</g,"&lt;")}</div>
-            </div>
-            <div class="can-chk" style="width:16px;height:16px;border-radius:50%;flex-shrink:0;${sel ? "background:var(--gold);color:#000;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center" : "border:1px solid rgba(255,255,255,.15);margin-top:2px"}">${sel ? "✓" : ""}</div>
-          </div>
-          <div style="display:flex;justify-content:flex-end">
-            <button class="btn-esc-can" type="button" style="background:rgba(214,178,94,.08);border:1px solid rgba(214,178,94,.25);color:var(--gold);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;cursor:pointer;font-family:inherit;white-space:nowrap">▶ Escuchar</button>
-          </div>
+      pistas.forEach((p) => {
+        const fila = document.createElement("div");
+        fila.className = "opcion-musica";
+        fila.dataset.url = p.muestra;
+        fila.innerHTML = `
+          <span class="radio"></span>
+          <span class="nombre">${p.nombre.replace(/</g,"&lt;")}
+            <span style="color:var(--muted);font-size:12px">— ${(p.artista||"").replace(/</g,"&lt;")}</span>
+          </span>
+          <button class="boton-escuchar" type="button" style="background:rgba(214,178,94,.08);border:1px solid rgba(214,178,94,.3);color:var(--gold);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:7px 14px;cursor:pointer;white-space:nowrap;border-radius:2px;font-family:inherit">▶ Escuchar</button>
         `;
-        // Seleccionar
-        card.onclick = (e) => {
-          if (e.target.classList.contains("btn-esc-can")) return;
-          cont.querySelectorAll("[style*='border']").forEach(t => {
-            t.style.border = "1px solid rgba(255,255,255,.08)";
-            t.style.background = "rgba(255,255,255,.02)";
-            const ch = t.querySelector(".can-chk");
-            if (ch) { ch.style.cssText = "width:16px;height:16px;border-radius:50%;flex-shrink:0;border:1px solid rgba(255,255,255,.15);margin-top:2px"; ch.textContent = ""; }
-          });
-          card.style.border = "1px solid var(--gold)";
-          card.style.background = "rgba(214,178,94,.06)";
-          const ch = card.querySelector(".can-chk");
-          if (ch) { ch.style.cssText = "width:16px;height:16px;border-radius:50%;flex-shrink:0;background:var(--gold);color:#000;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center"; ch.textContent = "✓"; }
+        fila.querySelector(".nombre").onclick = fila.querySelector(".radio").onclick = () => {
+          document.querySelectorAll("#lista-musica-premium .opcion-musica").forEach(f=>f.classList.remove("seleccionada"));
+          fila.classList.add("seleccionada");
           this.estado.musicaPremiumUrl = p.muestra;
           this.estado.musicaArchivo = "";
           document.getElementById("musica-premium-url").value = p.muestra;
           document.getElementById("musica").value = "";
         };
-        // Escuchar
-        const btn = card.querySelector(".btn-esc-can");
-        btn.onclick = (e) => {
+        const escuchar = fila.querySelector(".boton-escuchar");
+        escuchar.onclick = (e) => {
           e.stopPropagation();
           const audio = document.getElementById("reproductor-musica");
           if (audio.dataset.actual === p.muestra && !audio.paused) {
-            audio.pause(); btn.textContent = "▶ Escuchar"; return;
+            audio.pause(); escuchar.textContent = "Escuchar"; return;
           }
-          document.querySelectorAll(".btn-esc-can").forEach(b => b.textContent = "▶ Escuchar");
+          document.querySelectorAll(".boton-escuchar").forEach(b=>b.textContent="Escuchar");
           audio.src = p.muestra; audio.dataset.actual = p.muestra; audio.play();
-          btn.textContent = "⏸ Pausar";
-          audio.onended = () => { btn.textContent = "▶ Escuchar"; };
+          escuchar.textContent = "Pausar";
+          audio.onended = () => { escuchar.textContent = "Escuchar"; };
         };
-        // Seleccionar primera por defecto
-        if (sel) {
-          this.estado.musicaPremiumUrl = p.muestra;
-          document.getElementById("musica-premium-url").value = p.muestra;
-        }
-        cont.appendChild(card);
+        cont.appendChild(fila);
       });
     } catch (e) {
       cont.innerHTML = `<p class="ayuda" style="margin:14px;text-align:center">No pudimos cargar la música en este momento.</p>`;
@@ -779,163 +696,6 @@ const W = {
     if (descEl) descEl.textContent = cfg.desc;
   },
 
-  // ---- Banco de ideas por nicho ----
-  elegirNicho(btn) {
-    document.querySelectorAll(".nicho-btn").forEach(b => {
-      b.classList.remove("elegido");
-      b.style.borderColor = "rgba(255,255,255,.08)";
-      b.style.background = "rgba(255,255,255,.02)";
-      b.style.color = "rgba(255,255,255,.75)";
-    });
-    btn.classList.add("elegido");
-    btn.style.borderColor = "var(--gold)";
-    btn.style.background = "rgba(214,178,94,.08)";
-
-    const nicho = btn.dataset.nicho;
-    const IDEAS = {
-      restaurante: [
-        "3 platos de nuestra carta que se agotan todos los días",
-        "Así preparamos nuestro plato estrella desde cero",
-        "Por qué nuestros clientes vuelven cada semana",
-        "El secreto detrás de nuestra sazón especial",
-        "Reserva tu mesa este fin de semana — esto es lo que te espera",
-        "De la cocina a tu mesa en menos de 20 minutos",
-        "Los ingredientes frescos que usamos cada mañana",
-        "Menú del día con todo incluido a precio justo",
-        "Celebra tu ocasión especial con nosotros",
-        "Lo que dicen nuestros clientes después de su primera visita",
-      ],
-      salon: [
-        "Transforma tu look en menos de una hora con nosotros",
-        "Los 3 tratamientos más pedidos este mes en nuestro salón",
-        "Antes y después de una sesión completa de color",
-        "Por qué el balayage es la técnica del momento",
-        "Agenda tu cita hoy — cupos limitados esta semana",
-        "Así cuidamos tu cabello durante cada proceso",
-        "El corte perfecto para tu tipo de rostro",
-        "Keratina sin daño: así lo hacemos nosotros",
-        "Nuestros productos son 100% profesionales",
-        "Regala una experiencia de belleza esta semana",
-      ],
-      gimnasio: [
-        "Empieza tu transformación hoy — primer mes con descuento",
-        "3 ejercicios para tonificar sin necesidad de pesas",
-        "Así son nuestras clases funcionales en 60 segundos",
-        "Resultados reales de nuestros miembros en 30 días",
-        "Tu rutina de mañana en nuestro gimnasio — así se ve",
-        "Por qué entrenar con instructor hace la diferencia",
-        "Plan de nutrición incluido con tu membresía",
-        "Clases grupales que no parecen ejercicio",
-        "Instala el hábito del ejercicio en solo 3 semanas",
-        "Contamos con los equipos más modernos de la ciudad",
-      ],
-      tienda: [
-        "Nuevas llegadas esta semana — no te las pierdas",
-        "Los 5 productos más vendidos del mes",
-        "Así combinamos esta prenda para 3 looks distintos",
-        "Envío gratis en compras mayores a 100 mil pesos",
-        "Descubre nuestra colección exclusiva de temporada",
-        "Por qué nuestros clientes nos recomiendan siempre",
-        "Paga a cuotas sin intereses con tu tarjeta",
-        "Visítanos y llévate un descuento especial hoy",
-        "Así se ve esta prenda en talla real",
-        "Asesoría de imagen gratis con tu compra",
-      ],
-      inmobiliaria: [
-        "Conoce este apartamento disponible ahora en Medellín",
-        "3 razones para invertir en finca raíz este año",
-        "Así ayudamos a nuestros clientes a encontrar su hogar",
-        "Este es el barrio que más valorización tuvo este año",
-        "Cómo financiar tu primer inmueble paso a paso",
-        "Tour virtual por nuestra propiedad destacada del mes",
-        "El momento perfecto para comprar vivienda es ahora",
-        "Arrienda o compra — te explicamos cuál conviene más",
-        "Nuestros clientes hablan de su experiencia con nosotros",
-        "Propiedades desde 200 millones en zonas premium",
-      ],
-      clinica: [
-        "3 señales de que debes visitar a nuestro especialista",
-        "Así es una consulta con nosotros paso a paso",
-        "Por qué la prevención es más barata que el tratamiento",
-        "Nuestro equipo médico tiene más de 10 años de experiencia",
-        "Agenda tu cita hoy — atención el mismo día",
-        "Los procedimientos más solicitados este mes",
-        "Tecnología de punta para tu diagnóstico",
-        "Tu salud no puede esperar — actúa ahora",
-        "Atención personalizada para toda tu familia",
-        "Resultados de nuestros pacientes en los últimos 6 meses",
-      ],
-      educacion: [
-        "Lo que aprenderás en nuestro curso en solo 4 semanas",
-        "3 habilidades que te harán ganar más dinero este año",
-        "Así transformamos la vida de nuestros estudiantes",
-        "Inscríbete antes del viernes y ahorra el 30%",
-        "Aprende a tu ritmo desde cualquier lugar",
-        "Por qué nuestro método funciona cuando otros no",
-        "Testimonios reales de estudiantes que ya cambiaron su vida",
-        "Certificado avalado incluido con tu matrícula",
-        "Clases en vivo con expertos de la industria",
-        "Empieza gratis con nuestra clase de prueba",
-      ],
-      emprendedor: [
-        "Cómo empecé desde cero y hoy tengo mi propio negocio",
-        "3 errores que todo emprendedor comete al iniciar",
-        "El producto o servicio que me cambió la vida",
-        "Así manejo mis finanzas como emprendedor",
-        "Por qué decidí trabajar para mí y no para otros",
-        "Un día normal en mi negocio — así se ve",
-        "Los clientes ideales que busco para mi marca",
-        "Colabora conmigo — así puedes trabajar juntos",
-        "El consejo que le daría a alguien que quiere emprender",
-        "Mis resultados después de 6 meses de trabajo constante",
-      ],
-    };
-
-    const ideas = IDEAS[nicho] || [];
-    const nombres = {
-      restaurante: "🍽️ Restaurante",
-      salon: "💇 Salón / Peluquería",
-      gimnasio: "💪 Gimnasio",
-      tienda: "🛍️ Tienda",
-      inmobiliaria: "🏠 Inmobiliaria",
-      clinica: "🏥 Clínica",
-      educacion: "📚 Educación",
-      emprendedor: "🚀 Emprendedor",
-    };
-
-    document.getElementById("ideas-titulo").textContent = "Ideas para " + (nombres[nicho] || nicho);
-    const lista = document.getElementById("ideas-lista");
-    lista.innerHTML = ideas.map((idea, i) => `
-      <div style="border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02);padding:14px 16px;display:flex;align-items:center;gap:12px;transition:all .2s"
-        onmouseover="this.style.borderColor='rgba(214,178,94,.25)';this.style.background='rgba(214,178,94,.04)'"
-        onmouseout="this.style.borderColor='rgba(255,255,255,.07)';this.style.background='rgba(255,255,255,.02)'">
-        <span style="font-size:11px;color:rgba(214,178,94,.4);font-family:'Playfair Display',serif;font-style:italic;flex-shrink:0">${String(i+1).padStart(2,'0')}</span>
-        <span style="font-size:13px;color:rgba(255,255,255,.75);flex:1;line-height:1.4">${idea}</span>
-        <button onclick="W.producirIdea('${idea.replace(/'/g,"\'")}'); event.stopPropagation()"
-          style="background:#D6B25E;color:#07070A;border:none;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:8px 14px;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0">
-          Producir
-        </button>
-      </div>
-    `).join("");
-    document.getElementById("ideas-nicho").style.display = "block";
-  },
-
-  producirIdea(tema) {
-    // Ir a la pestaña producir y prellenar el tema
-    Panel.cambiarPestana("producir");
-    setTimeout(() => {
-      const input = document.getElementById("tema");
-      if (input) {
-        input.value = tema;
-        input.dispatchEvent(new Event("input"));
-        W._mostrarPaso(1);
-        input.focus();
-        // Scroll al inicio
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    }, 150);
-  },
-
   // ---- Paso 5: resumen ----
   pintarResumen() {
     // Sincronizar desde el DOM antes de pintar
@@ -962,12 +722,6 @@ const W = {
       { label: "Volumen música", valor: this.estado.volumen + "%" },
     ];
 
-    // Actualizar nombre en preview de voz
-    const elNombreVoz = document.getElementById("preview-voz-nombre");
-    if (elNombreVoz) {
-      const NOMBRES_VOZ = { lista: "Voz estándar", premium: "Voz ElevenLabs", propia: "Tu narración", ninguna: "Sin voz" };
-      elNombreVoz.textContent = NOMBRES_VOZ[this.estado.modoVoz] || "Voz estándar";
-    }
     document.getElementById("resumen-grid").innerHTML = items.map(i => `
       <div class="resumen-item">
         <div class="resumen-item-label">${i.label}</div>
@@ -976,119 +730,12 @@ const W = {
     `).join("");
   },
 
-  // ---- Preview de voz en paso 5 ----
-  async previewVozFinal() {
-    const btn = document.getElementById("btn-preview-voz");
-    const audio = document.getElementById("audio-preview-voz-final");
-    if (!audio) return;
-
-    // Si está reproduciendo, pausar
-    if (!audio.paused) {
-      audio.pause();
-      btn.textContent = "▶ Escuchar";
-      return;
-    }
-
-    // Obtener primeras palabras del guion
-    const guion = document.getElementById("guion-editable")?.value || this.estado.guion || "";
-    const texto = guion.split(" ").slice(0, 12).join(" ") + "...";
-    if (!texto || texto === "...") {
-      mostrarMensaje("Genera el guion primero en el paso 3.", "err");
-      return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = "Generando...";
-
-    try {
-      const voz = document.getElementById("voz")?.value || this.estado.voz || "es-CO-SalomeNeural";
-      const vozPremium = document.getElementById("voz-premium-elegida")?.value || "";
-      const sinNarracion = document.getElementById("sin-narracion")?.value === "1";
-
-      if (sinNarracion) {
-        mostrarMensaje("Seleccionaste narración propia — no hay voz para previsualizar.", "ok");
-        btn.disabled = false;
-        btn.textContent = "▶ Escuchar";
-        return;
-      }
-
-      const r = await API.pedir("/api/preview-voz", {
-        method: "POST",
-        body: JSON.stringify({ texto, voz: vozPremium ? `elevenlabs:${vozPremium}` : voz }),
-      });
-
-      if (r.url) {
-        audio.src = r.url;
-        audio.play();
-        btn.textContent = "⏸ Pausar";
-        btn.disabled = false;
-        audio.onended = () => { btn.textContent = "▶ Escuchar"; };
-      }
-    } catch(e) {
-      mostrarMensaje("No pudimos generar el preview de voz.", "err");
-      btn.disabled = false;
-      btn.textContent = "▶ Escuchar";
-    }
-  },
-
   // ---- Producir ----
   async producir() {
-    // Límite: un video a la vez
-    if (this._produciendo) {
-      mostrarMensaje("Ya tienes un video en producción. Espera a que termine antes de producir otro.", "err");
-      return;
-    }
     limpiarMensaje();
     const boton = document.getElementById("btn-producir");
     boton.disabled = true;
-    this._produciendo = true;
-
-    // Pantalla de carga inmediata
-    const pasoPanel = document.getElementById("paso-5-contenido") || document.querySelector('[data-paso="5"] .paso-body');
-    const overlay = document.createElement("div");
-    overlay.id = "overlay-produciendo";
-    overlay.style.cssText = "position:fixed;inset:0;z-index:9999;background:rgba(7,7,10,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;backdrop-filter:blur(8px)";
-    overlay.innerHTML = `
-      <div style="text-align:center;max-width:420px;padding:0 24px">
-        <div style="font-family:'Playfair Display',serif;font-size:28px;color:#F0EDE5;margin-bottom:8px">Viraliza<span style="color:#D6B25E">.</span></div>
-        <p style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(214,178,94,.6);margin-bottom:40px">Produciendo tu video</p>
-        <div id="overlay-paso-actual" style="font-size:18px;color:#F0EDE5;margin-bottom:8px;min-height:28px">Iniciando producción…</div>
-        <div id="overlay-detalle" style="font-size:12px;color:rgba(255,255,255,.35);margin-bottom:32px;min-height:18px">Esto puede tomar 2-5 minutos</div>
-        <div style="background:rgba(255,255,255,.06);height:2px;border-radius:1px;overflow:hidden;margin-bottom:8px">
-          <div id="overlay-barra" style="height:100%;background:linear-gradient(90deg,rgba(214,178,94,.4),#D6B25E);width:0%;transition:width 1s"></div>
-        </div>
-        <div id="overlay-porcentaje" style="font-size:11px;color:rgba(214,178,94,.5);text-align:right">0%</div>
-        <p style="font-size:11px;color:rgba(255,255,255,.2);margin-top:24px">Puedes cerrar esta ventana — recibirás un correo cuando esté listo</p>
-      </div>
-    `;
-    document.body.appendChild(overlay);
-
-    const pasos = [
-      { texto: "Redactando el guion…", detalle: "Creando el guion de ventas para tu negocio", pct: 15 },
-      { texto: "Sintetizando la voz…", detalle: "Generando la narración en español colombiano", pct: 30 },
-      { texto: "Buscando imágenes…", detalle: "Encontrando las imágenes perfectas para tu tema", pct: 45 },
-      { texto: "Preparando la música…", detalle: "Ajustando el volumen y la mezcla de audio", pct: 60 },
-      { texto: "Añadiendo subtítulos…", detalle: "Sincronizando el texto con la narración", pct: 75 },
-      { texto: "Renderizando el video…", detalle: "Combinando todos los elementos en HD", pct: 88 },
-      { texto: "Últimos toques…", detalle: "Aplicando la calidad final al video", pct: 95 },
-    ];
-    let pasoIdx = 0;
-    const animarPasos = setInterval(() => {
-      if (pasoIdx < pasos.length) {
-        const p = pasos[pasoIdx];
-        const el1 = document.getElementById("overlay-paso-actual");
-        const el2 = document.getElementById("overlay-detalle");
-        const bar = document.getElementById("overlay-barra");
-        const pct = document.getElementById("overlay-porcentaje");
-        if (el1) el1.textContent = p.texto;
-        if (el2) el2.textContent = p.detalle;
-        if (bar) bar.style.width = p.pct + "%";
-        if (pct) pct.textContent = p.pct + "%";
-        pasoIdx++;
-      }
-    }, 25000);
-
-    boton.textContent = "Produciendo…";
+    boton.textContent = "Enviando a producción…";
     try {
       await API.pedir("/api/videos", {
         method: "POST",
@@ -1111,7 +758,6 @@ const W = {
           audioPersonalizado: document.getElementById("audio-personalizado").value,
           vozPremium: document.getElementById("voz-premium-elegida").value,
           sinNarracion: document.getElementById("sin-narracion").value === "1",
-          sinMusica: document.getElementById("btn-musica-ninguna")?.classList.contains("activo") || false,
           imagenesSeleccionadas: this.estado.imagenesSeleccionadas || [],
           transicion: this.estado.transicion || "None",
         }),
@@ -1128,49 +774,12 @@ const W = {
       document.getElementById("tema").value = "";
       document.getElementById("guion-editable").value = "";
       this._mostrarPaso(1);
-      // Video encolado — mostrar confirmación y pasar a Mis Videos
-      clearInterval(animarPasos);
-      const ov = document.getElementById("overlay-produciendo");
-      const paso = document.getElementById("overlay-paso-actual");
-      const detalle = document.getElementById("overlay-detalle");
-      const bar = document.getElementById("overlay-barra");
-      const pct = document.getElementById("overlay-porcentaje");
-      if (paso) paso.textContent = "¡Producción iniciada!";
-      if (detalle) detalle.textContent = "Pasando a Mis Videos para ver el progreso…";
-      if (bar) bar.style.width = "30%";
-      if (pct) pct.textContent = "Iniciando…";
-      setTimeout(() => {
-        if (ov) ov.remove();
-        // Evento GA4: video producido
-        if (typeof gtag !== "undefined") {
-          gtag("event", "video_producido", { event_category: "produccion", value: 1 });
-        }
-        mostrarMensaje("Tu video entró a producción. Lo verás listo en la pestaña Mis videos.", "ok");
-        Panel.cambiarPestana("videos");
-        Panel.refrescarVideos();
-      }, 1200);
+      mostrarMensaje("Tu video entró a producción. Lo verás listo en la pestaña Mis videos.", "ok");
+      Panel.cambiarPestana("videos");
+      Panel.refrescarVideos();
     } catch (e) {
-      // Quitar overlay si hay error
-      const ov = document.getElementById("overlay-produciendo");
-      if (ov) ov.remove();
-      clearInterval(animarPasos);
-
-      // Mensajes de error claros según el tipo
-      let msgError = e.message;
-      if (e.message.includes("motor") || e.message.includes("502")) {
-        msgError = "El motor de producción está ocupado en este momento. Espera un minuto e inténtalo de nuevo.";
-      } else if (e.message.includes("Pexels") || e.message.includes("imágenes")) {
-        msgError = "No encontramos imágenes para ese tema. Intenta con palabras más generales o sube tus propias imágenes.";
-      } else if (e.message.includes("guion") || e.message.includes("Groq")) {
-        msgError = "No pudimos generar el guion. Verifica tu conexión e inténtalo de nuevo.";
-      } else if (e.message.includes("límite") || e.message.includes("402")) {
-        msgError = "Alcanzaste el límite de videos de tu plan. Actualiza tu membresía para seguir produciendo.";
-      } else if (e.message.includes("canción") || e.message.includes("música")) {
-        msgError = "No pudimos preparar la música seleccionada. Prueba con otro ánimo o sin música.";
-      }
-      mostrarMensaje(msgError, "err");
+      mostrarMensaje(e.message, "err");
     } finally {
-      this._produciendo = false;
       boton.disabled = false;
       boton.textContent = "🎬 PRODUCIR VIDEO";
     }
@@ -1181,16 +790,16 @@ const W = {
 //  Panel — pestañas, voces, música, videos
 // ============================================================
 const VOCES_ESPANOL = [
-  { valor: "es-CO-SalomeNeural",  genero: "M", nombre: "Salomé",    descripcion: "Natural y cálida",         pais: "Colombia · Recomendada" },
-  { valor: "es-CO-GonzaloNeural", genero: "H", nombre: "Gonzalo",   descripcion: "Serio y profesional",      pais: "Colombia · Recomendada" },
-  { valor: "es-VE-PaolaNeural",   genero: "M", nombre: "Paola",     descripcion: "Cálida y expresiva",       pais: "Venezuela" },
-  { valor: "es-VE-SebastianNeural",genero: "H", nombre: "Sebastián", descripcion: "Seguro y fluido",         pais: "Venezuela" },
-  { valor: "es-EC-AndreaNeural",  genero: "M", nombre: "Andrea",    descripcion: "Clara y cercana",          pais: "Ecuador" },
-  { valor: "es-EC-LuisNeural",    genero: "H", nombre: "Luis",      descripcion: "Directo y confiable",      pais: "Ecuador" },
-  { valor: "es-PE-CamilaNeural",  genero: "M", nombre: "Camila",    descripcion: "Dulce y articulada",       pais: "Perú" },
-  { valor: "es-PE-AlexNeural",    genero: "H", nombre: "Alex",      descripcion: "Neutral y profesional",    pais: "Perú" },
-  { valor: "es-CL-CatalinaNeural",genero: "M", nombre: "Catalina",  descripcion: "Enérgica y moderna",      pais: "Chile" },
-  { valor: "es-CL-LorenzoNeural", genero: "H", nombre: "Lorenzo",   descripcion: "Formal y claro",           pais: "Chile" },
+  { valor: "es-CO-SalomeNeural", etiqueta: "Salomé — Natural y cálida", pais: "🇨🇴 Colombia (Recomendada)" },
+  { valor: "es-CO-GonzaloNeural", etiqueta: "Gonzalo — Serio y profesional", pais: "🇨🇴 Colombia (Recomendada)" },
+  { valor: "es-MX-DaliaNeural", etiqueta: "Dalia — Energética y moderna", pais: "🌎 Latinoamérica" },
+  { valor: "es-MX-JorgeNeural", etiqueta: "Jorge — Dinámico y confiable", pais: "🌎 Latinoamérica" },
+  { valor: "es-AR-ElenaNeural", etiqueta: "Elena — Elegante y expresiva", pais: "🌎 Latinoamérica" },
+  { valor: "es-AR-TomasNeural", etiqueta: "Tomas — Cercano y directo", pais: "🌎 Latinoamérica" },
+  { valor: "es-ES-ElviraNeural", etiqueta: "Elvira — Clara y articulada", pais: "🌍 España" },
+  { valor: "es-ES-AlvaroNeural", etiqueta: "Álvaro — Formal y seguro", pais: "🌍 España" },
+  { valor: "es-US-PalomaNeural", etiqueta: "Paloma — Moderna y fresca", pais: "🌎 Bilingüe" },
+  { valor: "es-US-AlonsoNeural", etiqueta: "Alonso — Versátil y neutral", pais: "🌎 Bilingüe" },
 ];
 
 const Panel = {
@@ -1199,28 +808,12 @@ const Panel = {
     if (!API.token()) { location.href = "login.html"; return; }
     document.getElementById("nombre-usuario").textContent = localStorage.getItem("viraliza_nombre") || "";
     document.getElementById("salir").onclick = () => API.cerrarSesion();
+    const btnRedes = document.getElementById("conectar-redes");
+    if (btnRedes) btnRedes.onclick = () => this.conectarRedes();
 
     document.querySelectorAll(".tab-btn").forEach((b) => {
       b.onclick = () => this.cambiarPestana(b.dataset.tab);
     });
-
-    // Pedir permisos de notificación
-    if (typeof pedirPermisosNotificacion === "function") {
-      setTimeout(pedirPermisosNotificacion, 3000);
-    }
-
-    // Onboarding — mostrar solo la primera vez
-    setTimeout(() => {
-      if (!localStorage.getItem('viraliza_onboarding')) {
-        const modal = document.getElementById('modal-onboarding');
-        if (modal) {
-          modal.style.display = 'flex';
-          console.log('[Onboarding] modal mostrado');
-        }
-      } else {
-        console.log('[Onboarding] ya visto, no mostrar');
-      }
-    }, 1500);
 
     // Voces estándar
     // Reemplazar el select por tarjetas con botón de escuchar
@@ -1231,74 +824,64 @@ const Panel = {
       audioPreview.style.display = "none";
       contenedorVoz.appendChild(audioPreview);
 
+      const lista = document.createElement("div");
+      lista.className = "canciones-lista";
+      lista.style.maxHeight = "220px";
+      contenedorVoz.appendChild(lista);
+
       const hiddenVoz = document.createElement("input");
       hiddenVoz.type = "hidden";
       hiddenVoz.id = "voz";
       hiddenVoz.value = "es-CO-SalomeNeural";
       contenedorVoz.appendChild(hiddenVoz);
 
-      // Grid de tarjetas 2 columnas
-      const grid = document.createElement("div");
-      grid.style.cssText = "display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:4px 0 8px;overflow:visible";
-      contenedorVoz.appendChild(grid);
-
       VOCES_ESPANOL.forEach((v, idx) => {
-        const tarjeta = document.createElement("div");
-        tarjeta.dataset.valor = v.valor;
-        const sel = idx === 0;
-        tarjeta.style.cssText = "border:1px solid " + (sel ? "var(--gold)" : "rgba(255,255,255,.08)") + ";background:" + (sel ? "rgba(214,178,94,.08)" : "rgba(255,255,255,.02)") + ";padding:12px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:8px";
-        const esH = v.genero === "H";
-        const ac = esH ? "rgba(94,140,214,.15)" : "rgba(214,94,140,.15)";
-        const ab = esH ? "rgba(94,140,214,.3)" : "rgba(214,94,140,.3)";
-        const ai = esH ? "♂" : "♀";
-        const aic = esH ? "#5E8CD6" : "#D65E8C";
-        tarjeta.innerHTML = `<div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:50%;background:${ac};border:1px solid ${ab};display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;color:${aic};font-weight:700">${ai}</div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--ink)">${v.nombre}</div><div style="font-size:11px;color:var(--muted);margin-top:1px">${v.descripcion}</div></div><div class="voz-chk" style="width:18px;height:18px;border-radius:50%;${sel ? "background:var(--gold);color:#000;font-weight:700;font-size:10px;display:flex;align-items:center;justify-content:center" : "border:1px solid rgba(255,255,255,.15)"}">${sel ? "✓" : ""}</div></div><div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:10px;color:var(--muted)">${v.pais}</span><button class="btn-ev" type="button" style="background:rgba(214,178,94,.08);border:1px solid rgba(214,178,94,.25);color:var(--gold);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;cursor:pointer;font-family:inherit">▶ Escuchar</button></div>`;
-        tarjeta.onclick = (e) => {
-          if (e.target.classList.contains("btn-ev")) return;
-          document.querySelectorAll("#panel-voz-lista [data-valor]").forEach(t => {
-            t.style.border = "1px solid rgba(255,255,255,.08)";
-            t.style.background = "rgba(255,255,255,.02)";
-            const ch = t.querySelector(".voz-chk");
-            if (ch) { ch.style.cssText = "width:18px;height:18px;border-radius:50%;border:1px solid rgba(255,255,255,.15)"; ch.textContent = ""; }
-          });
-          tarjeta.style.border = "1px solid var(--gold)";
-          tarjeta.style.background = "rgba(214,178,94,.08)";
-          const ch = tarjeta.querySelector(".voz-chk");
-          if (ch) { ch.style.cssText = "width:18px;height:18px;border-radius:50%;background:var(--gold);color:#000;font-weight:700;font-size:10px;display:flex;align-items:center;justify-content:center"; ch.textContent = "✓"; }
+        const fila = document.createElement("div");
+        fila.className = "opcion-musica" + (idx === 0 ? " seleccionada" : "");
+        fila.dataset.valor = v.valor;
+        fila.innerHTML = `
+          <span class="radio"></span>
+          <span class="nombre">${v.etiqueta} <span style="color:var(--muted);font-size:11px">${v.pais}</span></span>
+          <button class="boton-escuchar" type="button" style="background:rgba(214,178,94,.08);border:1px solid rgba(214,178,94,.3);color:var(--gold);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:7px 14px;cursor:pointer;white-space:nowrap;border-radius:2px;font-family:inherit">▶ Escuchar</button>
+        `;
+        fila.querySelector(".nombre").onclick = fila.querySelector(".radio").onclick = () => {
+          document.querySelectorAll("#panel-voz-lista .opcion-musica").forEach(f => f.classList.remove("seleccionada"));
+          fila.classList.add("seleccionada");
           document.getElementById("voz").value = v.valor;
           W.estado.voz = v.valor;
         };
-        const btn = tarjeta.querySelector(".btn-ev");
+        const escuchar = fila.querySelector(".boton-escuchar");
         let cargando = false;
-        btn.onclick = async (e) => {
+        escuchar.onclick = async (e) => {
           e.stopPropagation();
           if (cargando) return;
           const audio = document.getElementById("reproductor-voz-estandar");
-          if (audio.dataset.actual === v.valor && !audio.paused) { audio.pause(); btn.textContent = "▶ Escuchar"; return; }
-          document.querySelectorAll("#panel-voz-lista .btn-ev").forEach(b => b.textContent = "▶ Escuchar");
-          btn.textContent = "Cargando…"; cargando = true;
+          if (audio.dataset.actual === v.valor && !audio.paused) {
+            audio.pause(); escuchar.textContent = "Escuchar"; return;
+          }
+          document.querySelectorAll("#panel-voz-lista .boton-escuchar").forEach(b => b.textContent = "Escuchar");
+          escuchar.textContent = "Cargando…";
+          cargando = true;
           try {
-            const r = await fetch("/api/voces/preview?voz=" + encodeURIComponent(v.valor), { headers: { Authorization: "Bearer " + API.token() } });
+            const r = await fetch(`/api/voces/preview?voz=${encodeURIComponent(v.valor)}`, {
+              headers: { Authorization: "Bearer " + API.token() }
+            });
             if (!r.ok) throw new Error();
-            audio.src = URL.createObjectURL(await r.blob());
+            const blob = await r.blob();
+            audio.src = URL.createObjectURL(blob);
             audio.dataset.actual = v.valor;
             audio.play();
-            btn.textContent = "⏸ Pausar";
-            audio.onended = () => { btn.textContent = "▶ Escuchar"; };
-          } catch { btn.textContent = "Error"; setTimeout(() => { btn.textContent = "▶ Escuchar"; }, 2000); }
-          finally { cargando = false; }
+            escuchar.textContent = "Pausar";
+            audio.onended = () => { escuchar.textContent = "Escuchar"; };
+          } catch {
+            escuchar.textContent = "Error";
+            setTimeout(() => { escuchar.textContent = "Escuchar"; }, 2000);
+          } finally {
+            cargando = false;
+          }
         };
-        grid.appendChild(tarjeta);
+        lista.appendChild(fila);
       });
-    }
-
-    // Zona de subir narración — solo se abre al tocar la zona, no el contenedor
-    const zonaSubir = document.getElementById("zona-subir-narracion");
-    if (zonaSubir) {
-      zonaSubir.onclick = (e) => {
-        e.stopPropagation();
-        document.getElementById("archivo-narracion").click();
-      };
     }
 
     // Voces premium
@@ -1401,11 +984,6 @@ const Panel = {
     if (nombre === "videos") {
       clearTimeout(this.temporizador);
       this.refrescarVideos();
-      const badge = document.getElementById("badge-videos");
-      if (badge) badge.style.display = "none";
-    }
-    if (nombre === "cuenta") {
-      if (typeof cargarReferidos === "function") cargarReferidos();
     }
   },
 
@@ -1423,24 +1001,6 @@ const Panel = {
         sesion.insertBefore(enlace, sesion.lastElementChild);
       }
       await this.refrescarVideos();
-
-      // Banner límite 80%
-      if (yo.cuota) {
-        const pct = yo.cuota.usados / yo.cuota.limite;
-        if (pct >= 0.8 && pct < 1) {
-          const restantes = yo.cuota.limite - yo.cuota.usados;
-          const banner = document.createElement('div');
-          banner.style.cssText = 'background:rgba(214,178,94,.08);border:1px solid rgba(214,178,94,.25);padding:12px 20px;margin:0 0 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap';
-          banner.innerHTML = `
-            <span style="font-size:12px;color:rgba(214,178,94,.9)">⚠ Te quedan <strong>${restantes} video${restantes!==1?'s':''}</strong> este mes en tu plan ${yo.cuota.plan}.</span>
-            <button onclick="Panel.cambiarPestana('membresia')" style="background:#D6B25E;color:#09090B;border:none;padding:8px 16px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit;white-space:nowrap">Subir de plan</button>
-          `;
-          const listaVideos = document.getElementById('lista-videos');
-          if (listaVideos && listaVideos.parentNode) {
-            listaVideos.parentNode.insertBefore(banner, listaVideos);
-          }
-        }
-      }
     } catch (e) {
       mostrarMensaje(e.message, "err");
     }
@@ -1525,18 +1085,10 @@ const Panel = {
     }
   },
 
-  cerrarOnboarding(irAProducir = false) {
+  cerrarOnboarding() {
     const modal = document.getElementById('modal-onboarding');
     if (modal) modal.style.display = 'none';
     localStorage.setItem('viraliza_onboarding', '1');
-    if (irAProducir) {
-      this.cambiarPestana('producir');
-      W._mostrarPaso(1);
-      setTimeout(() => {
-        const input = document.getElementById('tema');
-        if (input) input.focus();
-      }, 200);
-    }
   },
 
   async cancelarPlan() {
@@ -1589,7 +1141,7 @@ const Panel = {
       ],
       profesional: [
         "3 videos cinematográficos al mes",
-        "Producción profesional personalizada",
+        "Producción humana + IA profesional",
         "Capturas reales de tu negocio",
         "Entrega en 24-48 horas",
         "Versión 9:16 + 16:9 incluida",
@@ -1960,28 +1512,8 @@ const Panel = {
     this.pintarCuota(datos.cuota);
     this.pintarVideos(datos.videos);
     clearTimeout(this.temporizador);
-    const hayProduciendo = datos.videos.some(v => v.estado === "produciendo");
-    if (hayProduciendo) {
+    if (datos.videos.some(v=>v.estado==="produciendo")) {
       this.temporizador = setTimeout(() => this.refrescarVideos(), 8000);
-    }
-    // Notificar cuando un video recién terminó
-    if (this._videosProduciendo && !hayProduciendo) {
-      const recienListo = datos.videos.find(v => v.estado === "listo");
-      if (recienListo && typeof notificarVideoListo === "function") {
-        notificarVideoListo(recienListo.tema);
-      }
-    }
-    this._videosProduciendo = hayProduciendo;
-    // Badge de notificación cuando termina un video
-    const tabActiva = document.querySelector(".tab-btn.activo")?.dataset?.tab;
-    const badge = document.getElementById("badge-videos");
-    if (badge) {
-      const hayListoNuevo = datos.videos.some(v => v.estado === "listo");
-      if (hayListoNuevo && tabActiva !== "videos") {
-        badge.style.display = "inline-flex";
-      } else if (tabActiva === "videos") {
-        badge.style.display = "none";
-      }
     }
   },
 
@@ -2064,9 +1596,9 @@ const Panel = {
           <span style="position:absolute;top:10px;right:10px;background:rgba(105,240,174,.15);color:#69F0AE;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:4px 8px;backdrop-filter:blur(4px)">✓</span>
           <!-- Overlay de acciones -->
           <div class="vid-overlay" style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.9) 0%,rgba(0,0,0,.2) 50%,transparent 100%);opacity:0;transition:opacity .3s;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;gap:8px">
-            <a href="/api/videos/${v.id}/descargar?t=${API.token()}" onclick="event.stopPropagation()" download style="display:block;background:#D6B25E;color:#09090B;text-align:center;padding:10px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;border-radius:2px">⬇ Descargar</a>
+            <a href="/api/videos/${v.id}/descargar?t=${API.token()}" style="display:block;background:#D6B25E;color:#09090B;text-align:center;padding:10px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;border-radius:2px">⬇ Descargar</a>
             <div style="display:flex;gap:6px">
-              <button onclick="compartirVideo('${v.id}','${v.tema.replace(/'/g,String.fromCharCode(39)).replace(/</g,'&lt;')}');event.stopPropagation()" type="button" style="flex:1;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:8px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:inherit;backdrop-filter:blur(4px)">🔗 Compartir</button>
+              <button data-publicar="${v.id}" type="button" style="flex:1;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:8px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:inherit;backdrop-filter:blur(4px)">📤 Publicar</button>
               <button data-eliminar="${v.id}" type="button" style="background:rgba(232,72,85,.15);border:1px solid rgba(232,72,85,.3);color:#E84855;padding:8px 12px;font-size:11px;cursor:pointer;font-family:inherit;backdrop-filter:blur(4px)">✕</button>
             </div>
           </div>
@@ -2106,7 +1638,7 @@ const Panel = {
     boton.disabled=true; boton.textContent="Publicando…";
     try {
       await API.pedir(`/api/videos/${id}/publicar`, { method:"POST", body:JSON.stringify({}) });
-      mostrarMensaje("Tu video se está publicando.", "ok");
+      mostrarMensaje("Tu video se envió a publicar en tus redes conectadas.", "ok");
     } catch(e) {
       mostrarMensaje(e.message,"err");
     } finally {
@@ -2139,76 +1671,7 @@ const Admin = {
       set("stat-plan-esencial", d.porPlan.esencial);
       set("stat-plan-signature", d.porPlan.signature);
       set("stat-plan-elite", d.porPlan.elite);
-
-      // Dibujar gráfico
-      if (d.porDia) this.dibujarGrafico(d.porDia, d.usuariosPorDia);
     } catch(e) { console.error("Analytics:", e.message); }
-  },
-
-  dibujarGrafico(porDia, usuariosPorDia) {
-    const canvas = document.getElementById("grafico-videos");
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    canvas.width = canvas.offsetWidth || 800;
-    canvas.height = 120;
-    const W = canvas.width, H = canvas.height;
-    const pad = { top: 10, right: 20, bottom: 30, left: 30 };
-    const dias = Object.keys(porDia).sort();
-    const valsV = dias.map(d => porDia[d]);
-    const valsU = dias.map(d => (usuariosPorDia || {})[d] || 0);
-    const maxVal = Math.max(...valsV, ...valsU, 1);
-    const gW = W - pad.left - pad.right;
-    const gH = H - pad.top - pad.bottom;
-    const step = gW / (dias.length - 1);
-
-    ctx.clearRect(0, 0, W, H);
-
-    // Grid lines
-    ctx.strokeStyle = "rgba(255,255,255,.05)";
-    ctx.lineWidth = 1;
-    for (let i = 0; i <= 4; i++) {
-      const y = pad.top + (gH / 4) * i;
-      ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(W - pad.right, y); ctx.stroke();
-    }
-
-    const dibujarLinea = (vals, color) => {
-      ctx.beginPath();
-      vals.forEach((v, i) => {
-        const x = pad.left + i * step;
-        const y = pad.top + gH - (v / maxVal) * gH;
-        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      });
-      ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
-
-      // Puntos
-      vals.forEach((v, i) => {
-        const x = pad.left + i * step;
-        const y = pad.top + gH - (v / maxVal) * gH;
-        ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2);
-        ctx.fillStyle = color; ctx.fill();
-        if (v > 0) {
-          ctx.fillStyle = "rgba(255,255,255,.6)";
-          ctx.font = "10px Jost, sans-serif";
-          ctx.textAlign = "center";
-          ctx.fillText(v, x, y - 8);
-        }
-      });
-    };
-
-    dibujarLinea(valsV, "#D6B25E");
-    dibujarLinea(valsU, "rgba(105,240,174,.7)");
-
-    // Etiquetas de fechas
-    ctx.fillStyle = "rgba(255,255,255,.3)";
-    ctx.font = "9px Jost, sans-serif";
-    ctx.textAlign = "center";
-    dias.forEach((d, i) => {
-      if (i % 2 === 0) {
-        const x = pad.left + i * step;
-        const label = d.slice(5); // MM-DD
-        ctx.fillText(label, x, H - 8);
-      }
-    });
   },
   async cargar() {
     try {
@@ -2223,21 +1686,19 @@ const Admin = {
   pintar(usuarios) {
     const cuerpo = document.getElementById("cuerpo-tabla");
     if (!usuarios.length) {
-      cuerpo.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:40px">Todavía no hay usuarios.</td></tr>`;
+      cuerpo.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:40px">Todavía no hay usuarios.</td></tr>`;
       return;
     }
     cuerpo.innerHTML = usuarios.map(u => {
       const fecha = new Date(u.creadoEn).toLocaleDateString("es-CO",{day:"numeric",month:"short",year:"numeric"});
       const opciones = Object.entries(NOMBRES_PLAN)
         .map(([c,n])=>`<option value="${c}" ${c===u.plan?"selected":""}>${n}</option>`).join("");
-      const refInfo = `<span style="font-family:'Playfair Display',serif;font-size:20px;color:var(--gold)">${u.referidosCount || 0}</span>${u.videosBonus ? `<br><span style="font-size:10px;color:rgba(255,255,255,.4)">+${u.videosBonus} bonus</span>` : ""}`;
       return `<tr data-id="${u.id}">
         <td>${(u.nombre||"(sin nombre)").replace(/</g,"&lt;")}</td>
         <td>${u.email.replace(/</g,"&lt;")}</td>
         <td><select class="selector-plan">${opciones}</select></td>
         <td>${u.videosEsteMes} / ${u.videosTotal}</td>
-        <td>${refInfo}</td>
-        <td style="color:rgba(255,255,255,.4);font-size:12px">${fecha}</td>
+        <td>${fecha}</td>
       </tr>`;
     }).join("");
     cuerpo.querySelectorAll("tr[data-id]").forEach(fila => {
