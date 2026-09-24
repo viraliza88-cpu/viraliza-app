@@ -6,6 +6,20 @@
 <link rel="alternate icon" href="/favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Viraliza — Tu estudio de video profesional</title>
+<!-- Open Graph / WhatsApp / Redes -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://viralizacol.com/">
+<meta property="og:title" content="Viraliza — Tu estudio de video profesional">
+<meta property="og:description" content="Crea videos profesionales para TikTok, Reels e Instagram en 2 minutos. Sin cámara, sin editor, desde $0. Hecho en Colombia.">
+<meta property="og:image" content="https://viralizacol.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="es_CO">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Viraliza — Tu estudio de video profesional">
+<meta name="twitter:description" content="Crea videos profesionales para TikTok, Reels e Instagram en 2 minutos. Sin cámara, sin editor, desde $0.">
+<meta name="twitter:image" content="https://viralizacol.com/og-image.png">
 <meta name="description" content="Crea videos profesionales para TikTok, Reels e Instagram en minutos.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -245,6 +259,31 @@ footer{padding:52px 0;border-top:1px solid var(--line)}
   .hero-ctas .btn-s{width:100%;justify-content:center}
 }
 </style>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WSK6YL1L8S"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WSK6YL1L8S');
+  // Evento: click en plan de precio
+  function trackPlan(plan, precio) {
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'select_plan', {
+        event_category: 'conversion',
+        event_label: plan,
+        value: precio
+      });
+    }
+  }
+</script>
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ymx3afcvw4");
+</script>
 </head>
 <body>
 <nav id="nav">
@@ -382,7 +421,7 @@ footer{padding:52px 0;border-top:1px solid var(--line)}
           <div class="step reveal rd1"><div class="step-n">2</div><div><h3>Busca y elige tus imágenes</h3><p>Usa el buscador visual para encontrar exactamente las imágenes que necesitas. Selecciona las que quieres o sube las tuyas.</p><span class="step-t">~20 segundos</span></div></div>
           <div class="step reveal rd2"><div class="step-n">3</div><div><h3>Lee y ajusta el guion</h3><p>El guion aparece listo para editar. Si no te convence, genera otro. Hasta 5 versiones.</p><span class="step-t">1-2 minutos</span></div></div>
           <div class="step reveal"><div class="step-n">4</div><div><h3>Voz, música y transiciones</h3><p>Escucha la voz antes de elegir. Selecciona el ánimo musical, subtítulos y transiciones.</p><span class="step-t">~1 minuto</span></div></div>
-          <div class="step reveal rd1"><div class="step-n">5</div><div><h3>Produce, descarga y publica</h3><p>En 2-5 minutos tu video aparece en tu galería listo para publicar en tus redes.</p><span class="step-t">2-5 minutos</span></div></div>
+          <div class="step reveal rd1"><div class="step-n">5</div><div><h3>Produce y descarga</h3><p>En 2-5 minutos tu video aparece listo para descargar y publicar donde quieras.</p><span class="step-t">2-5 minutos</span></div></div>
         </div>
       </div>
       <div class="mockup reveal">
@@ -437,7 +476,7 @@ footer{padding:52px 0;border-top:1px solid var(--line)}
           </div>
           <div class="plan-feats">
             <span class="pf"><strong style="color:#D6B25E">3 videos</strong> profesionales/mes</span>
-            <span class="pf">Producción humana + IA</span>
+            <span class="pf">Producción profesional</span>
             <span class="pf">Capturas reales de tu negocio</span>
             <span class="pf">Entrega en 24-48 horas</span>
             <span class="pf">Versión 9:16 + 16:9</span>
@@ -576,6 +615,57 @@ let pct=0;const st=['Generando guion...','Sintetizando voz...','Buscando imágen
 const mf=document.getElementById('mf'),ms=document.getElementById('ms');
 function anim(){if(pct<100){pct+=0.35;if(mf)mf.style.width=pct+'%';if(ms)ms.textContent=st[Math.min(Math.floor(pct/17),5)];requestAnimationFrame(anim);}else{setTimeout(()=>{pct=0;if(mf)mf.style.width='0%';anim()},2000);}}
 setTimeout(anim,1200);
+</script>
+
+<!-- BANNER COOKIES -->
+<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#0F0F12;border-top:1px solid rgba(214,178,94,.25);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+  <p style="font-size:13px;color:rgba(255,255,255,.6);margin:0;line-height:1.6;flex:1;min-width:200px">Usamos cookies esenciales para el funcionamiento de la plataforma y tu sesión. Al continuar, aceptas nuestra <a href="privacidad.html" style="color:#D6B25E;text-decoration:none">política de privacidad</a>.</p>
+  <button onclick="aceptarCookies()" style="background:#D6B25E;color:#09090B;border:none;padding:10px 24px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0">Aceptar</button>
+</div>
+<script>
+function aceptarCookies(){
+  localStorage.setItem('cookies_ok','1');
+  document.getElementById('cookie-banner').style.display='none';
+}
+(function(){
+  if(!localStorage.getItem('cookies_ok')){
+    var b=document.getElementById('cookie-banner');
+    if(b) b.style.display='flex';
+  }
+})();
+</script>
+<!-- Exit Intent Pop-up -->
+<div id="exit-popup" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:24px">
+  <div style="background:#0C0C0F;border:1px solid rgba(214,178,94,.3);max-width:460px;width:100%;overflow:hidden;position:relative">
+    <button onclick="cerrarExitPopup()" style="position:absolute;top:12px;right:16px;background:none;border:none;color:rgba(255,255,255,.3);font-size:20px;cursor:pointer;line-height:1">×</button>
+    <div style="height:3px;background:linear-gradient(90deg,#8A6E1E,#D6B25E,#8A6E1E)"></div>
+    <div style="padding:36px 36px 32px;text-align:center">
+      <p style="font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(214,178,94,.6);margin-bottom:12px">Espera un momento</p>
+      <h2 style="font-family:'Playfair Display',serif;font-size:26px;color:#F0EDE5;margin-bottom:12px;line-height:1.3">Tu primer video es<br><em style="color:#D6B25E">completamente gratis</em></h2>
+      <p style="font-size:14px;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:28px">Sin tarjeta. Sin compromiso. En 2 minutos tienes un video profesional listo para publicar.</p>
+      <a href="/login.html" onclick="cerrarExitPopup()" style="display:block;background:#D6B25E;color:#08080B;padding:16px;font-family:'Jost',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;text-decoration:none;margin-bottom:10px">Producir mi video gratis →</a>
+      <button onclick="cerrarExitPopup()" style="background:none;border:none;color:rgba(255,255,255,.3);font-size:12px;cursor:pointer;letter-spacing:.5px">No me interesa</button>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  if (sessionStorage.getItem('exit_popup_seen')) return;
+  let mostrado = false;
+  document.addEventListener('mouseleave', function(e) {
+    if (e.clientY <= 0 && !mostrado) {
+      mostrado = true;
+      sessionStorage.setItem('exit_popup_seen', '1');
+      const popup = document.getElementById('exit-popup');
+      if (popup) popup.style.display = 'flex';
+      if (typeof gtag !== 'undefined') gtag('event', 'exit_intent', { event_category: 'engagement' });
+    }
+  });
+})();
+function cerrarExitPopup() {
+  const popup = document.getElementById('exit-popup');
+  if (popup) popup.style.display = 'none';
+}
 </script>
 </body>
 </html>

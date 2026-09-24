@@ -11,6 +11,34 @@ process.on("uncaughtException", (err) => {
 });
 
 const express = require("express");
+
+// ── Rate Limiter simple (sin dependencias) ──────────────────
+const _rl = new Map();
+function rateLimiter({ ventana = 60000, max = 30 } = {}) {
+  return (req, res, next) => {
+    const ip = req.headers["x-real-ip"] || req.ip || "unknown";
+    const ahora = Date.now();
+    const entrada = _rl.get(ip) || { count: 0, inicio: ahora };
+    if (ahora - entrada.inicio > ventana) {
+      entrada.count = 0;
+      entrada.inicio = ahora;
+    }
+    entrada.count++;
+    _rl.set(ip, entrada);
+    if (entrada.count > max) {
+      return res.status(429).json({ error: "Demasiadas solicitudes. Espera un momento e intenta de nuevo." });
+    }
+    next();
+  };
+}
+// Limpiar IPs viejas cada 5 minutos
+setInterval(() => {
+  const ahora = Date.now();
+  for (const [ip, e] of _rl.entries()) {
+    if (ahora - e.inicio > 300000) _rl.delete(ip);
+  }
+}, 300000);
+// ────────────────────────────────────────────────────────────
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
@@ -64,11 +92,24 @@ async function avisarVideoListo(video) {
         from: RESEND_REMITENTE,
         to: email,
         subject: "Tu video ya está listo",
-        html: `<div style="font-family:Georgia,serif;max-width:480px;margin:0 auto;padding:32px;background:#0C0C0E;color:#EDEAE2">
-          <h1 style="font-size:22px;margin-bottom:6px">Viraliza<span style="color:#D6B25E">.</span></h1>
-          <p style="color:#9B968B;font-size:14px;letter-spacing:1px;text-transform:uppercase;margin-bottom:24px">Tu producción está lista</p>
-          <p style="font-size:17px;margin-bottom:20px">"<strong>${video.tema}</strong>" ya terminó de producirse y te está esperando en tu panel.</p>
-          <a href="${SITIO_URL}/panel.html" style="display:inline-block;background:#D6B25E;color:#141209;padding:14px 26px;text-decoration:none;font-size:13px;letter-spacing:2px;text-transform:uppercase">Ver mi video</a>
+        html: `<div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;background:#08080B;color:#EDEAE2">
+          <div style="height:3px;background:linear-gradient(90deg,#8A6E1E,#D6B25E,#8A6E1E)"></div>
+          <div style="padding:40px 36px 32px">
+            <h1 style="font-size:26px;margin:0 0 4px;letter-spacing:-0.5px">Viraliza<span style="color:#D6B25E">.</span></h1>
+            <p style="color:#6B6560;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin:0 0 32px">Tu video está listo</p>
+            <div style="background:#0F0F13;border-left:3px solid #D6B25E;padding:20px 24px;margin-bottom:28px">
+              <p style="font-size:12px;color:#6B6560;letter-spacing:1.5px;text-transform:uppercase;margin:0 0 8px">Video producido</p>
+              <p style="font-size:17px;color:#EDEAE2;margin:0;line-height:1.4;font-weight:700">${video.tema}</p>
+            </div>
+            <p style="font-size:15px;line-height:1.7;color:#9B9590;margin:0 0 28px">Tu video terminó de producirse y ya está disponible en tu panel listo para descargar y publicar.</p>
+            <a href="${SITIO_URL}/panel.html" style="display:inline-block;background:#D6B25E;color:#08080B;padding:16px 32px;text-decoration:none;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;font-family:Arial,sans-serif">Ver mi video</a>
+            <p style="font-size:12px;color:#4A4540;margin-top:32px;line-height:1.6">¿Quieres producir otro? Entra a tu panel y empieza ahora mismo.<br>— El equipo de Viraliza</p>
+          </div>
+          <div style="height:1px;background:rgba(255,255,255,.05);margin:0 36px"></div>
+          <div style="padding:20px 36px;display:flex;justify-content:space-between;align-items:center">
+            <p style="font-size:11px;color:#3A3530;margin:0">© 2026 Viraliza · Medellín, Colombia</p>
+            <p style="font-size:11px;color:#3A3530;margin:0">viralizacol.com</p>
+          </div>
         </div>`,
       }),
     });
@@ -150,14 +191,44 @@ async function redactarPalabrasClave(tema, guion) {
     {
       role: "system",
       content:
-        "Genera 8 términos de búsqueda en inglés para video stock REAL relacionado con el tema. " +
-        "Términos específicos y visuales, en orden narrativo del guion. " +
-        "Sin animaciones ni ilustraciones. Solo responde los términos separados por coma.",
+        "Eres experto en busqueda de video stock en Pexels y Pixabay. " +
+        "Genera exactamente 8 frases en ingles para encontrar videos stock reales de alta calidad. " +
+        "Reglas: cada frase debe ser concreta y visual (que se VE en pantalla). " +
+        "Usa terminos que Pexels indexa bien: personas haciendo acciones, lugares, objetos. " +
+        "Mezcla planos generales y detalles. Prefiere acciones: barber cutting hair closeup. " +
+        "Sin animaciones ni ilustraciones. Solo video real de personas y lugares. " +
+        "Responde SOLO los 8 terminos separados por coma, sin numeracion ni explicacion.",
     },
-    { role: "user", content: `Tema: "${tema}"\nGuion completo: "${guion}"` },
+    { role: "user", content: "Tema: \"" + tema + "\"\nGuion: \"" + guion + "\"" },
   ]);
-  return texto.split(",").map((t) => t.trim()).filter(Boolean).slice(0, 8);
+  return texto.split(",").map((t) => t.trim().replace(/^[\s"'.]+|[\s"'.]+$/g, "")).filter((t) => t.length > 3).slice(0, 8);
 }
+
+// ── Cola de producción — máximo 2 simultáneos ──
+const colaProduccion = {
+  activos: 0,
+  MAX: 2,
+  cola: [],
+  async ejecutar(fn) {
+    if (this.activos >= this.MAX) {
+      await new Promise((resolve, reject) => {
+        this.cola.push({ resolve, reject });
+      });
+    }
+    this.activos++;
+    try {
+      return await fn();
+    } finally {
+      this.activos--;
+      if (this.cola.length > 0) {
+        const siguiente = this.cola.shift();
+        siguiente.resolve();
+      }
+    }
+  },
+  enEspera() { return this.cola.length; },
+  enProceso() { return this.activos; },
+};
 
 const PLANES = {
   inicial:      { nombre: "Inicial",      limite: 1,   sello: true,  precioCOP: 0,      produccion_humana: false },
@@ -179,7 +250,11 @@ async function cuotaDe(usuarioId, plan) {
     .eq("usuario_id", usuarioId)
     .eq("mes", mesActual())
     .neq("estado", "fallido");
-  return { usados: count || 0, limite: infoPlan.limite, plan: infoPlan.nombre };
+  // Sumar videos bonus por referidos
+  const { data: perfBonus } = await supabaseAdmin
+    .from("perfiles").select("videos_bonus").eq("id", usuarioId).single();
+  const bonus = perfBonus?.videos_bonus || 0;
+  return { usados: count || 0, limite: infoPlan.limite + bonus, plan: infoPlan.nombre, bonus };
 }
 
 async function planEfectivo(perfil) {
@@ -337,10 +412,10 @@ async function validarTipoArchivo(ruta, tiposValidos) {
 
 // Headers de seguridad
 app.use((req, res, next) => {
-  res.setHeader("X-Content-Type-Options", "nosniff");
-  res.setHeader("X-Frame-Options", "DENY");
-  res.setHeader("X-XSS-Protection", "1; mode=block");
-  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  // [nginx] res.setHeader("X-Content-Type-Options", "nosniff");
+  // [nginx] res.setHeader("X-Frame-Options", "DENY");
+  // [nginx] res.setHeader("X-XSS-Protection", "1; mode=block");
+  // [nginx] res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
   next();
 });
 
@@ -376,19 +451,47 @@ if (!fs.existsSync(VIDEOS_DIR)) fs.mkdirSync(VIDEOS_DIR, { recursive: true });
 
 async function limpiarVideosViejos() {
   try {
+    const ahora = Date.now();
+    const DIAS_90 = 90 * 24 * 60 * 60 * 1000;
     const archivos = fs.readdirSync(VIDEOS_DIR)
       .filter(f => f.endsWith(".mp4"))
       .map(f => { const s = fs.statSync(`${VIDEOS_DIR}/${f}`); return { nombre: f, size: s.size, mtime: s.mtime }; })
       .sort((a, b) => a.mtime - b.mtime);
-    let totalBytes = archivos.reduce((s, f) => s + f.size, 0);
-    const limiteBytes = MAX_VIDEOS_GB * 1024 * 1024 * 1024;
-    while (totalBytes > limiteBytes && archivos.length > 0) {
-      const viejo = archivos.shift();
-      fs.unlinkSync(`${VIDEOS_DIR}/${viejo.nombre}`);
-      totalBytes -= viejo.size;
-      console.log(`[LIMPIEZA] Borrado: ${viejo.nombre}`);
+
+    // Borrar videos de más de 90 días
+    for (const archivo of archivos) {
+      if (ahora - archivo.mtime.getTime() > DIAS_90) {
+        try {
+          fs.unlinkSync(`${VIDEOS_DIR}/${archivo.nombre}`);
+          console.log(`[LIMPIEZA] Borrado por antigüedad (+90 días): ${archivo.nombre}`);
+          // Marcar como expirado en Supabase
+          const uuid = archivo.nombre.replace(".mp4", "");
+          await supabaseAdmin.from("videos").update({ estado: "expirado" }).eq("id", uuid).catch(() => {});
+        } catch(e) { console.error(`[LIMPIEZA] Error borrando ${archivo.nombre}:`, e.message); }
+      }
     }
-  } catch(e) { console.error("[LIMPIEZA] Error:", e.message); }
+
+    // Borrar por límite de disco
+    const archivosActivos = archivos.filter(f => ahora - f.mtime.getTime() <= DIAS_90);
+    let totalBytes = archivosActivos.reduce((s, f) => s + f.size, 0);
+    const limiteBytes = MAX_VIDEOS_GB * 1024 * 1024 * 1024;
+    while (totalBytes > limiteBytes && archivosActivos.length > 0) {
+      const viejo = archivosActivos.shift();
+      try {
+        fs.unlinkSync(`${VIDEOS_DIR}/${viejo.nombre}`);
+        totalBytes -= viejo.size;
+        console.log(`[LIMPIEZA] Borrado por límite de disco: ${viejo.nombre}`);
+      } catch(e) { console.error(`[LIMPIEZA] Error borrando ${viejo.nombre}:`, e.message); }
+    }
+  } catch(e) { console.error("[LIMPIEZA] Error general:", e.message); }
+}
+
+async function registrarErrorVideo(videoId, motivo) {
+  try {
+    await supabaseAdmin.from("videos")
+      .update({ estado: "fallido", error_motivo: motivo.substring(0, 500) })
+      .eq("id", videoId);
+  } catch(e) { console.error("[ERROR_VIDEO] No se pudo registrar:", e.message); }
 }
 
 app.use(express.static(path.join(__dirname, "public")));
@@ -434,36 +537,40 @@ const PEXELS_API_KEY = process.env.PEXELS_API_KEY || "";
 const JAMENDO_CLIENT_ID = process.env.JAMENDO_CLIENT_ID || "";
 
 const ANIMOS_MUSICA = {
-  alegre: "happy",
-  energica: "energetic",
-  corporativa: "corporate",
-  motivacional: "uplifting",
-  cinematica: "epic",
-  calmada: "relaxing",
+  alegre:       ["happy", "fun", "positive"],
+  energica:     ["energy", "powerful", "sport", "action"],
+  corporativa:  ["corporate", "business", "professional"],
+  motivacional: ["uplifting", "inspiring", "motivational"],
+  cinematica:   ["epic", "cinematic", "dramatic"],
+  calmada:      ["relaxing", "ambient", "peaceful", "calm"],
 };
 
 app.get("/api/musicas/premium", autenticar, async (req, res) => {
   if (!JAMENDO_CLIENT_ID) return res.json({ pistas: [], aviso: "sin_configurar" });
-  const etiqueta = ANIMOS_MUSICA[req.query.animo];
-  if (!etiqueta) return res.status(400).json({ error: "Ánimo no reconocido." });
+  const tags = ANIMOS_MUSICA[req.query.animo];
+  if (!tags) return res.status(400).json({ error: "Ánimo no reconocido." });
   try {
-    const url = `https://api.jamendo.com/v3.0/tracks/?client_id=${JAMENDO_CLIENT_ID}&format=json&tags=${etiqueta}&limit=12&audioformat=mp31&order=popularity_total`;
-    let r = await fetch(url, { signal: AbortSignal.timeout(12000) });
-    if (!r.ok || !(await r.clone().json().then(j => j?.results?.length).catch(() => 0))) {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      r = await fetch(url, { signal: AbortSignal.timeout(12000) });
+    // Intentar con cada tag hasta encontrar resultados
+    let pistas = [];
+    for (const tag of tags) {
+      const url = `https://api.jamendo.com/v3.0/tracks/?client_id=${JAMENDO_CLIENT_ID}&format=json&tags=${tag}&limit=12&audioformat=mp31&order=popularity_total`;
+      try {
+        const r = await fetch(url, { signal: AbortSignal.timeout(10000) });
+        if (!r.ok) continue;
+        const j = await r.json();
+        if (j?.headers?.status !== "success") continue;
+        const resultados = (j?.results || []).map((t) => ({
+          id: t.id,
+          nombre: t.name,
+          artista: t.artist_name,
+          muestra: t.audio,
+        })).filter((p) => p.muestra);
+        if (resultados.length > 0) {
+          pistas = resultados;
+          break;
+        }
+      } catch { continue; }
     }
-    const j = await r.json();
-    if (j?.headers?.status !== "success") {
-      console.error("Jamendo respondió con error:", JSON.stringify(j?.headers || j));
-      return res.json({ pistas: [], aviso: "error_jamendo" });
-    }
-    const pistas = (j?.results || []).map((t) => ({
-      id: t.id,
-      nombre: t.name,
-      artista: t.artist_name,
-      muestra: t.audio,
-    })).filter((p) => p.muestra);
     res.json({ pistas });
   } catch (e) {
     console.error("Error buscando música premium:", e.message);
@@ -652,6 +759,18 @@ app.get("/api/materiales", autenticar, async (req, res) => {
 
 app.post("/api/materiales", autenticar, async (req, res) => {
   try {
+    const carpeta = require("path").join(__dirname, "public_assets", "materiales", req.usuario.id);
+    if (require("fs").existsSync(carpeta)) {
+      let totalBytes = 0;
+      for (const archivo of require("fs").readdirSync(carpeta)) {
+        try { totalBytes += require("fs").statSync(require("path").join(carpeta, archivo)).size; } catch {}
+      }
+      if (totalBytes > 100 * 1024 * 1024) {
+        return res.status(413).json({ error: "Limite de 100MB alcanzado. Elimina archivos antes de subir mas." });
+      }
+    }
+  } catch {}
+  try {
     const r = await fetch(`${MOTOR_URL}/api/v1/video_materials`, {
       method: "POST",
       headers: { "Content-Type": req.headers["content-type"] || "" },
@@ -765,7 +884,35 @@ app.get("/api/admin/analytics", autenticar, async (req, res) => {
     const PRECIOS = { esencial: 39900, signature: 89900, elite: 199900 };
     const ingresos = (porPlan.esencial * PRECIOS.esencial) + (porPlan.signature * PRECIOS.signature) + (porPlan.elite * PRECIOS.elite);
 
-    res.json({ total, pagos, videosMes, videosTotal, porPlan, ingresos });
+    // Videos por día — últimos 14 días
+    const hace14 = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
+    const { data: videosRecientes } = await supabaseAdmin
+      .from("videos")
+      .select("creado_en")
+      .gte("creado_en", hace14)
+      .neq("estado", "fallido");
+
+    const porDia = {};
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+      const key = d.toISOString().slice(0, 10);
+      porDia[key] = 0;
+    }
+    (videosRecientes || []).forEach(v => {
+      const key = v.creado_en?.slice(0, 10);
+      if (key && porDia[key] !== undefined) porDia[key]++;
+    });
+
+    // Nuevos usuarios por día — últimos 14 días
+    const { data: usuariosAuth } = await supabaseAdmin.auth.admin.listUsers({ perPage: 1000 });
+    const usuariosPorDia = { ...porDia };
+    Object.keys(usuariosPorDia).forEach(k => usuariosPorDia[k] = 0);
+    (usuariosAuth?.users || []).forEach(u => {
+      const key = u.created_at?.slice(0, 10);
+      if (key && usuariosPorDia[key] !== undefined) usuariosPorDia[key]++;
+    });
+
+    res.json({ total, pagos, videosMes, videosTotal, porPlan, ingresos, porDia, usuariosPorDia });
   } catch(e) {
     console.error("Error analytics:", e.message);
     res.status(500).json({ error: "Error obteniendo analytics." });
@@ -829,6 +976,48 @@ async function aplicarPlanDesdeReferencia(referencia, estadoTransaccion) {
   expira.setDate(expira.getDate() + 30);
   await supabaseAdmin.from("perfiles").update({ plan: pago.plan, plan_expira: expira.toISOString() }).eq("id", pago.usuario_id);
   await supabaseAdmin.from("pagos").update({ estado: "aprobado" }).eq("referencia", referencia);
+
+  // Correo de bienvenida al nuevo plan
+  try {
+    const { data: usuario } = await supabaseAdmin.auth.admin.getUserById(pago.usuario_id);
+    const email = usuario?.user?.email;
+    const { data: perfil } = await supabaseAdmin.from("perfiles").select("nombre").eq("id", pago.usuario_id).single();
+    const nombre = perfil?.nombre || "amigo";
+    const LIMITES = { Esencial: 15, Signature: 50, Elite: 150, Élite: 150, Profesional: 3 };
+    const limite = LIMITES[pago.plan] || "ilimitados";
+    if (email && RESEND_API_KEY) {
+      await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${RESEND_API_KEY}` },
+        body: JSON.stringify({
+          from: RESEND_REMITENTE,
+          to: email,
+          subject: `Tu plan ${pago.plan} ya está activo — Viraliza`,
+          html: `<div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;background:#08080B;color:#EDEAE2">
+            <div style="height:3px;background:linear-gradient(90deg,#8A6E1E,#D6B25E,#8A6E1E)"></div>
+            <div style="padding:40px 36px 32px">
+              <h1 style="font-size:26px;margin:0 0 4px">Viraliza<span style="color:#D6B25E">.</span></h1>
+              <p style="color:#6B6560;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin:0 0 32px">Plan activado</p>
+              <p style="font-size:22px;font-weight:700;color:#F0EDE5;margin:0 0 8px">¡Bienvenido al plan <span style="color:#D6B25E">${pago.plan}</span>, ${nombre}!</p>
+              <p style="font-size:15px;line-height:1.7;color:#9B9590;margin:0 0 28px">Tu membresía está activa. Tienes <strong style="color:#F0EDE5">${limite} videos al mes</strong> disponibles para producir.</p>
+              <div style="background:#0F0F13;border:1px solid rgba(214,178,94,.2);padding:20px 24px;margin-bottom:28px">
+                <p style="font-size:11px;color:#D6B25E;letter-spacing:2px;text-transform:uppercase;margin:0 0 12px">Lo que tienes ahora</p>
+                <p style="font-size:13px;color:#CCCAB8;margin:0 0 8px">✓ &nbsp;${limite} videos al mes</p>
+                <p style="font-size:13px;color:#CCCAB8;margin:0 0 8px">✓ &nbsp;Sin marca de agua</p>
+                <p style="font-size:13px;color:#CCCAB8;margin:0">✓ &nbsp;Voces profesionales y música premium</p>
+              </div>
+              <a href="${SITIO_URL}/panel.html" style="display:inline-block;background:#D6B25E;color:#08080B;padding:16px 32px;text-decoration:none;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;font-family:Arial,sans-serif">Producir mi primer video</a>
+              <p style="font-size:12px;color:#4A4540;margin-top:32px;line-height:1.6">Gracias por confiar en Viraliza.<br>— El equipo de Viraliza</p>
+            </div>
+            <div style="height:1px;background:rgba(255,255,255,.05);margin:0 36px"></div>
+            <div style="padding:20px 36px"><p style="font-size:11px;color:#3A3530;margin:0">© 2026 Viraliza · Medellín, Colombia · viralizacol.com</p></div>
+          </div>`,
+        }),
+      });
+      console.log(`[PAGO] Correo de bienvenida enviado a ${email} — plan ${pago.plan}`);
+    }
+  } catch(e) { console.error("[PAGO] Error enviando correo de upgrade:", e.message); }
+
   return { ok: true, usuarioId: pago.usuario_id, plan: pago.plan };
 }
 
@@ -878,13 +1067,17 @@ app.get("/api/admin/usuarios", autenticar, requiereAdmin, async (req, res) => {
     const videosEsteMes = videosDelUsuario.filter((v) => v.mes === mes && v.estado !== "fallido").length;
     return {
       id: u.id,
-      nombre: u.user_metadata?.nombre || "",
+      nombre: u.user_metadata?.nombre || perfil.nombre || "",
       email: u.email,
       plan: perfil.plan || "inicial",
       planExpira: perfil.plan_expira || null,
       videosTotal: videosDelUsuario.length,
       videosEsteMes,
       creadoEn: u.created_at,
+      codigoReferido: perfil.codigo_referido || "",
+      referidoPor: perfil.referido_por || "",
+      videosBonus: perfil.videos_bonus || 0,
+      referidosCount: (perfiles || []).filter(p => p.referido_por === perfil.codigo_referido).length,
     };
   });
   lista.sort((a, b) => (a.creadoEn < b.creadoEn ? 1 : -1));
@@ -998,6 +1191,91 @@ app.get("/api/voces/preview", autenticar, async (req, res) => {
   }
 });
 
+// ── Sistema de referidos ──
+app.get("/api/referidos/mi-codigo", autenticar, async (req, res) => {
+  try {
+    const { data: perfil } = await supabaseAdmin
+      .from("perfiles")
+      .select("codigo_referido, videos_bonus")
+      .eq("id", req.usuario.id)
+      .single();
+    if (!perfil?.codigo_referido) {
+      // Generar código si no tiene
+      const codigo = require("crypto").randomBytes(4).toString("hex");
+      await supabaseAdmin.from("perfiles").update({ codigo_referido: codigo }).eq("id", req.usuario.id);
+      return res.json({ codigo, link: `${SITIO_URL}/login.html?ref=${codigo}`, videosBonus: 0 });
+    }
+    // Contar cuántos usuarios se registraron con este código
+    const { count } = await supabaseAdmin
+      .from("perfiles")
+      .select("id", { count: "exact", head: true })
+      .eq("referido_por", perfil.codigo_referido);
+    res.json({
+      codigo: perfil.codigo_referido,
+      link: `${SITIO_URL}/login.html?ref=${perfil.codigo_referido}`,
+      referidos: count || 0,
+      videosBonus: perfil.videos_bonus || 0,
+    });
+  } catch(e) {
+    res.status(500).json({ error: "No pudimos obtener tu código." });
+  }
+});
+
+// ── Preview de voz ──
+app.post("/api/preview-voz", autenticar, async (req, res) => {
+  const { texto, voz } = req.body || {};
+  if (!texto || !voz) return res.status(400).json({ error: "Faltan parámetros." });
+  try {
+    const MOTOR_PREVIEW = `${MOTOR_URL}/api/v1/voices/tts`;
+    const r = await fetch(MOTOR_PREVIEW, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: texto.substring(0, 200), voice_name: voz.replace(/-Female$|-Male$/i, "") }),
+      signal: AbortSignal.timeout(15000),
+    });
+    if (!r.ok) throw new Error("Motor no disponible");
+    const buf = await r.arrayBuffer();
+    const b64 = Buffer.from(buf).toString("base64");
+    res.json({ url: `data:audio/mpeg;base64,${b64}` });
+  } catch(e) {
+    console.error("[PREVIEW_VOZ]", e.message);
+    res.status(502).json({ error: "No pudimos generar el preview." });
+  }
+});
+
+// ── Recuperar contraseña ──
+app.post("/api/recuperar-clave", rateLimiter(5), async (req, res) => {
+  const { email } = req.body || {};
+  if (!email || !email.includes("@")) return res.status(400).json({ error: "Correo inválido." });
+  try {
+    const { error } = await supabaseAdmin.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
+      redirectTo: `${SITIO_URL}/login.html`,
+    });
+    // Siempre responder OK para no revelar si el correo existe
+    res.json({ ok: true });
+  } catch (e) {
+    console.error("Error recuperar clave:", e.message);
+    res.json({ ok: true }); // No revelar errores
+  }
+});
+
+app.post("/api/nueva-clave", async (req, res) => {
+  const { nueva, token } = req.body || {};
+  if (!nueva || nueva.length < 6) return res.status(400).json({ error: "Contraseña muy corta." });
+  if (!token) return res.status(400).json({ error: "Token inválido o expirado." });
+  try {
+    // Usar el token para autenticar y cambiar la contraseña
+    const { data, error } = await supabasePublic.auth.setSession({ access_token: token, refresh_token: token });
+    if (error) return res.status(400).json({ error: "El enlace expiró. Solicita uno nuevo." });
+    const { error: updateError } = await supabasePublic.auth.updateUser({ password: nueva });
+    if (updateError) return res.status(400).json({ error: "No pudimos actualizar la contraseña." });
+    res.json({ ok: true });
+  } catch (e) {
+    console.error("Error nueva clave:", e.message);
+    res.status(500).json({ error: "Error interno. Intenta de nuevo." });
+  }
+});
+
 app.post("/api/registro", rateLimiter(10), async (req, res) => {
   const { nombre, email, clave } = req.body || {};
   if (!nombre || !email || !clave) return res.status(400).json({ error: "Completa nombre, correo y contraseña." });
@@ -1023,6 +1301,27 @@ app.post("/api/registro", rateLimiter(10), async (req, res) => {
   if (error || !data?.session) {
     return res.status(500).json({ error: "Tu cuenta se creó, pero no pudimos iniciar tu sesión. Intenta iniciar sesión manualmente." });
   }
+  // Aplicar referido si viene con código
+  try {
+    const codigoRef = String(req.body.ref || "").trim().toLowerCase();
+    if (codigoRef && data?.user?.id) {
+      const { data: referidor } = await supabaseAdmin
+        .from("perfiles")
+        .select("id, videos_bonus")
+        .eq("codigo_referido", codigoRef)
+        .single();
+      if (referidor && referidor.id !== data.user.id) {
+        // Marcar al nuevo usuario como referido
+        await supabaseAdmin.from("perfiles").update({ referido_por: codigoRef }).eq("id", data.user.id);
+        // Dar 3 videos bonus al referidor
+        await supabaseAdmin.from("perfiles")
+          .update({ videos_bonus: (referidor.videos_bonus || 0) + 3 })
+          .eq("id", referidor.id);
+        console.log(`[REFERIDO] ${data.user.email} referido por código ${codigoRef} — 3 videos bonus al referidor`);
+      }
+    }
+  } catch(e) { console.error("[REFERIDO] Error:", e.message); }
+
   // Correo de bienvenida
   try {
     await fetch("https://api.resend.com/emails", {
@@ -1032,13 +1331,27 @@ app.post("/api/registro", rateLimiter(10), async (req, res) => {
         from: RESEND_REMITENTE,
         to: String(email).trim().toLowerCase(),
         subject: "Bienvenido a Viraliza — tu estudio de video está listo",
-        html: `<div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;padding:40px 32px;background:#0C0C0E;color:#EDEAE2">
-          <h1 style="font-size:24px;margin-bottom:4px">Viraliza<span style="color:#D6B25E">.</span></h1>
-          <p style="color:#9B968B;font-size:13px;letter-spacing:1px;text-transform:uppercase;margin-bottom:28px">Tu estudio ya está activo</p>
-          <p style="font-size:17px;line-height:1.6;margin-bottom:20px">Hola <strong>${String(nombre).trim()}</strong>, bienvenido a Viraliza.</p>
-          <p style="font-size:15px;line-height:1.7;color:#C9C4B8;margin-bottom:24px">Tu cuenta está lista. Puedes producir tu primer video ahora mismo — escribe el tema, nosotros hacemos el resto.</p>
-          <a href="${SITIO_URL}/panel.html" style="display:inline-block;background:#D6B25E;color:#141209;padding:14px 28px;text-decoration:none;font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:600">Producir mi primer video</a>
-          <p style="font-size:13px;color:#9B968B;margin-top:32px">Si tienes preguntas, responde este correo y te ayudamos.</p>
+        html: `<div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;background:#08080B;color:#EDEAE2">
+          <div style="height:3px;background:linear-gradient(90deg,#8A6E1E,#D6B25E,#8A6E1E)"></div>
+          <div style="padding:40px 36px 32px">
+            <h1 style="font-size:26px;margin:0 0 4px;letter-spacing:-0.5px">Viraliza<span style="color:#D6B25E">.</span></h1>
+            <p style="color:#6B6560;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin:0 0 32px">Estudio de video profesional</p>
+            <p style="font-size:22px;line-height:1.3;margin:0 0 8px;font-weight:700">Hola, <span style="color:#D6B25E">${String(nombre).trim()}</span>.</p>
+            <p style="font-size:15px;line-height:1.7;color:#9B9590;margin:0 0 28px">Tu estudio ya está activo. Produce tu primer video ahora mismo — escribe el tema de tu negocio y nosotros nos encargamos del guion, la voz, las imágenes y la música.</p>
+            <div style="background:#0F0F13;border:1px solid rgba(214,178,94,.2);padding:20px 24px;margin-bottom:28px">
+              <p style="font-size:12px;color:#6B6560;letter-spacing:1.5px;text-transform:uppercase;margin:0 0 12px">Lo que puedes hacer hoy</p>
+              <p style="font-size:13px;color:#CCCAB8;margin:0 0 8px;line-height:1.5">✓ &nbsp;Producir un video de 30 segundos gratis</p>
+              <p style="font-size:13px;color:#CCCAB8;margin:0 0 8px;line-height:1.5">✓ &nbsp;Elegir tu voz, música y estilo de subtítulos</p>
+              <p style="font-size:13px;color:#CCCAB8;margin:0;line-height:1.5">✓ &nbsp;Descargarlo listo para TikTok, Reels o YouTube</p>
+            </div>
+            <a href="${SITIO_URL}/panel.html" style="display:inline-block;background:#D6B25E;color:#08080B;padding:16px 32px;text-decoration:none;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;font-family:Arial,sans-serif">Producir mi primer video</a>
+            <p style="font-size:12px;color:#4A4540;margin-top:32px;line-height:1.6">¿Tienes preguntas? Responde este correo y te ayudamos el mismo día.<br>— El equipo de Viraliza</p>
+          </div>
+          <div style="height:1px;background:rgba(255,255,255,.05);margin:0 36px"></div>
+          <div style="padding:20px 36px;display:flex;justify-content:space-between;align-items:center">
+            <p style="font-size:11px;color:#3A3530;margin:0">© 2026 Viraliza · Medellín, Colombia</p>
+            <p style="font-size:11px;color:#3A3530;margin:0">viralizacol.com</p>
+          </div>
         </div>`,
       }),
     });
@@ -1112,8 +1425,11 @@ app.post("/api/guion", rateLimiter(20), autenticar, async (req, res) => {
   }
 });
 
-app.post("/api/videos", autenticar, async (req, res) => {
-  let { tema, guion, terminos, voz, duracion, bgmArchivo, bgmVolumen, materiales, audioPersonalizado, vozPremium, formato, sinNarracion, fuente, bgmPremiumUrl, subtitulosActivos, subtitulosColor, subtitulosFuente, imagenesSeleccionadas, transicion } = req.body || {};
+app.post("/api/videos", rateLimiter({ventana:60000,max:3}), autenticar, async (req, res) => {
+  let { tema, guion, terminos, voz, duracion, bgmArchivo, bgmVolumen, materiales, audioPersonalizado, vozPremium, formato, sinNarracion, sinMusica, fuente, bgmPremiumUrl, subtitulosActivos, subtitulosColor, subtitulosFuente, imagenesSeleccionadas, transicion } = req.body || {};
+  // Validar tamaños máximos
+  if (tema && String(tema).length > 200) return res.status(400).json({ error: "El tema no puede tener más de 200 caracteres." });
+  if (guion && String(guion).length > 3000) return res.status(400).json({ error: "El guion no puede tener más de 3000 caracteres." });
   // Si hay imágenes seleccionadas del buscador visual, usarlas como materiales
   if (imagenesSeleccionadas && imagenesSeleccionadas.length > 0 && (!materiales || !materiales.length)) {
     try {
@@ -1152,6 +1468,39 @@ app.post("/api/videos", autenticar, async (req, res) => {
   const plan = await planEfectivo(perfil);
   const cuota = await cuotaDe(req.usuario.id, plan);
   if (cuota.usados >= cuota.limite) {
+    // Correo de límite alcanzado
+    try {
+      const { data: usuarioLimite } = await supabaseAdmin.auth.admin.getUserById(usuarioId);
+      const emailLimite = usuarioLimite?.user?.email;
+      const { data: perfilLimite } = await supabaseAdmin.from("perfiles").select("nombre").eq("id", usuarioId).single();
+      const nombreLimite = perfilLimite?.nombre || "amigo";
+      if (emailLimite && RESEND_API_KEY) {
+        await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${RESEND_API_KEY}` },
+          body: JSON.stringify({
+            from: RESEND_REMITENTE,
+            to: emailLimite,
+            subject: `Alcanzaste tu límite — sube de plan para seguir`,
+            html: `<div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;background:#08080B;color:#EDEAE2">
+              <div style="height:3px;background:linear-gradient(90deg,#8A6E1E,#D6B25E,#8A6E1E)"></div>
+              <div style="padding:40px 36px 32px">
+                <h1 style="font-size:26px;margin:0 0 4px">Viraliza<span style="color:#D6B25E">.</span></h1>
+                <p style="color:#6B6560;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin:0 0 32px">Límite del plan</p>
+                <p style="font-size:18px;font-weight:700;color:#F0EDE5;margin:0 0 8px">Hola, <span style="color:#D6B25E">${nombreLimite}</span>.</p>
+                <p style="font-size:15px;line-height:1.7;color:#9B9590;margin:0 0 28px">Usaste todos tus videos del plan <strong style="color:#F0EDE5">${cuota.plan}</strong> este mes. Para seguir produciendo, sube de plan — es inmediato.</p>
+                <a href="${SITIO_URL}/panel.html#membresia" style="display:inline-block;background:#D6B25E;color:#08080B;padding:16px 32px;text-decoration:none;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;font-family:Arial,sans-serif">Ver planes disponibles</a>
+                <p style="font-size:12px;color:#4A4540;margin-top:32px;line-height:1.6">Tu cuota se renueva el primer día del próximo mes.<br>— El equipo de Viraliza</p>
+              </div>
+              <div style="height:1px;background:rgba(255,255,255,.05);margin:0 36px"></div>
+              <div style="padding:20px 36px"><p style="font-size:11px;color:#3A3530;margin:0">© 2026 Viraliza · Medellín, Colombia · viralizacol.com</p></div>
+            </div>`,
+          }),
+        });
+        console.log(`[LIMITE] Correo de límite enviado a ${emailLimite}`);
+      }
+    } catch(e) { console.error("[LIMITE] Error enviando correo:", e.message); }
+
     return res.status(402).json({
       error: `Alcanzaste el límite de tu membresía ${cuota.plan} (${cuota.limite} videos este mes). Sube de nivel para seguir produciendo.`,
     });
@@ -1220,6 +1569,12 @@ app.post("/api/videos", autenticar, async (req, res) => {
   }
 
   console.log("[PRODUCIR] usaPropios:", usaPropios, "materiales:", materiales?.length, "transicion:", transicion);
+  console.log(`[COLA] En proceso: ${colaProduccion.enProceso()}, En espera: ${colaProduccion.enEspera()}`);
+
+  // Ejecutar dentro de la cola — máximo 2 simultáneos
+  let taskId, urlFinal;
+  try {
+    ({ taskId, urlFinal } = await colaProduccion.ejecutar(async () => {
   const carga = {
     video_subject: String(tema).trim(),
     video_script: guionFinal,
@@ -1236,13 +1591,13 @@ app.post("/api/videos", autenticar, async (req, res) => {
     video_material_count: usaPropios ? materiales.length : undefined,
     only_local_materials: usaPropios ? true : undefined,
     video_language: "es",
-    voice_name: vozPremium ? `elevenlabs:${vozPremium}:premium` : (voz || "es-CO-SalomeNeural-Female"),
-    voice_rate: 0.98,
+    voice_name: vozPremium ? `elevenlabs:${vozPremium}:premium` : (voz ? voz.replace(/-Female$|-Male$/i,"") : "es-CO-SalomeNeural"),
+    voice_rate: 0.93,
     voice_volume: 1.0,
     custom_audio_file: audioFinal || null,
-    bgm_type: "random",
+    bgm_type: sinMusica ? "none" : (bgmArchivoFinal ? "file" : "random"),
     bgm_file: bgmArchivoFinal,
-    bgm_volume: typeof bgmVolumen === "number" ? Math.max(0, Math.min(1, bgmVolumen)) : 0.2,
+    bgm_volume: sinMusica ? 0 : (typeof bgmVolumen === "number" ? Math.max(0, Math.min(1, bgmVolumen)) : 0.2),
     subtitle_enabled: subtitulosActivos !== false,
     font_name: FUENTES_VALIDAS_SUBTITULO[subtitulosFuente] || "BeVietnamPro-Bold.ttf",
     font_size: (() => {
@@ -1300,6 +1655,11 @@ app.post("/api/videos", autenticar, async (req, res) => {
     return res.status(500).json({ error: "El video se envió a producir, pero no pudimos registrarlo. Escríbenos si no aparece en tu lista." });
   }
   res.json({ ok: true, video });
+    })); // cierre colaProduccion.ejecutar
+  } catch(ecola) {
+    console.error("[COLA] Error en producción:", eCola?.message || eola);
+    return res.status(500).json({ error: "Error interno en la cola de producción." });
+  }
 });
 
 async function sincronizarVideo(video) {
@@ -1439,6 +1799,14 @@ app.get("/api/videos/:id/descargar", autenticar, async (req, res) => {
   } catch {
     res.status(502).json({ error: "No pudimos preparar tu descarga. Inténtalo de nuevo en un momento." });
   }
+});
+
+// Manejador 404 — debe ir antes de app.listen
+app.use((req, res) => {
+  if (req.accepts("html")) {
+    return res.status(404).sendFile(path.join(__dirname, "public", "404.html"));
+  }
+  res.status(404).json({ error: "Ruta no encontrada." });
 });
 
 app.listen(PUERTO, () => {

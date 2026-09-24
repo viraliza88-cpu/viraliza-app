@@ -41,6 +41,21 @@ input:focus{border-bottom-color:var(--gold)}
   input{font-size:16px}
 }
 </style>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WSK6YL1L8S"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WSK6YL1L8S');
+</script>
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ymx3afcvw4");
+</script>
 </head>
 <body>
 <div class="caja">
@@ -53,19 +68,160 @@ input:focus{border-bottom-color:var(--gold)}
     <h1 id="titulo">Bienvenido <em>de vuelta</em></h1>
     <p class="sub" id="subtitulo">Entra a tu panel de producción.</p>
     <p class="msg" id="mensaje"></p>
-    <div id="campo-nombre" style="display:none">
-      <label for="nombre">Tu nombre</label>
-      <input id="nombre" type="text" autocomplete="name" placeholder="Esteban Rendón">
+
+    <!-- VISTA: LOGIN / REGISTRO -->
+    <div id="vista-auth">
+      <div id="campo-nombre" style="display:none">
+        <label for="nombre">Tu nombre <span style="color:#D6B25E">*</span></label>
+        <input id="nombre" type="text" autocomplete="name" placeholder="Tu nombre completo" required>
+      </div>
+      <label for="email">Correo electrónico</label>
+      <input id="email" type="email" autocomplete="email" placeholder="tu@correo.com">
+      <label for="clave">Contraseña</label>
+      <div style="position:relative">
+        <input id="clave" type="password" autocomplete="current-password" placeholder="Mínimo 6 caracteres" style="padding-right:44px">
+        <button type="button" onclick="toggleClave()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,.4);font-size:16px;padding:4px;line-height:1" id="btn-ver-clave">👁</button>
+      </div>
+      <button class="btn-main" id="accion" type="button">Entrar</button>
+      <p class="alterno" id="alterno">¿Aún no tienes cuenta? <a href="#" id="cambiar">Crea una gratis</a></p>
+      <p id="link-olvide" style="text-align:center;margin-top:8px;display:block">
+        <a href="#" onclick="mostrarVistaRecuperar();return false" style="font-size:12px;color:rgba(255,255,255,.3);text-decoration:none" onmouseover="this.style.color='#D6B25E'" onmouseout="this.style.color='rgba(255,255,255,.3)'">¿Olvidaste tu contraseña?</a>
+      </p>
     </div>
-    <label for="email">Correo electrónico</label>
-    <input id="email" type="email" autocomplete="email" placeholder="tu@correo.com">
-    <label for="clave">Contraseña</label>
-    <input id="clave" type="password" autocomplete="current-password" placeholder="Mínimo 6 caracteres">
-    <button class="btn-main" id="accion" type="button">Entrar</button>
-    <p class="alterno" id="alterno">¿Aún no tienes cuenta? <a href="#" id="cambiar">Crea una gratis</a></p>
+
+    <!-- VISTA: RECUPERAR CONTRASEÑA -->
+    <div id="vista-recuperar" style="display:none">
+      <p style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:20px;line-height:1.6">Escribe tu correo y te enviamos un enlace para restablecer tu contraseña.</p>
+      <label for="email-recuperar">Correo electrónico</label>
+      <input id="email-recuperar" type="email" autocomplete="email" placeholder="tu@correo.com">
+      <button class="btn-main" id="btn-recuperar" type="button" onclick="enviarRecuperacion()">Enviar enlace</button>
+      <p style="text-align:center;margin-top:16px">
+        <a href="#" onclick="mostrarVistaLogin();return false" style="font-size:12px;color:rgba(255,255,255,.3);text-decoration:none" onmouseover="this.style.color='#D6B25E'" onmouseout="this.style.color='rgba(255,255,255,.3)'">← Volver al inicio de sesión</a>
+      </p>
+    </div>
+
+    <!-- VISTA: NUEVA CONTRASEÑA -->
+    <div id="vista-nueva-clave" style="display:none">
+      <p style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:20px;line-height:1.6">Escribe tu nueva contraseña.</p>
+      <label for="nueva-clave">Nueva contraseña</label>
+      <div style="position:relative">
+        <input id="nueva-clave" type="password" placeholder="Mínimo 6 caracteres" style="padding-right:44px">
+        <button type="button" onclick="toggleNuevaClave()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,.4);font-size:16px;padding:4px;line-height:1">👁</button>
+      </div>
+      <label for="confirmar-clave" style="margin-top:12px">Confirmar contraseña</label>
+      <input id="confirmar-clave" type="password" placeholder="Repite la contraseña">
+      <button class="btn-main" id="btn-nueva-clave" type="button" onclick="guardarNuevaClave()">Guardar contraseña</button>
+    </div>
   </div>
-</div>
 <script src="app.js"></script>
-<script>Acceso.iniciar();</script>
+<script>
+Acceso.iniciar();
+
+function toggleClave() {
+  const i = document.getElementById("clave");
+  const b = document.getElementById("btn-ver-clave");
+  i.type = i.type === "password" ? "text" : "password";
+  b.textContent = i.type === "password" ? "👁" : "🙈";
+}
+function toggleNuevaClave() {
+  const i = document.getElementById("nueva-clave");
+  i.type = i.type === "password" ? "text" : "password";
+}
+function mostrarVistaRecuperar() {
+  document.getElementById("vista-auth").style.display = "none";
+  document.getElementById("vista-recuperar").style.display = "block";
+  document.getElementById("vista-nueva-clave").style.display = "none";
+  document.getElementById("titulo").textContent = "Recuperar contraseña";
+  document.getElementById("subtitulo").style.display = "none";
+  document.getElementById("mensaje").textContent = "";
+  document.getElementById("mensaje").className = "msg";
+  document.querySelector(".tabs").style.display = "none";
+}
+function mostrarVistaLogin() {
+  document.getElementById("vista-auth").style.display = "block";
+  document.getElementById("vista-recuperar").style.display = "none";
+  document.getElementById("vista-nueva-clave").style.display = "none";
+  document.getElementById("titulo").innerHTML = "Bienvenido <em>de vuelta</em>";
+  document.getElementById("subtitulo").style.display = "block";
+  document.getElementById("mensaje").textContent = "";
+  document.getElementById("mensaje").className = "msg";
+  document.querySelector(".tabs").style.display = "flex";
+}
+async function enviarRecuperacion() {
+  const email = document.getElementById("email-recuperar").value.trim();
+  const msg = document.getElementById("mensaje");
+  const btn = document.getElementById("btn-recuperar");
+  if (!email || !email.includes("@")) {
+    msg.textContent = "Escribe un correo válido."; msg.className = "msg err"; return;
+  }
+  btn.disabled = true; btn.textContent = "Enviando…";
+  try {
+    await API.pedir("/api/recuperar-clave", { method: "POST", body: JSON.stringify({ email }) });
+    msg.textContent = "Te enviamos un enlace. Revisa tu bandeja de entrada y la carpeta de spam.";
+    msg.className = "msg ok"; btn.textContent = "Enlace enviado ✓";
+  } catch(e) {
+    msg.textContent = "No pudimos enviar el correo. Intenta de nuevo.";
+    msg.className = "msg err"; btn.disabled = false; btn.textContent = "Enviar enlace";
+  }
+}
+async function guardarNuevaClave() {
+  const nueva = document.getElementById("nueva-clave").value;
+  const confirmar = document.getElementById("confirmar-clave").value;
+  const msg = document.getElementById("mensaje");
+  const btn = document.getElementById("btn-nueva-clave");
+  if (!nueva || nueva.length < 6) {
+    msg.textContent = "Mínimo 6 caracteres."; msg.className = "msg err"; return;
+  }
+  if (nueva !== confirmar) {
+    msg.textContent = "Las contraseñas no coinciden."; msg.className = "msg err"; return;
+  }
+  btn.disabled = true; btn.textContent = "Guardando…";
+  try {
+    const token = localStorage.getItem("viraliza_recovery_token");
+    await API.pedir("/api/nueva-clave", { method: "POST", body: JSON.stringify({ nueva, token }) });
+    msg.textContent = "¡Contraseña actualizada! Redirigiendo…"; msg.className = "msg ok";
+    localStorage.removeItem("viraliza_recovery_token");
+    setTimeout(() => { location.href = "panel.html"; }, 1500);
+  } catch(e) {
+    msg.textContent = "El enlace expiró o no es válido. Solicita uno nuevo.";
+    msg.className = "msg err"; btn.disabled = false; btn.textContent = "Guardar contraseña";
+  }
+}
+// Detectar enlace de recuperación de Supabase
+(function() {
+  const hash = window.location.hash;
+  if (hash && hash.includes("type=recovery")) {
+    const params = new URLSearchParams(hash.substring(1));
+    const token = params.get("access_token");
+    if (token) {
+      localStorage.setItem("viraliza_recovery_token", token);
+      document.getElementById("vista-auth").style.display = "none";
+      document.getElementById("vista-recuperar").style.display = "none";
+      document.getElementById("vista-nueva-clave").style.display = "block";
+      document.getElementById("titulo").textContent = "Nueva contraseña";
+      document.getElementById("subtitulo").style.display = "none";
+      document.querySelector(".tabs").style.display = "none";
+    }
+  }
+})();
+</script>
+
+<!-- BANNER COOKIES -->
+<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#0F0F12;border-top:1px solid rgba(214,178,94,.25);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+  <p style="font-size:13px;color:rgba(255,255,255,.6);margin:0;line-height:1.6;flex:1;min-width:200px">Usamos cookies esenciales para el funcionamiento de la plataforma y tu sesión. Al continuar, aceptas nuestra <a href="privacidad.html" style="color:#D6B25E;text-decoration:none">política de privacidad</a>.</p>
+  <button onclick="aceptarCookies()" style="background:#D6B25E;color:#09090B;border:none;padding:10px 24px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0">Aceptar</button>
+</div>
+<script>
+function aceptarCookies(){
+  localStorage.setItem('cookies_ok','1');
+  document.getElementById('cookie-banner').style.display='none';
+}
+(function(){
+  if(!localStorage.getItem('cookies_ok')){
+    var b=document.getElementById('cookie-banner');
+    if(b) b.style.display='flex';
+  }
+})();
+</script>
 </body>
 </html>
