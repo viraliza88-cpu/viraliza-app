@@ -1958,6 +1958,7 @@ const Panel = {
     const datos = await API.pedir("/api/videos");
     if (!datos) return;
     this.pintarCuota(datos.cuota);
+    this._todosLosVideos = datos.videos;
     this.pintarVideos(datos.videos);
     clearTimeout(this.temporizador);
     const hayProduciendo = datos.videos.some(v => v.estado === "produciendo");
@@ -2045,41 +2046,33 @@ const Panel = {
         </div>`;
       }
 
-      // LISTO — tarjeta vertical estilo TikTok
+      // LISTO — tarjeta compacta profesional
       return `
-      <div style="position:relative;border-radius:4px;overflow:hidden;background:#0A0A0D;border:1px solid rgba(255,255,255,.06);cursor:pointer;transition:all .3s;display:flex;flex-direction:column"
-        onmouseover="this.querySelector('.vid-overlay').style.opacity='1';this.style.borderColor='rgba(214,178,94,.3)';this.style.transform='translateY(-3px)'"
-        onmouseout="this.querySelector('.vid-overlay').style.opacity='0';this.style.borderColor='rgba(255,255,255,.06)';this.style.transform='translateY(0)'">
-        <!-- Miniatura vertical -->
-        <div style="position:relative;aspect-ratio:9/16;background:#000;overflow:hidden" ${urlVideo ? `onclick="abrirModalVideo('${urlVideo}','${v.tema.replace(/'/g,"\'").replace(/</g,"&lt;")}')"` : ""}>
+      <div data-id="${v.id}" style="position:relative;border-radius:6px;overflow:hidden;background:#0A0A0D;border:1px solid rgba(255,255,255,.06);cursor:pointer;transition:border-color .2s"
+        onmouseover="this.querySelector('.vid-overlay').style.opacity='1';this.style.borderColor='rgba(214,178,94,.3)'"
+        onmouseout="this.querySelector('.vid-overlay').style.opacity='0';this.style.borderColor='rgba(255,255,255,.06)'">
+        <div style="position:relative;aspect-ratio:9/16;background:#111;overflow:hidden;max-height:240px" ${urlVideo ? `onclick="abrirModalVideo('${urlVideo}','${v.tema.replace(/'/g,"\'").replace(/</g,"&lt;")}')"` : ""}>
           ${urlVideo
-            ? `<video src="${urlVideo}#t=0.5" preload="metadata" muted playsinline
+            ? `<video src="${urlVideo}#t=0.001" preload="metadata" muted playsinline
                 style="width:100%;height:100%;object-fit:cover;display:block"
-                onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0"></video>`
-            : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:32px;color:rgba(255,255,255,.1)">🎬</div>`
+                onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0.001"></video>`
+            : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:24px;color:rgba(255,255,255,.1)">🎬</div>`
           }
-          <!-- Badge duración -->
-          <span style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,.7);color:#D6B25E;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 8px;backdrop-filter:blur(4px)">${durLabel}</span>
-          <!-- Badge listo -->
-          <span style="position:absolute;top:10px;right:10px;background:rgba(105,240,174,.15);color:#69F0AE;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:4px 8px;backdrop-filter:blur(4px)">✓</span>
-          <!-- Overlay de acciones -->
-          <div class="vid-overlay" style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.9) 0%,rgba(0,0,0,.2) 50%,transparent 100%);opacity:0;transition:opacity .3s;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;gap:8px">
-            <a href="/api/videos/${v.id}/descargar?t=${API.token()}" onclick="event.stopPropagation()" download style="display:block;background:#D6B25E;color:#09090B;text-align:center;padding:10px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;border-radius:2px">⬇ Descargar</a>
+          <span style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,.8);color:#D6B25E;font-size:8px;letter-spacing:1px;text-transform:uppercase;padding:3px 6px">${durLabel}</span>
+          <span style="position:absolute;top:6px;right:6px;color:#69F0AE;font-size:11px;background:rgba(0,0,0,.6);padding:2px 5px;border-radius:50%">✓</span>
+          <div class="vid-overlay" style="position:absolute;inset:0;background:rgba(0,0,0,.8);opacity:0;transition:opacity .2s;display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:6px;padding:12px">
+            <a href="/api/videos/${v.id}/descargar?t=${API.token()}" onclick="event.stopPropagation()" download style="display:block;background:#D6B25E;color:#09090B;text-align:center;padding:8px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none">⬇ Descargar</a>
             <div style="display:flex;gap:6px">
-              <button onclick="compartirVideo('${v.id}','${v.tema.replace(/'/g,String.fromCharCode(39)).replace(/</g,'&lt;')}');event.stopPropagation()" type="button" style="flex:1;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:8px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:inherit;backdrop-filter:blur(4px)">🔗 Compartir</button>
-              <button data-eliminar="${v.id}" type="button" style="background:rgba(232,72,85,.15);border:1px solid rgba(232,72,85,.3);color:#E84855;padding:8px 12px;font-size:11px;cursor:pointer;font-family:inherit;backdrop-filter:blur(4px)">✕</button>
+              <button onclick="compartirVideo('${v.id}','${v.tema.replace(/'/g,String.fromCharCode(39)).replace(/</g,"&lt;")}');event.stopPropagation()" type="button" style="flex:1;background:rgba(255,255,255,.12);border:none;color:#fff;padding:7px;font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:inherit">🔗</button>
+              <button data-eliminar="${v.id}" type="button" style="background:rgba(232,72,85,.2);border:none;color:#E84855;padding:7px 10px;font-size:11px;cursor:pointer;font-family:inherit">✕</button>
             </div>
           </div>
         </div>
-        <!-- Info -->
-        <div style="padding:14px 16px">
-          <p style="font-size:12px;color:rgba(255,255,255,.75);line-height:1.4;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${v.tema.replace(/</g,"&lt;")}</p>
-          <p style="font-size:10px;color:rgba(255,255,255,.2);letter-spacing:.5px">${fecha}</p>
+        <div style="padding:8px 10px 10px">
+          <p style="font-size:11px;color:rgba(255,255,255,.8);line-height:1.3;margin-bottom:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${v.tema.replace(/</g,"&lt;")}</p>
+          <p style="font-size:9px;color:rgba(255,255,255,.25)">${fecha}</p>
         </div>
       </div>`;
-    }).join("");
-    cont.querySelectorAll("button[data-publicar]").forEach(b => {
-      b.onclick = () => this.publicarVideo(b.dataset.publicar, b);
     });
     cont.querySelectorAll("button[data-eliminar]").forEach(b => {
       b.onclick = () => this.eliminarVideo(b.dataset.eliminar, b);
@@ -2144,6 +2137,8 @@ const Admin = {
       if (d.porDia) this.dibujarGrafico(d.porDia, d.usuariosPorDia);
     } catch(e) { console.error("Analytics:", e.message); }
   },
+
+
 
   dibujarGrafico(porDia, usuariosPorDia) {
     const canvas = document.getElementById("grafico-videos");

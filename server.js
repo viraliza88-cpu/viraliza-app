@@ -204,6 +204,29 @@ async function redactarPalabrasClave(tema, guion) {
   return texto.split(",").map((t) => t.trim().replace(/^[\s"'.]+|[\s"'.]+$/g, "")).filter((t) => t.length > 3).slice(0, 8);
 }
 
+// ── Caché de búsqueda de imágenes — 1 hora ──
+const cacheImagenes = new Map();
+const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hora
+
+function getCacheImagenes(key) {
+  const entry = cacheImagenes.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.ts > CACHE_TTL_MS) {
+    cacheImagenes.delete(key);
+    return null;
+  }
+  return entry.data;
+}
+
+function setCacheImagenes(key, data) {
+  // Limitar caché a 200 entradas
+  if (cacheImagenes.size >= 200) {
+    const firstKey = cacheImagenes.keys().next().value;
+    cacheImagenes.delete(firstKey);
+  }
+  cacheImagenes.set(key, { data, ts: Date.now() });
+}
+
 // ── Cola de producción — máximo 2 simultáneos ──
 const colaProduccion = {
   activos: 0,
@@ -581,6 +604,12 @@ app.get("/api/musicas/premium", autenticar, async (req, res) => {
 app.get("/api/imagenes/buscar", autenticar, async (req, res) => {
   const { q, fuente } = req.query;
   if (!q) return res.status(400).json({ error: "Falta el término de búsqueda." });
+  const cacheKey = `img:${fuente || "pexels"}:${q.toLowerCase().trim()}`;
+  const cached = getCacheImagenes(cacheKey);
+  if (cached) {
+    console.log(`[CACHE] Hit imágenes: ${cacheKey}`);
+    return res.json({ resultados: cached, fromCache: true });
+  }
   try {
     let resultados = [];
     if (fuente === "pixabay") {
@@ -594,6 +623,7 @@ app.get("/api/imagenes/buscar", autenticar, async (req, res) => {
       const j = await r.json();
       resultados = (j.photos || []).map(p => ({ url: p.src.large2x || p.src.large, thumb: p.src.large, ancho: p.width, alto: p.height }));
     }
+    if (resultados.length > 0) setCacheImagenes(cacheKey, resultados);
     res.json({ resultados });
   } catch(e) {
     console.error("Error buscando imágenes:", e.message);
@@ -1722,9 +1752,14 @@ app.get("/api/videos", autenticar, async (req, res) => {
     .from("videos")
     .select("*")
     .eq("usuario_id", req.usuario.id)
-    .order("creado_en", { ascending: false });
+    .order("creado_en", { ascending: false })
+    .limit(10);
 
-  const sincronizados = await Promise.all((videos || []).map(sincronizarVideo));
+  // Solo sincronizar videos en producción — no todos
+  const sincronizados = await Promise.all((videos || []).map(async v => {
+    if (v.estado === "produciendo") return sincronizarVideo(v);
+    return v;
+  }));
   res.json({ videos: sincronizados, cuota: await cuotaDe(req.usuario.id, plan) });
 });
 
