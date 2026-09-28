@@ -2053,10 +2053,10 @@ const Panel = {
         onmouseout="this.querySelector('.vid-overlay').style.opacity='0';this.style.borderColor='rgba(255,255,255,.06)'">
         <div style="position:relative;aspect-ratio:9/16;background:#111;overflow:hidden;max-height:240px" ${urlVideo ? `onclick="abrirModalVideo('${urlVideo}','${v.tema.replace(/'/g,"\'").replace(/</g,"&lt;")}')"` : ""}>
           ${urlVideo
-            ? `<video src="${urlVideo}#t=0.001" preload="metadata" muted playsinline
-                style="width:100%;height:100%;object-fit:cover;display:block"
-                onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0.001"></video>`
-            : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:24px;color:rgba(255,255,255,.1)">🎬</div>`
+            ? `<video src="${urlVideo}#t=2" preload="metadata" muted playsinline
+                style="width:100%;height:100%;object-fit:cover;display:block;background:#111"
+                onmouseover="this.play()" onmouseout="this.pause();this.currentTime=2"></video>`
+            : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#111"><span style="font-size:11px;color:rgba(255,255,255,.2);letter-spacing:1px">SIN VIDEO</span></div>`
           }
           <span style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,.8);color:#D6B25E;font-size:8px;letter-spacing:1px;text-transform:uppercase;padding:3px 6px">${durLabel}</span>
           <span style="position:absolute;top:6px;right:6px;color:#69F0AE;font-size:11px;background:rgba(0,0,0,.6);padding:2px 5px;border-radius:50%">✓</span>
