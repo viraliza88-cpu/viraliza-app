@@ -1633,9 +1633,8 @@ app.post("/api/videos", rateLimiter({ventana:60000,max:3}), autenticar, async (r
   console.log(`[COLA] En proceso: ${colaProduccion.enProceso()}, En espera: ${colaProduccion.enEspera()}`);
 
   // Ejecutar dentro de la cola — máximo 2 simultáneos
-  let taskId, urlFinal;
   try {
-    ({ taskId, urlFinal } = await colaProduccion.ejecutar(async () => {
+    await colaProduccion.ejecutar(async () => {
   const carga = {
     video_subject: String(tema).trim(),
     video_script: guionFinal,
@@ -1716,9 +1715,9 @@ app.post("/api/videos", rateLimiter({ventana:60000,max:3}), autenticar, async (r
     return res.status(500).json({ error: "El video se envió a producir, pero no pudimos registrarlo. Escríbenos si no aparece en tu lista." });
   }
   res.json({ ok: true, video });
-    })); // cierre colaProduccion.ejecutar
+  }); // cierre colaProduccion.ejecutar
   } catch(ecola) {
-    console.error("[COLA] Error en producción:", eCola?.message || eola);
+    console.error("[COLA] Error en producción:", ecola?.message || ecola);
     return res.status(500).json({ error: "Error interno en la cola de producción." });
   }
 });

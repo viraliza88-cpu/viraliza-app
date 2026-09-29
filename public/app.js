@@ -579,6 +579,27 @@ const W = {
     document.getElementById("voz-premium-elegida").value = "";
     document.getElementById("sin-narracion").value = modo === "ninguna" ? "1" : "";
     if (modo === "propia") document.getElementById("archivo-narracion").click();
+
+    // Al usar narración propia o sin voz, desactivar subtítulos automáticamente
+    if (modo === "propia" || modo === "ninguna") {
+      const toggleSub = document.getElementById("toggle-subtitulos");
+      const inputSub = document.getElementById("subtitulos-activos");
+      if (toggleSub && inputSub && inputSub.value === "1") {
+        inputSub.value = "0";
+        toggleSub.classList.remove("activo");
+        this.estado.subtitulosActivos = false;
+        mostrarMensaje("Subtítulos desactivados automáticamente — no aplican sin voz generada por Viraliza.", "ok");
+      }
+    } else {
+      // Al volver a voz estándar o premium, reactivar subtítulos
+      const toggleSub = document.getElementById("toggle-subtitulos");
+      const inputSub = document.getElementById("subtitulos-activos");
+      if (toggleSub && inputSub && inputSub.value === "0") {
+        inputSub.value = "1";
+        toggleSub.classList.add("activo");
+        this.estado.subtitulosActivos = true;
+      }
+    }
   },
 
   // ---- Paso 4: música ----
