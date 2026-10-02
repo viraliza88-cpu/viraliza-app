@@ -237,6 +237,36 @@ const W = {
     window.scrollTo({ top: 0, behavior: "smooth" });
   },
 
+  async producirAutomatico() {
+    const tema = document.getElementById("tema")?.value?.trim();
+    if (!tema || tema.length < 10) {
+      mostrarMensaje("Escribe el contexto de tu negocio primero.", "err");
+      return;
+    }
+    this.estado.tema = tema;
+    this.estado.duracion = "corto";
+    this.estado.formato = "9:16";
+    this.estado.modoVoz = "lista";
+    this.estado.sinNarracion = false;
+    this.estado.subtitulosActivos = true;
+    this.estado.subtitulosColor = "#FFE500";
+    this.estado.subtitulosFuente = "viral";
+    this.estado.transicion = "ZoomIn";
+    this.estado.bgmVolumen = 0.15;
+    this.estado.sinMusica = false;
+    const VOCES_AUTO = ["es-CO-SalomeNeural","es-CO-GonzaloNeural","es-ES-AlvaroNeural"];
+    this.estado.voz = VOCES_AUTO[Math.floor(Math.random() * VOCES_AUTO.length)];
+    mostrarMensaje("Generando tu video automáticamente...", "ok");
+    try {
+      const r = await API.pedir("/api/guion", {
+        method: "POST",
+        body: JSON.stringify({ tema, duracion: "corto" })
+      });
+      if (r.guion) { this.estado.guion = r.guion; this.estado.terminos = r.terminos || []; }
+    } catch(e) { console.error("Error guion auto:", e); }
+    await this.producir();
+  },
+
   // ---- Paso 1 ----
   limpiarSeleccionImagenes() {
     const grid = document.getElementById("grid-imagenes");
