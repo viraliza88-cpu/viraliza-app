@@ -529,16 +529,17 @@ input[type=file]{display:none}
       <div class="wizard-pantalla activa" data-pantalla="1">
         <div class="s-header">
           <span class="s-eyebrow">Paso 1 de 5</span>
-          <div class="s-headline">Crea tu video<br>profesional en <em>minutos.</em></div>
-          <p class="s-sub">Escribe el tema de tu negocio y nosotros producimos el guion, la voz, la música y el video completo.</p>
+          <div class="s-headline">Cuéntanos sobre<br>tu <em>negocio.</em></div>
+          <p class="s-sub">Entre más contexto nos des, mejor quedará tu video. Nuestro sistema genera el guion, la voz y el video completo.</p>
         </div>
         <div class="s-body">
           <div class="s-field">
-            <span class="s-label">Tema del video</span>
-            <input class="s-input" id="tema" type="text" maxlength="160" placeholder="Ej: servicios de plomería en Bogotá, ropa deportiva para mujer, clínica dental en Cali">
+            <span class="s-label">¿De qué trata tu video?</span>
+            <textarea class="s-input" id="tema" maxlength="300" rows="3" placeholder="Ej: Soy dueño de una peluquería en Medellín especializada en cortes modernos para hombres. Quiero mostrar mis servicios y atraer clientes nuevos con un video para Instagram." style="resize:none;min-height:80px;line-height:1.6"></textarea>
+            <p style="font-size:11px;color:rgba(255,255,255,.3);margin-top:6px">Incluye: qué haces, dónde estás, a quién va dirigido y qué quieres lograr</p>
           </div>
           <div class="s-field">
-            <span class="s-label">Tipo de negocio</span>
+            <span class="s-label">Tipo de negocio <span style="font-size:10px;color:rgba(255,255,255,.3)">(opcional — para sugerencias)</span></span>
             <div class="nicho-wrap" id="chips-nicho">
               <button class="nicho-tag" data-nicho="restaurante" onclick="W.elegirNicho(this)" type="button">🍽 Restaurante</button>
               <button class="nicho-tag" data-nicho="inmobiliaria" onclick="W.elegirNicho(this)" type="button">🏠 Inmobiliaria</button>

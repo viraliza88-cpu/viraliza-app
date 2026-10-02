@@ -197,7 +197,7 @@ async function redactarGuion(tema, duracion) {
     },
     {
       role: "user",
-      content: `Escribe un guion de ventas en español para este tema: "${tema}". Extensión: ${palabras} palabras. Ángulo: ${enfoque.angulo}. ${enfoque.apertura} Tono: ${enfoque.tono}. IMPORTANTE: No uses signos de interrogación ni exclamación. No uses frases como "Sabías que" o "Hoy te traigo". Usa afirmaciones directas. Variación #${semilla}. Solo devuelve el guion, nada más.`,
+      content: `Escribe un guion de ventas en español para un video corto de redes sociales. Contexto del negocio: "${tema}". Extensión: ${palabras} palabras. Ángulo: ${enfoque.angulo}. ${enfoque.apertura} Tono: ${enfoque.tono}. IMPORTANTE: Usa el contexto del negocio para hacer el guion específico y relevante. No uses signos de interrogación ni exclamación. No uses frases como "Sabías que" o "Hoy te traigo". Usa afirmaciones directas y concretas sobre el negocio. Variación #${semilla}. Solo devuelve el guion, nada más.`,
     },
   ]);
   return texto.replace(/^["']|["']$/g, "").trim();
@@ -1681,7 +1681,7 @@ app.post("/api/videos", rateLimiter({ventana:60000,max:3}), autenticar, async (r
     bgm_type: sinMusica ? "none" : (bgmArchivoFinal ? "file" : "random"),
     bgm_file: bgmArchivoFinal,
     bgm_volume: sinMusica ? 0 : (typeof bgmVolumen === "number" ? Math.max(0, Math.min(1, bgmVolumen)) : 0.2),
-    subtitle_enabled: subtitulosActivos !== false,
+    subtitle_enabled: false, // Post-procesador maneja subtítulos virales
     subtitle_display_mode: "word_by_word",
     subtitle_animation: "pop_spring",
     subtitle_position: "bottom",
@@ -1730,6 +1730,11 @@ app.post("/api/videos", rateLimiter({ventana:60000,max:3}), autenticar, async (r
       progreso: 0,
       urls: [],
       mes: mesActual(),
+      subtitulos_activos: subtitulosActivos !== false,
+      subtitulos_color: subtitulosColor || "#FFE500",
+      subtitulos_fuente: subtitulosFuente || "clasica",
+      sin_narracion: !!sinNarracion,
+      guion: guionFinal,
     })
     .select()
     .single();
@@ -1769,6 +1774,29 @@ async function sincronizarVideo(video) {
       const nombreArchivo = `${video.id}.mp4`;
       const rutaLocal = `${VIDEOS_DIR}/${nombreArchivo}`;
       fs.writeFileSync(rutaLocal, bytes);
+
+      // Post-procesador: subtítulos virales según config del usuario
+      if (video.subtitulos_activos !== false && !video.sin_narracion) {
+        try {
+          const rutaPost = `${VIDEOS_DIR}/${video.id}_viral.mp4`;
+          const { execSync } = require("child_process");
+          const python = "/var/www/MoneyPrinterTurbo/venv/bin/python";
+          const colorSub = video.subtitulos_color || "#FFE500";
+          const fuenteSub = video.subtitulos_fuente || "clasica";
+          const guionVideo = (video.guion || "").replace(/"/g, '\'');
+          execSync(
+            `${python} /var/www/viraliza-app/post_process.py "${rutaLocal}" "${rutaLocal}" "${rutaPost}" "${colorSub}" "${fuenteSub}" "${guionVideo}"`,
+            { timeout: 120000, stdio: "pipe" }
+          );
+          if (fs.existsSync(rutaPost) && fs.statSync(rutaPost).size > 100000) {
+            fs.renameSync(rutaPost, rutaLocal);
+            console.log(`[POST] Subtítulos virales aplicados: ${video.id}`);
+          }
+        } catch(ePost) {
+          console.error("[POST] Error post-procesador:", ePost.message);
+        }
+      }
+
       const urlPublica = `https://viralizacol.com/videos/${nombreArchivo}`;
       
       // Limpiar videos viejos si es necesario
