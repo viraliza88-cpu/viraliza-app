@@ -211,7 +211,7 @@ const W = {
     subtitulosActivos: true,
     subtitulosColor: "#FFFFFF",
     subtitulosFuente: "clasica",
-    transicion: "None",
+    transicion: "ZoomIn",
   },
 
   irA(paso) {
@@ -1480,6 +1480,18 @@ const Panel = {
     if (elPlan) elPlan.textContent = cuota.plan;
     if (elUsados) elUsados.textContent = cuota.usados;
     if (elLimite) elLimite.textContent = cuota.limite;
+    // Mostrar mes actual en el contador
+    const elMes = document.getElementById("mes-actual-label");
+    if (elMes) {
+      const ahora = new Date();
+      const meses = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+      elMes.textContent = "· " + meses[ahora.getMonth()] + " " + ahora.getFullYear();
+    }
+    // IDs del nav
+    const navUsados = document.getElementById("nav-usados");
+    const navLimite = document.getElementById("nav-limite");
+    if (navUsados) navUsados.textContent = cuota.usados;
+    if (navLimite) navLimite.textContent = cuota.limite;
     const campoTrans = document.getElementById("campo-transiciones");
     if (campoTrans) {
       const planesConTrans = ["Signature","Élite","Elite"];

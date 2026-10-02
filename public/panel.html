@@ -478,7 +478,7 @@ input[type=file]{display:none}
   <button class="tab-btn" type="button" data-tab="redes">Ideas de contenido</button>
   <button class="tab-btn" type="button" data-tab="cuenta">Mi cuenta</button>
   <div class="tabs-bar-right">
-    <span class="videos-count">Videos <span id="nav-usados">0</span> / <span id="nav-limite">0</span></span>
+    <span class="videos-count">Videos <span id="nav-usados">0</span> / <span id="nav-limite">0</span> <span id="mes-actual-label" style="font-size:10px;color:rgba(255,255,255,.3)"></span></span>
   </div>
 </div>
 
@@ -781,7 +781,7 @@ input[type=file]{display:none}
           <div class="s-field" id="campo-transiciones" style="display:none">
             <span class="s-label">Transiciones entre imágenes <span style="background:rgba(214,178,94,.15);color:var(--gold);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;margin-left:8px">Signature · Élite</span></span>
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px" id="grid-transiciones">
-              <div class="trans-card elegida" data-trans="None" onclick="W.elegirTransicion(this)" style="border:1px solid rgba(255,255,255,.15);padding:16px;cursor:pointer;transition:all .2s;text-align:center">
+              <div class="trans-card" data-trans="None" onclick="W.elegirTransicion(this)" style="border:1px solid rgba(255,255,255,.15);padding:16px;cursor:pointer;transition:all .2s;text-align:center">
                 <div style="font-size:22px;margin-bottom:8px">⬜</div>
                 <div style="font-size:11px;color:rgba(255,255,255,.88);margin-bottom:4px;font-weight:500">Sin transición</div>
                 <div style="font-size:10px;color:rgba(255,255,255,.72)">Corte directo</div>
@@ -801,10 +801,20 @@ input[type=file]{display:none}
                 <div style="font-size:11px;color:rgba(255,255,255,.88);margin-bottom:4px;font-weight:500">Deslizar entrada</div>
                 <div style="font-size:10px;color:rgba(255,255,255,.72)">Dinámico y moderno</div>
               </div>
-              <div class="trans-card" data-trans="ZoomIn" onclick="W.elegirTransicion(this)" style="border:1px solid rgba(255,255,255,.15);padding:16px;cursor:pointer;transition:all .2s;text-align:center">
+              <div class="trans-card elegida" data-trans="ZoomIn" onclick="W.elegirTransicion(this)" style="border:1px solid rgba(255,255,255,.15);padding:16px;cursor:pointer;transition:all .2s;text-align:center">
                 <div style="font-size:22px;margin-bottom:8px">🔍</div>
                 <div style="font-size:11px;color:rgba(255,255,255,.88);margin-bottom:4px;font-weight:500">Zoom entrada</div>
                 <div style="font-size:10px;color:rgba(255,255,255,.72)">Impactante y visual</div>
+              </div>
+              <div class="trans-card" data-trans="ZoomOut" onclick="W.elegirTransicion(this)" style="border:1px solid rgba(255,255,255,.15);padding:16px;cursor:pointer;transition:all .2s;text-align:center">
+                <div style="font-size:22px;margin-bottom:8px">🔎</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.88);margin-bottom:4px;font-weight:500">Zoom salida</div>
+                <div style="font-size:10px;color:rgba(255,255,255,.72)">Cinematográfico</div>
+              </div>
+              <div class="trans-card" data-trans="SlideOut" onclick="W.elegirTransicion(this)" style="border:1px solid rgba(255,255,255,.15);padding:16px;cursor:pointer;transition:all .2s;text-align:center">
+                <div style="font-size:22px;margin-bottom:8px">➡️</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.88);margin-bottom:4px;font-weight:500">Deslizar salida</div>
+                <div style="font-size:10px;color:rgba(255,255,255,.72)">Fluido y moderno</div>
               </div>
               <div class="trans-card" data-trans="Shuffle" onclick="W.elegirTransicion(this)" style="border:1px solid rgba(255,255,255,.15);padding:16px;cursor:pointer;transition:all .2s;text-align:center">
                 <div style="font-size:22px;margin-bottom:8px">🎲</div>

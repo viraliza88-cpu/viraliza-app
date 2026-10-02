@@ -1641,7 +1641,10 @@ app.post("/api/videos", rateLimiter({ventana:60000,max:3}), autenticar, async (r
     video_terms: terminosFinales,
     video_aspect: aspecto,
     video_concat_mode: "random",
-    video_transition_mode: transicion || "None",
+    video_transition_mode: transicion && transicion !== "None" ? transicion : "ZoomIn",
+    video_clip_duration: duracion === "largo" ? 4 : duracion === "medio" ? 3 : 3,
+    video_fit_mode: "cover",
+    match_materials_to_script: true,
     match_materials_to_script: !usaPropios,
     n_threads: 4,
     video_clip_duration: 3,
@@ -1659,24 +1662,25 @@ app.post("/api/videos", rateLimiter({ventana:60000,max:3}), autenticar, async (r
     bgm_file: bgmArchivoFinal,
     bgm_volume: sinMusica ? 0 : (typeof bgmVolumen === "number" ? Math.max(0, Math.min(1, bgmVolumen)) : 0.2),
     subtitle_enabled: subtitulosActivos !== false,
+    subtitle_display_mode: "word_by_word",
+    subtitle_animation: "pop_spring",
+    subtitle_position: "bottom",
+    custom_position: 75.0,
+    rounded_subtitle_background: false,
+    text_background_color: false,
     font_name: FUENTES_VALIDAS_SUBTITULO[subtitulosFuente] || "BeVietnamPro-Bold.ttf",
     font_size: (() => {
-      // Base por formato
-      let base = aspecto === "16:9" ? 60 : aspecto === "1:1" ? 70 : 80;
-      // Reducir si el guion es largo (muchas palabras por escena)
+      let base = aspecto === "16:9" ? 65 : aspecto === "1:1" ? 72 : 88;
       const palabras = (guionFinal || "").split(/\s+/).length;
       if (palabras > 120) base = Math.round(base * 0.82);
       else if (palabras > 80) base = Math.round(base * 0.90);
-      // Reducir para fuentes condensadas/uppercase que ocupan más ancho
       if (["moderna", "viral"].includes(subtitulosFuente)) base = Math.round(base * 0.88);
-      // Reducir ligeramente para cursivas que son más anchas
       if (["elegante", "redondeada"].includes(subtitulosFuente)) base = Math.round(base * 0.93);
-      return Math.max(44, Math.min(base, 92));
+      return Math.max(50, Math.min(base, 100));
     })(),
-    text_color: /^#[0-9A-Fa-f]{6}$/.test(subtitulosColor || "") ? subtitulosColor : "#FFFFFF",
+    text_fore_color: /^#[0-9A-Fa-f]{6}$/.test(subtitulosColor || "") ? subtitulosColor : "#FFFFFF",
     stroke_color: "#000000",
-    stroke_width: 3.2,
-    subtitle_position: "bottom",
+    stroke_width: 3.8,
   };
 
   let respuesta;
