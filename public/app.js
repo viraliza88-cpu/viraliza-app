@@ -254,8 +254,13 @@ const W = {
     this.estado.transicion = "ZoomIn";
     this.estado.bgmVolumen = 0.15;
     this.estado.sinMusica = false;
-    const VOCES_AUTO = ["es-CO-SalomeNeural","es-CO-GonzaloNeural","es-ES-AlvaroNeural"];
+    const VOCES_AUTO = [
+      "es-CO-SalomeNeural","es-CO-GonzaloNeural",
+      "es-MX-DaliaNeural","es-MX-JorgeNeural",
+      "es-VE-PaolaNeural","es-US-PalomaNeural","es-US-AlonsoNeural"
+    ];
     this.estado.voz = VOCES_AUTO[Math.floor(Math.random() * VOCES_AUTO.length)];
+    this.estado.vozRate = 1.15;
     mostrarMensaje("Generando tu video automáticamente...", "ok");
     try {
       const r = await API.pedir("/api/guion", {
@@ -265,6 +270,18 @@ const W = {
       if (r.guion) { this.estado.guion = r.guion; this.estado.terminos = r.terminos || []; }
     } catch(e) { console.error("Error guion auto:", e); }
     await this.producir();
+  },
+
+  iniciarContadorTema() {
+    const textarea = document.getElementById("tema");
+    const contador = document.getElementById("tema-contador");
+    if (textarea && contador) {
+      textarea.addEventListener("input", () => {
+        const len = textarea.value.length;
+        contador.textContent = `${len} / 300`;
+        contador.style.color = len > 250 ? "rgba(214,178,94,.6)" : "rgba(255,255,255,.2)";
+      });
+    }
   },
 
   // ---- Paso 1 ----
@@ -1165,6 +1182,7 @@ const W = {
           sinMusica: document.getElementById("btn-musica-ninguna")?.classList.contains("activo") || false,
           imagenesSeleccionadas: this.estado.imagenesSeleccionadas || [],
           transicion: this.estado.transicion || "None",
+          vozRate: this.estado.vozRate || 0.93,
         }),
       });
       // Resetear el wizard
@@ -1259,7 +1277,6 @@ const Panel = {
     if (typeof pedirPermisosNotificacion === "function") {
       setTimeout(pedirPermisosNotificacion, 3000);
     }
-    this.iniciarContadorTema();
 
     // Onboarding — mostrar solo la primera vez
     setTimeout(() => {

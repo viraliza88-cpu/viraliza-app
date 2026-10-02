@@ -1507,7 +1507,7 @@ app.post("/api/guion", rateLimiter(20), autenticar, async (req, res) => {
 });
 
 app.post("/api/videos", rateLimiter({ventana:60000,max:3}), autenticar, async (req, res) => {
-  let { tema, guion, terminos, voz, duracion, bgmArchivo, bgmVolumen, materiales, audioPersonalizado, vozPremium, formato, sinNarracion, sinMusica, fuente, bgmPremiumUrl, subtitulosActivos, subtitulosColor, subtitulosFuente, imagenesSeleccionadas, transicion } = req.body || {};
+  let { tema, guion, terminos, voz, duracion, bgmArchivo, bgmVolumen, materiales, audioPersonalizado, vozPremium, formato, sinNarracion, sinMusica, fuente, bgmPremiumUrl, subtitulosActivos, subtitulosColor, subtitulosFuente, imagenesSeleccionadas, transicion, vozRate } = req.body || {};
   // Validar tamaños máximos
   if (tema && String(tema).length > 200) return res.status(400).json({ error: "El tema no puede tener más de 200 caracteres." });
   if (guion && String(guion).length > 3000) return res.status(400).json({ error: "El guion no puede tener más de 3000 caracteres." });
@@ -1675,7 +1675,7 @@ app.post("/api/videos", rateLimiter({ventana:60000,max:3}), autenticar, async (r
     only_local_materials: usaPropios ? true : undefined,
     video_language: "es",
     voice_name: vozPremium ? `elevenlabs:${vozPremium}:premium` : (voz ? voz.replace(/-Female$|-Male$/i,"") : "es-CO-SalomeNeural"),
-    voice_rate: 0.93,
+    voice_rate: vozRate || 0.93,
     voice_volume: 1.0,
     custom_audio_file: audioFinal || null,
     bgm_type: sinMusica ? "none" : (bgmArchivoFinal ? "file" : "random"),

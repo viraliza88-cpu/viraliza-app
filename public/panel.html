@@ -553,7 +553,23 @@ input[type=file]{display:none}
         <div class="s-body">
           <div class="s-field">
             <span class="s-label">¿De qué trata tu video?</span>
-            <textarea class="s-input" id="tema" maxlength="300" rows="3" placeholder="Ej: Soy dueño de una peluquería en Medellín especializada en cortes modernos para hombres. Quiero mostrar mis servicios y atraer clientes nuevos con un video para Instagram." style="resize:none;min-height:80px;line-height:1.6"></textarea>
+            <textarea class="s-input" id="tema" maxlength="300" rows="4" placeholder="Ej: Soy dueño de una peluquería en Medellín especializada en cortes modernos para hombres. Quiero mostrar mis servicios y atraer clientes nuevos con un video para Instagram." style="resize:none;min-height:110px;line-height:1.7;font-size:14px;padding:16px;border:1px solid rgba(214,178,94,.2);background:rgba(214,178,94,.03)"></textarea>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+              <p style="font-size:11px;color:rgba(255,255,255,.25)">Incluye: qué haces, dónde estás, a quién va dirigido y qué quieres lograr</p>
+              <span id="tema-contador" style="font-size:10px;color:rgba(255,255,255,.2)">0 / 300</span>
+            </div>
+            <div style="margin-top:20px;border:1px solid rgba(214,178,94,.25);background:rgba(214,178,94,.04);padding:18px 20px">
+              <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+                <div>
+                  <p style="font-size:13px;color:#F0EDE5;font-weight:500;margin-bottom:4px">⚡ Producción automática</p>
+                  <p style="font-size:11px;color:rgba(255,255,255,.35);line-height:1.5">El sistema elige imágenes, música, voz y subtítulos por ti. Solo escribe el contexto arriba y toca producir.</p>
+                </div>
+                <button type="button" onclick="W.producirAutomatico()"
+                  style="background:#D6B25E;color:#09090B;border:none;padding:12px 24px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0">
+                  ⚡ PRODUCIR AHORA
+                </button>
+              </div>
+            </div>
             <p style="font-size:11px;color:rgba(255,255,255,.3);margin-top:6px">Incluye: qué haces, dónde estás, a quién va dirigido y qué quieres lograr</p>
           </div>
           <div class="s-field">
