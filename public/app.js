@@ -1229,6 +1229,7 @@ const Panel = {
     if (typeof pedirPermisosNotificacion === "function") {
       setTimeout(pedirPermisosNotificacion, 3000);
     }
+    this.iniciarContadorTema();
 
     // Onboarding — mostrar solo la primera vez
     setTimeout(() => {
