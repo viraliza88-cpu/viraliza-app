@@ -254,6 +254,8 @@ const W = {
     this.estado.transicion = "ZoomIn";
     this.estado.bgmVolumen = 0.15;
     this.estado.sinMusica = false;
+    const FUENTES_AUTO = ["pexels", "pixabay"];
+    this.estado.fuente = FUENTES_AUTO[Math.floor(Math.random() * FUENTES_AUTO.length)];
     const VOCES_AUTO = [
       "es-CO-SalomeNeural","es-CO-GonzaloNeural",
       "es-MX-DaliaNeural","es-MX-JorgeNeural",

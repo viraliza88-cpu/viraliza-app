@@ -1509,7 +1509,7 @@ app.post("/api/guion", rateLimiter(20), autenticar, async (req, res) => {
 app.post("/api/videos", rateLimiter({ventana:60000,max:3}), autenticar, async (req, res) => {
   let { tema, guion, terminos, voz, duracion, bgmArchivo, bgmVolumen, materiales, audioPersonalizado, vozPremium, formato, sinNarracion, sinMusica, fuente, bgmPremiumUrl, subtitulosActivos, subtitulosColor, subtitulosFuente, imagenesSeleccionadas, transicion, vozRate } = req.body || {};
   // Validar tamaños máximos
-  if (tema && String(tema).length > 200) return res.status(400).json({ error: "El tema no puede tener más de 200 caracteres." });
+  if (tema && String(tema).length > 500) return res.status(400).json({ error: "El tema no puede tener más de 500 caracteres." });
   if (guion && String(guion).length > 3000) return res.status(400).json({ error: "El guion no puede tener más de 3000 caracteres." });
   // Si hay imágenes seleccionadas del buscador visual, usarlas como materiales
   if (imagenesSeleccionadas && imagenesSeleccionadas.length > 0 && (!materiales || !materiales.length)) {
@@ -1538,7 +1538,7 @@ app.post("/api/videos", rateLimiter({ventana:60000,max:3}), autenticar, async (r
       if (materialesSubidos.length > 0) materiales = materialesSubidos;
     } catch(e) { console.error("Error procesando materiales:", e.message); }
   }
-  tema = sanitizar(tema, 200);
+  tema = sanitizar(tema, 500);
   guion = sanitizar(guion, 3000);
   if (!tema) return res.status(400).json({ error: "El tema del video es requerido." });
   if (!tema || String(tema).trim().length < 5) {
@@ -1664,7 +1664,7 @@ app.post("/api/videos", rateLimiter({ventana:60000,max:3}), autenticar, async (r
     video_transition_mode: transicion && transicion !== "None" ? transicion : "ZoomIn",
     video_clip_duration: duracion === "largo" ? 4 : duracion === "medio" ? 3 : 3,
     video_fit_mode: "cover",
-    match_materials_to_script: true,
+    match_materials_to_script: false,
     match_materials_to_script: !usaPropios,
     n_threads: 4,
     video_clip_duration: 3,
