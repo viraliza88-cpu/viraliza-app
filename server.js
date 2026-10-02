@@ -295,12 +295,32 @@ function mesActual() {
 
 async function cuotaDe(usuarioId, plan) {
   const infoPlan = PLANES[plan] || PLANES.inicial;
-  const { count } = await supabaseAdmin
+
+  // Calcular período según plan_expira (30 días desde el pago)
+  let countQuery = supabaseAdmin
     .from("videos")
     .select("id", { count: "exact", head: true })
     .eq("usuario_id", usuarioId)
-    .eq("mes", mesActual())
     .neq("estado", "fallido");
+
+  if (plan && plan.toLowerCase() !== "inicial") {
+    // Tiene plan pago — contar desde inicio del período (expira - 30 días)
+    const { data: perfil } = await supabaseAdmin
+      .from("perfiles").select("plan_expira").eq("id", usuarioId).single();
+    if (perfil?.plan_expira) {
+      const expira = new Date(perfil.plan_expira);
+      const inicio = new Date(expira.getTime() - 30 * 24 * 60 * 60 * 1000);
+      countQuery = countQuery.gte("creado_en", inicio.toISOString());
+    } else {
+      // Sin fecha de expiración — contar últimos 30 días
+      const inicio = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+      countQuery = countQuery.gte("creado_en", inicio.toISOString());
+    }
+  } else {
+    countQuery = countQuery.eq("mes", mesActual());
+  }
+
+  const { count } = await countQuery;
   // Sumar videos bonus por referidos
   const { data: perfBonus } = await supabaseAdmin
     .from("perfiles").select("videos_bonus").eq("id", usuarioId).single();

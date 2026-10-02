@@ -1516,10 +1516,6 @@ const Panel = {
     if (cuentaUsados) cuentaUsados.textContent = cuota.usados || 0;
     if (cuentaLimite) cuentaLimite.textContent = cuota.limite || 0;
     // Actualizar contador en navbar
-    const navUsados = document.getElementById("nav-usados");
-    const navLimite = document.getElementById("nav-limite");
-    if (navUsados) navUsados.textContent = cuota.usados;
-    if (navLimite) navLimite.textContent = cuota.limite;
     if (elRenovacion) {
       if (cuota.expira) {
         const fecha = new Date(cuota.expira).toLocaleDateString("es-CO", {day:"numeric", month:"long", year:"numeric"});
