@@ -80,28 +80,9 @@ def generar_filtro_grupos(palabras, font_path, color_principal):
 
             texto_grupo = " ".join(linea_partes)
 
-            # Fondo semitransparente — línea de texto completo en blanco
-            filtro_base = (
-                f"drawtext=fontfile='{font_path}'"
-                f":text='{texto_grupo}'"
-                f":fontcolor=0xFFFFFF"
-                f":fontsize={FONT_SIZE_RESTO}"
-                f":bordercolor=0x000000"
-                f":borderw=5"
-                f":x=(w-text_w)/2"
-                f":y=h*0.74"
-                f":enable='between(t,{start_activa:.3f},{end_activa:.3f})'"
-            )
-            filtros.append(filtro_base)
-
-            # Palabra activa encima — en color principal y más grande
+                # Solo palabra activa en color principal — limpio y viral
             w_activa = limpiar(p_activa["word"]).upper()
             if w_activa:
-                # Calcular posición X aproximada de la palabra activa
-                total_palabras = len(grupo)
-                pos_relativa = idx_activa / max(total_palabras - 1, 1) - 0.5  # -0.5 a 0.5
-                offset_x = f"(w-text_w)/2+{int(pos_relativa * 120)}"
-
                 filtro_activa = (
                     f"drawtext=fontfile='{font_path}'"
                     f":text='{w_activa}'"
@@ -110,7 +91,7 @@ def generar_filtro_grupos(palabras, font_path, color_principal):
                     f":bordercolor=0x000000"
                     f":borderw=6"
                     f":x=(w-text_w)/2"
-                    f":y=h*0.725"
+                    f":y=h*0.73"
                     f":enable='between(t,{start_activa:.3f},{end_activa:.3f})'"
                 )
                 filtros.append(filtro_activa)

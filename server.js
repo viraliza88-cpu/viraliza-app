@@ -1683,7 +1683,7 @@ app.post("/api/videos", rateLimiter({ventana:60000,max:3}), autenticar, async (r
     bgm_type: sinMusica ? "none" : (bgmArchivoFinal ? "file" : "random"),
     bgm_file: bgmArchivoFinal,
     bgm_volume: sinMusica ? 0 : (typeof bgmVolumen === "number" ? Math.max(0, Math.min(1, bgmVolumen)) : 0.2),
-    subtitle_enabled: true,
+    subtitle_enabled: false,
     subtitle_display_mode: "word_by_word",
     subtitle_animation: "pop_spring",
     subtitle_display_mode: "word_by_word",
@@ -1779,8 +1779,8 @@ async function sincronizarVideo(video) {
       const rutaLocal = `${VIDEOS_DIR}/${nombreArchivo}`;
       fs.writeFileSync(rutaLocal, bytes);
 
-      // Post-procesador: DESACTIVADO temporalmente
-      if (false && video.subtitulos_activos !== false && !video.sin_narracion) {
+      // Post-procesador: subtítulos virales según config del usuario
+      if (video.subtitulos_activos !== false && !video.sin_narracion) {
         try {
           const rutaPost = `${VIDEOS_DIR}/${video.id}_viral.mp4`;
           const { execSync } = require("child_process");
