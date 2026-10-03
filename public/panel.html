@@ -545,33 +545,57 @@ input[type=file]{display:none}
 
       <!-- PASO 1 -->
       <div class="wizard-pantalla activa" data-pantalla="1">
-        <div class="s-header">
+        <div class="s-header" style="padding:40px 44px 28px;text-align:center">
           <span class="s-eyebrow">Paso 1 de 5</span>
-          <div class="s-headline">Cuéntanos sobre<br>tu <em>negocio.</em></div>
-          <p class="s-sub">Entre más contexto nos des, mejor quedará tu video. Nuestro sistema genera el guion, la voz y el video completo.</p>
+          <div class="s-headline" style="font-size:clamp(28px,4vw,48px)">Tu video en<br><em>2 minutos.</em></div>
+          <p class="s-sub" style="max-width:560px;margin:0 auto">Cuéntanos sobre tu negocio y el sistema genera el guion, la voz, la música y el video completo.</p>
         </div>
         <div class="s-body">
-          <div class="s-field">
-            <span class="s-label">¿De qué trata tu video?</span>
-            <textarea class="s-input" id="tema" maxlength="500" rows="4" placeholder="Ej: Soy dueño de una peluquería en Medellín especializada en cortes modernos para hombres. Quiero mostrar mis servicios y atraer clientes nuevos con un video para Instagram." style="resize:none;min-height:110px;line-height:1.7;font-size:14px;padding:16px;border:1px solid rgba(214,178,94,.2);background:rgba(214,178,94,.03)"></textarea>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
-              <p style="font-size:11px;color:rgba(255,255,255,.25)">Incluye: qué haces, dónde estás, a quién va dirigido y qué quieres lograr</p>
-              <span id="tema-contador" style="font-size:10px;color:rgba(255,255,255,.2)">0 / 300</span>
+
+          <!-- Selector de modo -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px">
+
+            <!-- Modo automático -->
+            <div id="card-modo-auto" style="border:2px solid rgba(214,178,94,.8);background:linear-gradient(135deg,rgba(214,178,94,.12),rgba(214,178,94,.04));padding:28px 24px;cursor:pointer;position:relative;transition:all .2s" onclick="W.seleccionarModo('auto')">
+              <div style="position:absolute;top:14px;right:14px;background:#D6B25E;color:#09090B;font-size:9px;font-weight:700;letter-spacing:1.5px;padding:3px 8px;text-transform:uppercase">Recomendado</div>
+              <div style="font-size:32px;margin-bottom:12px">⚡</div>
+              <p style="font-size:15px;color:#D6B25E;font-weight:700;margin-bottom:8px">Producción automática</p>
+              <p style="font-size:12px;color:rgba(255,255,255,.5);line-height:1.6">El sistema elige todo por ti. Solo describe tu negocio y en 2 minutos tienes tu video listo.</p>
             </div>
-            <div style="margin-top:20px;border:1px solid rgba(214,178,94,.25);background:rgba(214,178,94,.04);padding:18px 20px">
-              <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
-                <div>
-                  <p style="font-size:13px;color:#F0EDE5;font-weight:500;margin-bottom:4px">⚡ Producción automática</p>
-                  <p style="font-size:11px;color:rgba(255,255,255,.35);line-height:1.5">El sistema elige imágenes, música, voz y subtítulos por ti. Solo escribe el contexto arriba y toca producir.</p>
-                </div>
-                <button type="button" onclick="W.producirAutomatico()"
-                  style="background:#D6B25E;color:#09090B;border:none;padding:12px 24px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0">
-                  ⚡ PRODUCIR AHORA
-                </button>
+
+            <!-- Modo manual -->
+            <div id="card-modo-manual" style="border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.02);padding:28px 24px;cursor:pointer;transition:all .2s" onclick="W.seleccionarModo('manual')">
+              <div style="font-size:32px;margin-bottom:12px">🎛</div>
+              <p style="font-size:15px;color:#F0EDE5;font-weight:700;margin-bottom:8px">Producción manual</p>
+              <p style="font-size:12px;color:rgba(255,255,255,.5);line-height:1.6">Tú eliges el formato, las imágenes, la voz y la música. Control total sobre tu video.</p>
+            </div>
+          </div>
+
+          <!-- Área automática -->
+          <div id="modo-auto">
+            <div style="margin-bottom:12px">
+              <label style="font-size:11px;color:rgba(255,255,255,.5);letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:10px">Describe tu negocio</label>
+              <textarea class="s-input" id="tema" maxlength="500" rows="5" placeholder="Ejemplo: Tengo una barbería en Medellín llamada Vanité, especializada en cortes modernos y degradados para hombres de 20 a 40 años. Quiero atraer clientes nuevos con un video para TikTok e Instagram que muestre el ambiente y los servicios." style="resize:none;min-height:130px;line-height:1.7;font-size:13px;padding:18px;border:1px solid rgba(214,178,94,.2);background:rgba(0,0,0,.3);width:100%"></textarea>
+              <div style="display:flex;justify-content:space-between;margin-top:8px">
+                <p style="font-size:11px;color:rgba(255,255,255,.25)">Mientras más detalle escribas, mejor quedará el guion</p>
+                <span id="tema-contador" style="font-size:10px;color:rgba(255,255,255,.2)">0 / 500</span>
               </div>
             </div>
-            <p style="font-size:11px;color:rgba(255,255,255,.3);margin-top:6px">Incluye: qué haces, dónde estás, a quién va dirigido y qué quieres lograr</p>
+            <button type="button" onclick="W.producirAutomatico()"
+              style="width:100%;background:#D6B25E;color:#09090B;border:none;padding:18px;font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;font-family:inherit;margin-top:8px">
+              ⚡ GENERAR Y PRODUCIR AHORA
+            </button>
+            <p style="font-size:10px;color:rgba(255,255,255,.2);text-align:center;margin-top:10px">~2 minutos · Sin configuración adicional · Listo para publicar</p>
           </div>
+
+          <!-- Área manual -->
+          <div id="modo-manual-area" style="display:none;margin-top:8px">
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+              <div style="flex:1;height:1px;background:rgba(255,255,255,.06)"></div>
+              <span style="font-size:10px;color:rgba(255,255,255,.2);letter-spacing:2px;text-transform:uppercase">configuración manual</span>
+              <div style="flex:1;height:1px;background:rgba(255,255,255,.06)"></div>
+            </div>
+
           <div class="s-field">
             <span class="s-label">Tipo de negocio <span style="font-size:10px;color:rgba(255,255,255,.3)">(opcional — para sugerencias)</span></span>
             <div class="nicho-wrap" id="chips-nicho">
@@ -609,6 +633,7 @@ input[type=file]{display:none}
               </div>
             </div>
           </div>
+          </div><!-- /modo-manual-area -->
         </div>
         <div class="s-footer">
           <div class="s-hint"><div class="s-dots"><div class="s-dot activo"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div></div></div>

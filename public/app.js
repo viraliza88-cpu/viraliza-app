@@ -237,6 +237,31 @@ const W = {
     window.scrollTo({ top: 0, behavior: "smooth" });
   },
 
+  // ---- Selector modo automático/manual ----
+  seleccionarModo(modo) {
+    const cardAuto = document.getElementById("card-modo-auto");
+    const cardManual = document.getElementById("card-modo-manual");
+    const areaAuto = document.getElementById("modo-auto");
+    const areaManual = document.getElementById("modo-manual-area");
+
+    if (modo === "auto") {
+      cardAuto.style.border = "2px solid rgba(214,178,94,.8)";
+      cardAuto.style.background = "linear-gradient(135deg,rgba(214,178,94,.12),rgba(214,178,94,.04))";
+      cardManual.style.border = "1px solid rgba(255,255,255,.1)";
+      cardManual.style.background = "rgba(255,255,255,.02)";
+      if (areaAuto) areaAuto.style.display = "block";
+      if (areaManual) areaManual.style.display = "none";
+    } else {
+      cardManual.style.border = "2px solid rgba(214,178,94,.8)";
+      cardManual.style.background = "linear-gradient(135deg,rgba(214,178,94,.12),rgba(214,178,94,.04))";
+      cardAuto.style.border = "1px solid rgba(214,178,94,.2)";
+      cardAuto.style.background = "rgba(214,178,94,.02)";
+      if (areaAuto) areaAuto.style.display = "none";
+      if (areaManual) areaManual.style.display = "block";
+    }
+    this.estado.modoProduccion = modo;
+  },
+
   async producirAutomatico() {
     const tema = document.getElementById("tema")?.value?.trim();
     if (!tema || tema.length < 10) {
