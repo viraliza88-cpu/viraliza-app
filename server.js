@@ -220,13 +220,13 @@ async function redactarPalabrasClave(tema, guion) {
       role: "system",
       content:
         "Eres experto en busqueda de video stock en Pexels y Pixabay. " +
-        "Genera exactamente 8 palabras clave en ingles para buscar videos stock de alta calidad. " +
-        "REGLAS ESTRICTAS: " +
-        "1. Maximo 3 palabras por termino (ej: barber, haircut, barbershop interior). " +
-        "2. Usa palabras que Pexels indexa bien — sustantivos y acciones simples. " +
-        "3. Incluye: 2 terminos del lugar/negocio, 3 de personas en accion, 2 de productos/servicios, 1 de ambiente. " +
-        "4. Sin frases largas. Sin palabras abstractas. Solo visual y concreto. " +
-        "5. Ejemplos buenos: barbershop, man haircut, barber scissors, salon interior, hair styling. " +
+        "Analiza el negocio descrito y genera 8 terminos en ingles para buscar videos stock relevantes. " +
+        "REGLAS: " +
+        "1. Los primeros 4 terminos deben ser MUY ESPECIFICOS del negocio (ej: para barberia: barber fade haircut, razor blade beard, barbershop chair, hair clipper closeup). " +
+        "2. Los ultimos 4 terminos deben ser mas generales pero visuales (ej: professional man grooming, modern salon interior, customer service smile, city lifestyle). " +
+        "3. Maximo 3 palabras por termino. Solo sustantivos y acciones visuales. " +
+        "4. Usa terminos que Pexels indexa — evita palabras muy locales o marcas especificas. " +
+        "5. El objetivo es encontrar videos que muestren exactamente lo que hace ese negocio. " +
         "Responde SOLO los 8 terminos separados por coma, sin numeracion ni explicacion.",
     },
     { role: "user", content: "Tema: \"" + tema + "\"\nGuion: \"" + guion + "\"" },
