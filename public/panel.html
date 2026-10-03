@@ -391,6 +391,7 @@ input[type=file]{display:none}
   .tab-btn{padding:0 12px;font-size:10px}
   .cuenta-wrap{padding:20px 16px}
 }
+@media(max-width:600px){#grid-modos{grid-template-columns:1fr !important}#card-modo-auto,#card-modo-manual{padding:20px 16px !important}}
 @media(max-width:480px){
   .top .wrap{padding:0 12px}
   .logo{font-size:20px}
@@ -553,21 +554,21 @@ input[type=file]{display:none}
         <div class="s-body">
 
           <!-- Selector de modo -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px" id="grid-modos">
 
             <!-- Modo automático -->
             <div id="card-modo-auto" style="border:2px solid rgba(214,178,94,.8);background:linear-gradient(135deg,rgba(214,178,94,.12),rgba(214,178,94,.04));padding:28px 24px;cursor:pointer;position:relative;transition:all .2s" onclick="W.seleccionarModo('auto')">
               <div style="position:absolute;top:14px;right:14px;background:#D6B25E;color:#09090B;font-size:9px;font-weight:700;letter-spacing:1.5px;padding:3px 8px;text-transform:uppercase">Recomendado</div>
               <div style="font-size:32px;margin-bottom:12px">⚡</div>
               <p style="font-size:15px;color:#D6B25E;font-weight:700;margin-bottom:8px">Producción automática</p>
-              <p style="font-size:12px;color:rgba(255,255,255,.5);line-height:1.6">El sistema elige todo por ti. Solo describe tu negocio y en 2 minutos tienes tu video listo.</p>
+              <p style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.6">El sistema elige todo por ti. Solo describe tu negocio y en 2 minutos tienes tu video listo.</p>
             </div>
 
             <!-- Modo manual -->
             <div id="card-modo-manual" style="border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.02);padding:28px 24px;cursor:pointer;transition:all .2s" onclick="W.seleccionarModo('manual')">
               <div style="font-size:32px;margin-bottom:12px">🎛</div>
               <p style="font-size:15px;color:#F0EDE5;font-weight:700;margin-bottom:8px">Producción manual</p>
-              <p style="font-size:12px;color:rgba(255,255,255,.5);line-height:1.6">Tú eliges el formato, las imágenes, la voz y la música. Control total sobre tu video.</p>
+              <p style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.6">Tú eliges el formato, las imágenes, la voz y la música. Control total sobre tu video.</p>
             </div>
           </div>
 
@@ -577,15 +578,15 @@ input[type=file]{display:none}
               <label style="font-size:11px;color:rgba(255,255,255,.5);letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:10px">Describe tu negocio</label>
               <textarea class="s-input" id="tema" maxlength="500" rows="5" placeholder="Ejemplo: Tengo una barbería en Medellín llamada Vanité, especializada en cortes modernos y degradados para hombres de 20 a 40 años. Quiero atraer clientes nuevos con un video para TikTok e Instagram que muestre el ambiente y los servicios." style="resize:none;min-height:130px;line-height:1.7;font-size:13px;padding:18px;border:1px solid rgba(214,178,94,.2);background:rgba(0,0,0,.3);width:100%"></textarea>
               <div style="display:flex;justify-content:space-between;margin-top:8px">
-                <p style="font-size:11px;color:rgba(255,255,255,.25)">Mientras más detalle escribas, mejor quedará el guion</p>
-                <span id="tema-contador" style="font-size:10px;color:rgba(255,255,255,.2)">0 / 500</span>
+                <p style="font-size:11px;color:rgba(255,255,255,.55)">Mientras más detalle escribas, mejor quedará el guion</p>
+                <span id="tema-contador" style="font-size:10px;color:rgba(255,255,255,.45)">0 / 500</span>
               </div>
             </div>
             <button type="button" onclick="W.producirAutomatico()"
               style="width:100%;background:#D6B25E;color:#09090B;border:none;padding:18px;font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;font-family:inherit;margin-top:8px">
               ⚡ GENERAR Y PRODUCIR AHORA
             </button>
-            <p style="font-size:10px;color:rgba(255,255,255,.2);text-align:center;margin-top:10px">~2 minutos · Sin configuración adicional · Listo para publicar</p>
+            <p style="font-size:10px;color:rgba(255,255,255,.45);text-align:center;margin-top:10px">~2 minutos · Sin configuración adicional · Listo para publicar</p>
           </div>
 
           <!-- Área manual -->

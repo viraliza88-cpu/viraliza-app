@@ -265,10 +265,10 @@ const W = {
   async producirAutomatico() {
     const tema = document.getElementById("tema")?.value?.trim();
     if (!tema || tema.length < 10) {
-      mostrarMensaje("Escribe el contexto de tu negocio primero.", "err");
+      mostrarMensaje("Escribe el contexto de tu negocio primero (mínimo 10 caracteres).", "err");
+      document.getElementById("tema")?.focus();
       return;
     }
-    this.estado.tema = tema;
     this.estado.duracion = "corto";
     this.estado.formato = "9:16";
     this.estado.modoVoz = "lista";
@@ -279,8 +279,7 @@ const W = {
     this.estado.transicion = "ZoomIn";
     this.estado.bgmVolumen = 0.15;
     this.estado.sinMusica = false;
-    const FUENTES_AUTO = ["pexels", "pixabay"];
-    this.estado.fuente = FUENTES_AUTO[Math.floor(Math.random() * FUENTES_AUTO.length)];
+    this.estado.fuente = "pexels";
     const VOCES_AUTO = [
       "es-CO-SalomeNeural","es-CO-GonzaloNeural",
       "es-MX-DaliaNeural","es-MX-JorgeNeural",
