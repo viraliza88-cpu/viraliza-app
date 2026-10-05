@@ -198,6 +198,7 @@ const W = {
     duracion: "corto",
     formato: "9:16",
     fuente: "pexels",
+    modoProduccion: "auto",
     guion: "",
     terminos: [],
     voz: "es-CO-SalomeNeural",
@@ -239,6 +240,7 @@ const W = {
 
   // ---- Selector modo automático/manual ----
   seleccionarModo(modo) {
+    this.estado.modoProduccion = modo;
     const cardAuto = document.getElementById("card-modo-auto");
     const cardManual = document.getElementById("card-modo-manual");
     const areaAuto = document.getElementById("modo-auto");
@@ -515,12 +517,24 @@ const W = {
   },
 
   async irAPaso2() {
-    const tema = document.getElementById("tema").value.trim();
-    if (tema.length < 5) {
-      mostrarMensaje("Escribe el tema de tu video (mínimo 5 caracteres).", "err");
-      return;
+    // Sincronizar tema según modo activo
+    const modoActual = this.estado.modoProduccion || "auto";
+    if (modoActual === "manual") {
+      const temaManual = document.getElementById("tema-manual")?.value?.trim();
+      if (!temaManual || temaManual.length < 5) {
+        mostrarMensaje("Escribe el tema de tu video (mínimo 5 caracteres).", "err");
+        return;
+      }
+      document.getElementById("tema").value = temaManual;
+      this.estado.tema = temaManual;
+    } else {
+      const temaAuto = document.getElementById("tema")?.value?.trim();
+      if (!temaAuto || temaAuto.length < 5) {
+        mostrarMensaje("Describe tu negocio antes de continuar.", "err");
+        return;
+      }
+      this.estado.tema = temaAuto;
     }
-    this.estado.tema = tema;
     limpiarMensaje();
     // Generamos el guion en background mientras el usuario elige formato
     this.estado.guion = "";
@@ -1227,6 +1241,7 @@ const W = {
       // Resetear el wizard
       this.estado = {
         tema: "", duracion: "corto", formato: "9:16", fuente: "pexels",
+        modoProduccion: "auto",
         guion: "", terminos: [], voz: "es-CO-SalomeNeural",
         modoVoz: "lista", vozPremiumId: "", audioPropio: "",
         sinNarracion: false, musicaArchivo: "", musicaPremiumUrl: "",

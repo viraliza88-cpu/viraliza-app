@@ -573,7 +573,7 @@ input[type=file]{display:none}
           </div>
 
           <!-- Área automática -->
-          <div id="modo-auto">
+          <div id="modo-auto" style="display:block">
             <div style="margin-bottom:12px">
               <label style="font-size:11px;color:rgba(255,255,255,.5);letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:10px">Describe tu negocio</label>
               <textarea class="s-input" id="tema" maxlength="500" rows="5" placeholder="Ejemplo: Tengo una barbería en Medellín llamada Vanité, especializada en cortes modernos y degradados para hombres de 20 a 40 años. Quiero atraer clientes nuevos con un video para TikTok e Instagram que muestre el ambiente y los servicios." style="resize:none;min-height:130px;line-height:1.7;font-size:13px;padding:18px;border:1px solid rgba(214,178,94,.2);background:rgba(0,0,0,.3);width:100%"></textarea>
@@ -591,6 +591,10 @@ input[type=file]{display:none}
 
           <!-- Área manual -->
           <div id="modo-manual-area" style="display:none;margin-top:8px">
+            <div style="margin-bottom:20px">
+              <label style="font-size:11px;color:rgba(255,255,255,.5);letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:10px">Tema del video</label>
+              <input class="s-input" id="tema-manual" type="text" maxlength="200" placeholder="Ej: servicios de plomería en Bogotá, barbería moderna en Medellín" style="font-size:13px;padding:14px 16px">
+            </div>
             <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
               <div style="flex:1;height:1px;background:rgba(255,255,255,.06)"></div>
               <span style="font-size:10px;color:rgba(255,255,255,.2);letter-spacing:2px;text-transform:uppercase">configuración manual</span>
