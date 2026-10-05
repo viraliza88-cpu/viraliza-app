@@ -269,6 +269,7 @@ const W = {
       document.getElementById("tema")?.focus();
       return;
     }
+    this.estado.tema = tema;
     this.estado.duracion = "corto";
     this.estado.formato = "9:16";
     this.estado.modoVoz = "lista";
@@ -490,20 +491,6 @@ const W = {
     }
   },
 
-  elegirNicho(btn) {
-    document.querySelectorAll(".chip-nicho").forEach(b => b.classList.remove("activo"));
-    btn.classList.add("activo");
-    const nicho = btn.dataset.nicho;
-    const temas = TEMAS_POR_NICHO[nicho] || [];
-    const cont = document.getElementById("lista-temas-sugeridos");
-    const wrap = document.getElementById("temas-sugeridos");
-    cont.innerHTML = temas.map(t => `
-      <button class="tema-sugerido-btn" onclick="W.usarTema('${t.replace(/'/g, "\'")}')" type="button">
-        💡 ${t}
-      </button>
-    `).join("");
-    wrap.style.display = temas.length ? "block" : "none";
-  },
 
   usarTema(tema) {
     document.getElementById("tema").value = tema;
@@ -875,17 +862,43 @@ const W = {
 
   // ---- Banco de ideas por nicho ----
   elegirNicho(btn) {
-    document.querySelectorAll(".nicho-btn").forEach(b => {
+    document.querySelectorAll(".nicho-tag").forEach(b => {
       b.classList.remove("elegido");
-      b.style.borderColor = "rgba(255,255,255,.08)";
-      b.style.background = "rgba(255,255,255,.02)";
-      b.style.color = "rgba(255,255,255,.75)";
+      b.style.borderColor = "";
+      b.style.background = "";
+      b.style.color = "";
     });
     btn.classList.add("elegido");
-    btn.style.borderColor = "var(--gold)";
-    btn.style.background = "rgba(214,178,94,.08)";
+    btn.style.borderColor = "var(--gold, #D6B25E)";
+    btn.style.background = "rgba(214,178,94,.12)";
+    btn.style.color = "#D6B25E";
 
     const nicho = btn.dataset.nicho;
+
+    // Llenar textarea con ejemplo según tipo de negocio
+    const EJEMPLOS_NICHO = {
+      restaurante: "Tengo un restaurante en [ciudad] especializado en [tipo de comida]. Quiero atraer más clientes con un video para TikTok e Instagram que muestre nuestros platos, el ambiente y la experiencia de visitarnos.",
+      inmobiliaria: "Soy agente inmobiliario en [ciudad] y vendo/arriendo apartamentos y casas. Quiero un video para redes que muestre propiedades y genere contactos de personas interesadas en comprar o arrendar.",
+      gimnasio: "Tengo un gimnasio en [ciudad] con clases de [tipo de clases]. Quiero un video viral que muestre las instalaciones, los resultados de clientes y motive a nuevas personas a unirse.",
+      belleza: "Tengo un salón de belleza en [ciudad] especializado en [servicios]. Quiero un video para redes que muestre resultados antes y después y atraiga clientas nuevas.",
+      tienda: "Tengo una tienda en [ciudad] que vende [productos]. Quiero un video para TikTok e Instagram que muestre los productos, precios y cómo comprar.",
+      agencia: "Soy de una agencia de [servicios] en [ciudad]. Quiero un video profesional para redes que muestre nuestros resultados y atraiga nuevos clientes.",
+      educacion: "Ofrezco cursos de [tema] para [público objetivo]. Quiero un video para redes que explique qué aprenderán, los beneficios y cómo inscribirse.",
+      salud: "Tengo una clínica de [especialidad] en [ciudad]. Quiero un video para redes que genere confianza en los pacientes y los motive a agendar una cita.",
+    };
+    const ejemploNicho = EJEMPLOS_NICHO[nicho];
+    if (ejemploNicho) {
+      const textarea = document.getElementById("tema");
+      if (textarea) {
+        textarea.value = ejemploNicho;
+        textarea.dispatchEvent(new Event('input'));
+        textarea.focus();
+        textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const contador = document.getElementById("tema-contador");
+        if (contador) contador.textContent = ejemploNicho.length + " / 500";
+      }
+    }
+
     const IDEAS = {
       restaurante: [
         "3 platos de nuestra carta que se agotan todos los días",
